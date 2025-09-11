@@ -2010,7 +2010,7 @@ const showToast = (message, type = 'info') => {
 
 const columnsExport = [
   "Date", "Employee ID","Timesheet Type Code", "Name", "Fiscal Year", "Period",
-  "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment", "IP Address"
+  "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment",
 ];
 
 export default function ExportTable() {
@@ -2167,7 +2167,7 @@ export default function ExportTable() {
         "Hours": formatHours(item.hours),
         "Seq No": item.sequenceNumber || "",
         "Comment": item.comment || "",
-        "IP Address": item.ipAddress || ""
+        // "IP Address": item.ipAddress || ""
       })) : [];
       setRows(mappedData);
       setSelectedRows(new Set());

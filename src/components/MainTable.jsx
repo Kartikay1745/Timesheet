@@ -11258,13 +11258,13 @@ const getUserIPAddress = async () => {
 };
 
 const columnsAdmin = [
-  "Notify", "Date", "Employee ID", "Timesheet Type Code", "Name", "Fiscal Year", "Period",
+  "Notify", "Status", "Date", "Employee ID", "Timesheet Type Code", "Name", "Fiscal Year", "Period",
   "Project ID", "PLC", "Pay Type", "Hours", "Seq No"
 ];
 
 const columnsViewer = [
   "Select", "Status", "Date", "Employee ID", "Timesheet Type Code", "Name", "Fiscal Year", "Period",
-  "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment", "IP Address"
+  "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment"
 ];
 
 const ReasonModal = ({ isOpen, action, selectedCount, onConfirm, onCancel }) => {
@@ -11460,20 +11460,88 @@ export default function MainTable() {
     return ' ⇅';
   };
 
-  const getStatusStyle = (status) => {
-    switch (status?.toUpperCase()) {
-      case 'APPROVED':
-        return { backgroundColor: '#dcfce7', color: '#166534', fontWeight: 'bold' };
-      case 'REJECTED':
-        return { backgroundColor: '#fef2f2', color: '#dc2626', fontWeight: 'bold' };
-      case 'PENDING':
-        return { backgroundColor: '#fff7ed', color: '#ea580c', fontWeight: 'bold' };
-      case 'NOTIFIED':
-        return { backgroundColor: '#eff6ff', color: '#2563eb', fontWeight: 'bold' };
-      default:
-        return { backgroundColor: '#f9fafb', color: '#6b7280', fontWeight: 'normal' };
-    }
-  };
+//   const getStatusStyle = (status) => {
+//     switch (status?.toUpperCase()) {
+//       case 'APPROVED':
+//         return { backgroundColor: '#dcfce7', color: '#166534', fontWeight: 'bold' };
+//       case 'REJECTED':
+//         return { backgroundColor: '#fef2f2', color: '#dc2626', fontWeight: 'bold' };
+//       case 'PENDING':
+//         return { backgroundColor: '#fff7ed', color: '#ea580c', fontWeight: 'bold' };
+//       case 'NOTIFIED':
+//         return { backgroundColor: '#eff6ff', color: '#2563eb', fontWeight: 'bold' };
+//       default:
+//         return { backgroundColor: '#f9fafb', color: '#6b7280', fontWeight: 'normal' };
+//     }
+//   };
+  
+const getStatusStyle = (status) => {
+  const statusUpper = status?.toUpperCase() || "PENDING";
+  
+  switch (statusUpper) {
+    case 'APPROVED':
+      return {
+        backgroundColor: '#dcfce7',
+        color: '#16a34a',
+        fontWeight: '600',
+        padding: '4px 8px',
+        // borderRadius: '9999px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
+    case 'REJECTED':
+      return {
+        backgroundColor: '#fef2f2',
+        color: '#dc2626',
+        fontWeight: '600',
+        padding: '4px 8px',
+        // borderRadius: '9999px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
+    case 'PENDING':
+      return {
+        backgroundColor: '#fef3c7',
+        color: '#d97706',
+        fontWeight: '600',
+        padding: '4px 8px',
+        // borderRadius: '9999px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
+    case 'NOTIFIED':
+      return {
+        backgroundColor: '#dbeafe',
+        color: '#2563eb',
+        fontWeight: '600',
+        padding: '4px 8px',
+        // borderRadius: '9999px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
+    case 'UN-NOTIFIED':
+    case 'UNNOTIFIED':
+      return {
+        backgroundColor: '#dcfce7',  // Green background (same as APPROVED)
+        color: '#16a34a',            // Green text (same as APPROVED)
+        fontWeight: '600',
+        padding: '4px 8px',
+        // borderRadius: '9999px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
+    default:
+      return {
+        backgroundColor: '#f3f4f6',
+        color: '#6b7280',
+        fontWeight: '500',
+        padding: '4px 8px',
+        // borderRadius: '9999px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
+  }
+};
 
   useEffect(() => {
     getUserIPAddress().then(ip => setUserIpAddress(ip || ''));
@@ -11527,35 +11595,58 @@ export default function MainTable() {
       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const apiData = await response.json();
-      const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
-        id: item.timesheetId || item.id || `fallback-${index}`,
-        requestId: item.requestId || item.id,
-        levelNo: item.levelNo || 1,
-        selected: false,
-        notifySelected: false,
-        isApproved: item.approvalStatus === 'APPROVED' || false,
-        isRejected: item.approvalStatus === 'REJECTED' || false,
-        isNotified: item.approvalStatus === 'NOTIFIED' || false,
-        status: item.approvalStatus?.toLowerCase() || 'pending',
-        originalDate: item.timesheetDate,
-        "Date": formatDate(item.timesheetDate),
-        "Employee ID": item.employee?.employeeId || item.employeeId || "",
-        "Timesheet Type Code": item.timesheetTypeCode || "",
-        "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
-        "Fiscal Year": item.fiscalYear || "",
-        "Period": item.period || "",
-        "Project ID": item.projectId || "",
-        "Account": item.accountId || "",
-        "Org": item.organizationId || "",
-        "PLC": item.projectLaborCategory || "",
-        "Pay Type": item.payType || "",
-        "Hours": formatHours(item.hours),
-        "Seq No": item.sequenceNumber || "",
-        "Status": item.approvalStatus || "PENDING",
-        "Comment": item.comment || "",
-        "IP Address": item.ipAddress || ""
-      })) : [];
-      setRows(mappedData);
+    //   const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
+    //     id: item.timesheetId || item.id || `fallback-${index}`,
+    //     requestId: item.requestId || item.id,
+    //     levelNo: item.levelNo || 1,
+    //     selected: false,
+    //     notifySelected: false,
+    //     isApproved: item.approvalStatus === 'APPROVED' || false,
+    //     isRejected: item.approvalStatus === 'REJECTED' || false,
+    //     isNotified: item.approvalStatus === 'NOTIFIED' || false,
+    //     status: item.approvalStatus?.toLowerCase() || 'pending',
+    //     originalDate: item.timesheetDate,
+    //     "Date": formatDate(item.timesheetDate),
+    //     "Employee ID": item.employee?.employeeId || item.employeeId || "",
+    //     "Timesheet Type Code": item.timesheetTypeCode || "",
+    //     "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+    //     "Fiscal Year": item.fiscalYear || "",
+    //     "Period": item.period || "",
+    //     "Project ID": item.projectId || "",
+    //     "Account": item.accountId || "",
+    //     "Org": item.organizationId || "",
+    //     "PLC": item.projectLaborCategory || "",
+    //     "Pay Type": item.payType || "",
+    //     "Hours": formatHours(item.hours),
+    //     "Seq No": item.sequenceNumber || "",
+    //     // "Status": item.approvalStatus || "PENDING",
+    //     "Comment": item.comment || "",
+    //     "Status": item.status || "PENDING",  // ADD THIS LINE - Map the status field
+    //      isNotified: (item.status || "").toLowerCase() === "notified",  // ADD THIS LINE - Helper for disabled 
+    //     "IP Address": item.ipAddress || ""
+    //   })) : [];
+     const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
+  id: item.timesheetId || item.id || `timesheet-${index}`,
+  originalDate: item.timesheetDate,
+  originalItem: item,
+  "Date": formatDate(item.timesheetDate),
+  "Employee ID": item.employee?.employeeId || item.employeeId || "",
+  "Timesheet Type Code": item.timesheetTypeCode || "",
+  "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+  "Fiscal Year": item.fiscalYear || "",
+  "Period": item.period || "",
+  "Project ID": item.projectId || "",
+  "PLC": item.projectLaborCategory || "",
+  "Pay Type": item.payType || "",
+  "Hours": formatHours(item.hours),
+  "Seq No": item.sequenceNumber || "",
+  "Comment": item.comment || "",
+  "Status": item.status || "PENDING",  // ADD THIS LINE - Map the status field
+  isNotified: (item.status || "").toLowerCase() === "notified",  // ADD THIS LINE - Helper for disabled checkboxes
+  notifySelected: false
+})) : [];
+
+    setRows(mappedData);
     } catch (error) {
       setRows([]);
     } finally {
@@ -11677,35 +11768,56 @@ if (searchDate) {
         }
         
         if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
-          const formattedImportedData = dataToProcess.map((item, index) => ({
-            id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
-            requestId: item.requestId || item.id,
-            levelNo: item.levelNo || 1,
-            selected: false,
-            notifySelected: false,
-            isApproved: item.approvalStatus === 'APPROVED' || false,
-            isRejected: item.approvalStatus === 'REJECTED' || false,
-            isNotified: item.approvalStatus === 'NOTIFIED' || false,
-            status: item.approvalStatus?.toLowerCase() || 'pending',
-            originalDate: item.timesheetDate,
-            "Date": formatDate(item.timesheetDate),
-            "Employee ID": item.employee?.employeeId || item.employeeId || "",
-            "Timesheet Type Code": item.timesheetTypeCode || "",
-            "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
-            "Fiscal Year": item.fiscalYear || "",
-            "Period": item.period || "",
-            "Project ID": item.projectId || "",
-            "Account": item.accountId || "",
-            "Org": item.organizationId || "",
-            "PLC": item.projectLaborCategory || "",
-            "Pay Type": item.payType || "",
-            "Hours": formatHours(item.hours),
-            "Seq No": item.sequenceNumber || "",
-            "Status": item.approvalStatus || "PENDING",
-            "Comment": item.comment || "",
-            "IP Address": item.ipAddress || ""
-          }));
+        //   const formattedImportedData = dataToProcess.map((item, index) => ({
+        //     id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+        //     requestId: item.requestId || item.id,
+        //     levelNo: item.levelNo || 1,
+        //     selected: false,
+        //     notifySelected: false,
+        //     isApproved: item.approvalStatus === 'APPROVED' || false,
+        //     isRejected: item.approvalStatus === 'REJECTED' || false,
+        //     isNotified: item.approvalStatus === 'NOTIFIED' || false,
+        //     status: item.approvalStatus?.toLowerCase() || 'pending',
+        //     originalDate: item.timesheetDate,
+        //     "Date": formatDate(item.timesheetDate),
+        //     "Employee ID": item.employee?.employeeId || item.employeeId || "",
+        //     "Timesheet Type Code": item.timesheetTypeCode || "",
+        //     "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+        //     "Fiscal Year": item.fiscalYear || "",
+        //     "Period": item.period || "",
+        //     "Project ID": item.projectId || "",
+        //     "Account": item.accountId || "",
+        //     "Org": item.organizationId || "",
+        //     "PLC": item.projectLaborCategory || "",
+        //     "Pay Type": item.payType || "",
+        //     "Hours": formatHours(item.hours),
+        //     "Seq No": item.sequenceNumber || "",
+        //     "Status": item.approvalStatus || "PENDING",
+        //     "Comment": item.comment || "",
+        //     "IP Address": item.ipAddress || ""
+        //   }));
           
+        const formattedImportedData = csvData.map((item, index) => ({
+  id: item.timesheetId || item.id || `imported-${index}`,
+  originalDate: item.timesheetDate || item["Timesheet Date"],
+  originalItem: item,
+  "Date": formatDate(item.timesheetDate || item["Timesheet Date"]),
+  "Employee ID": item.employeeId || item["Employee ID"] || "",
+  "Timesheet Type Code": item.timesheetTypeCode || item["Timesheet Type Code"] || "",
+  "Name": item.displayedName || item["Name"] || `Employee ${item.employeeId || item["Employee ID"]}` || "",
+  "Fiscal Year": item.fiscalYear || item["Fiscal Year"] || "",
+  "Period": item.period || item["Period"] || "",
+  "Project ID": item.projectId || item["Project ID"] || "",
+  "PLC": item.projectLaborCategory || item["PLC"] || "",
+  "Pay Type": item.payType || item["Pay Type"] || "",
+  "Hours": formatHours(item.hours || item["Hours"]),
+  "Seq No": item.sequenceNumber || item["Seq No"] || "",
+  "Comment": item.comment || item["Comment"] || "",
+  "Status": item.status || item["Status"] || "PENDING",  // ADD THIS LINE
+  isNotified: (item.status || item["Status"] || "").toLowerCase() === "notified",  // ADD THIS LINE
+  notifySelected: false
+}));
+
           setRows(prevRows => [...prevRows, ...formattedImportedData]);
           
           const requestBody = dataToProcess.map(item => ({
@@ -11776,7 +11888,7 @@ if (searchDate) {
       if (response.ok) {
         showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
         const notifiedIds = selectedNotifyRows.map(row => row.id);
-        setRows(prevRows => prevRows.filter(row => !notifiedIds.includes(row.id)));
+        //setRows(prevRows => prevRows.filter(row => !notifiedIds.includes(row.id)));
         setSelectedNotifyRows([]);
         setNotifySelectAll(false);
       } else {
@@ -11790,11 +11902,18 @@ if (searchDate) {
   };
 
   const handleNotifyRowSelect = (rowIndex, isSelected) => {
+
+    const rowData = filteredRows[rowIndex];
+  
+  // Prevent selection of NOTIFIED rows
+  if (rowData.isNotified || rowData.status === 'notified' || rowData["Status"] === 'NOTIFIED') {
+    return;
+  }
     const updatedRows = [...rows];
     const actualRowIndex = rows.findIndex(row => row.id === filteredRows[rowIndex].id);
     updatedRows[actualRowIndex].notifySelected = isSelected;
     setRows(updatedRows);
-    const rowData = filteredRows[rowIndex];
+    // const rowData = filteredRows[rowIndex];
     if (isSelected) {
       setSelectedNotifyRows(prev => [...prev, rowData]);
     } else {
@@ -11806,12 +11925,18 @@ if (searchDate) {
   const handleNotifySelectAll = (isSelected) => {
     setNotifySelectAll(isSelected);
     const updatedRows = [...rows];
-    filteredRows.forEach(filteredRow => {
+
+    // Filter out NOTIFIED rows from bulk selection
+  const selectableRows = filteredRows.filter(row => 
+    !row.isNotified && row.status !== 'notified' && row["Status"] !== 'NOTIFIED'
+  );
+
+    selectableRows.forEach(filteredRow => {
       const actualRowIndex = rows.findIndex(row => row.id === filteredRow.id);
       if (actualRowIndex !== -1) updatedRows[actualRowIndex].notifySelected = isSelected;
     });
     setRows(updatedRows);
-    setSelectedNotifyRows(isSelected ? [...filteredRows] : []);
+    setSelectedNotifyRows(isSelected ? [...selectableRows] : []);
   };
 
   const handleRowSelect = (rowIndex, isSelected) => {
@@ -12221,6 +12346,7 @@ if (searchDate) {
                               checked={notifySelectAll}
                               onChange={e => handleNotifySelectAll(e.target.checked)}
                               className="cursor-pointer"
+                            //   disabled={row.isNotified || row.status === 'notified' || row["Status"] === 'NOTIFIED'}
                             />
                             <span style={{ fontSize: "11px", fontWeight: "normal" }}>All</span>
                           </div>
@@ -12249,7 +12375,7 @@ if (searchDate) {
                             rdx % 2 === 0 ? "#f9fafb" : "white")
                         }
                       >
-                        {columns.map(col => (
+                        {/* {columns.map(col => (
                           <td
                             key={col}
                             style={{
@@ -12278,7 +12404,45 @@ if (searchDate) {
                               />
                             ) : row[col] || ""}
                           </td>
-                        ))}
+                        ))} */}
+                        {columns.map((col) => (
+  <td
+    key={col}
+    style={{
+      border: "1px solid #e5e7eb",
+      padding: "8px",
+      fontSize: "11px",
+      minWidth: col === "Select" || col === "Notify" ? "80px" : `${colWidth}px`,
+      whiteSpace: "nowrap",
+      textAlign: "center",
+      ...(col === "Status" ? getStatusStyle(row[col]) : {})
+    }}>
+    {col === "Status" ? (
+      <span style={getStatusStyle(row[col] || "PENDING")}>
+        {row[col] || "PENDING"}
+      </span>
+    ) : col === "Select" && isUser ? (
+      <input
+        type="checkbox"
+        checked={row.selected || false}
+        onChange={e => handleRowSelect(rdx, e.target.checked)}
+        className="cursor-pointer"
+        disabled={!isRowActionable(row)}
+      />
+    ) : col === "Notify" && isAdmin ? (
+      <input
+        type="checkbox"
+        checked={row.notifySelected || false}
+        onChange={e => handleNotifyRowSelect(rdx, e.target.checked)}
+        className="cursor-pointer"
+        disabled={row.isNotified || (row[col] || row["Status"] || "").toLowerCase() === "notified"}
+      />
+    ) : (
+      row[col] || ""
+    )}
+  </td>
+))}
+
                       </tr>
                     ))
                   ) : (
