@@ -11393,72 +11393,147 @@ export default function MainTable() {
     }
   };
 
+//   const getSortedRows = (rowsToSort) => {
+//     let sorted = [...rowsToSort];
+    
+//     if (sortConfig.key) {
+//       sorted.sort((a, b) => {
+//         let aVal, bVal;
+        
+//         if (sortConfig.key === 'Date') {
+//           aVal = new Date(a.originalDate || a["Date"]);
+//           bVal = new Date(b.originalDate || b["Date"]);
+//           if (isNaN(aVal.getTime())) aVal = new Date(0);
+//           if (isNaN(bVal.getTime())) bVal = new Date(0);
+//           return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+//         } else if (sortConfig.key === 'Employee ID') {
+//           aVal = String(a["Employee ID"] || '').toLowerCase();
+//           bVal = String(b["Employee ID"] || '').toLowerCase();
+//         } else if (sortConfig.key === 'Name') {
+//           aVal = String(a["Name"] || '').toLowerCase();
+//           bVal = String(b["Name"] || '').toLowerCase();
+//         }
+        
+//         if (sortConfig.key === 'Employee ID' || sortConfig.key === 'Name') {
+//           if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+//           if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+//           return 0;
+//         }
+        
+//         return 0;
+//       });
+//     } else {
+//       // Default sorting when no sort is applied
+//       sorted.sort((a, b) => {
+//         let aDate = new Date(a.originalDate || a["Date"]);
+//         let bDate = new Date(b.originalDate || b["Date"]);
+//         if (isNaN(aDate.getTime())) aDate = new Date(0);
+//         if (isNaN(bDate.getTime())) bDate = new Date(0);
+//         if (aDate.getTime() !== bDate.getTime()) {
+//           return aDate.getTime() - bDate.getTime();
+//         }
+//         const aEmpId = String(a["Employee ID"] || '').toLowerCase();
+//         const bEmpId = String(b["Employee ID"] || '').toLowerCase();
+//         return aEmpId.localeCompare(bEmpId);
+//       });
+//     }
+    
+//     return sorted;
+//   };
+  
   const getSortedRows = (rowsToSort) => {
-    let sorted = [...rowsToSort];
-    
-    if (sortConfig.key) {
-      sorted.sort((a, b) => {
-        let aVal, bVal;
+  let sorted = [...rowsToSort];
+  
+  if (sortConfig.key) {
+    sorted.sort((a, b) => {
+      let aVal, bVal;
+      
+      if (sortConfig.key === 'Date') {
+        aVal = new Date(a.originalDate || a["Date"]);
+        bVal = new Date(b.originalDate || b["Date"]);
+        if (isNaN(aVal.getTime())) aVal = new Date(0);
+        if (isNaN(bVal.getTime())) bVal = new Date(0);
+        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+      } else if (sortConfig.key === 'Employee ID') {
+        aVal = String(a["Employee ID"] || '').toLowerCase();
+        bVal = String(b["Employee ID"] || '').toLowerCase();
+      } else if (sortConfig.key === 'Name') {
+        aVal = String(a["Name"] || '').toLowerCase();
+        bVal = String(b["Name"] || '').toLowerCase();
+      } else if (sortConfig.key === 'Status') {
+        // Custom priority order: Un-Notified first, then Pending, then others
+        const getStatusPriority = (status) => {
+          const statusUpper = String(status || 'PENDING').toUpperCase();
+          switch (statusUpper) {
+            case 'UN-NOTIFIED': 
+            case 'UNNOTIFIED': return 1;  // Un-Notified shows FIRST
+            case 'PENDING': return 2;     // Pending shows SECOND
+            case 'APPROVED': return 3;    // Approved shows THIRD
+            case 'REJECTED': return 4;    // Rejected shows FOURTH
+            default: return 5;            // Other statuses show LAST
+          }
+        };
         
-        if (sortConfig.key === 'Date') {
-          aVal = new Date(a.originalDate || a["Date"]);
-          bVal = new Date(b.originalDate || b["Date"]);
-          if (isNaN(aVal.getTime())) aVal = new Date(0);
-          if (isNaN(bVal.getTime())) bVal = new Date(0);
-          return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
-        } else if (sortConfig.key === 'Employee ID') {
-          aVal = String(a["Employee ID"] || '').toLowerCase();
-          bVal = String(b["Employee ID"] || '').toLowerCase();
-        } else if (sortConfig.key === 'Name') {
-          aVal = String(a["Name"] || '').toLowerCase();
-          bVal = String(b["Name"] || '').toLowerCase();
-        }
+        aVal = getStatusPriority(a["Status"]);
+        bVal = getStatusPriority(b["Status"]);
         
-        if (sortConfig.key === 'Employee ID' || sortConfig.key === 'Name') {
-          if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-          if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-          return 0;
-        }
-        
+        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+      
+      if (sortConfig.key === 'Employee ID' || sortConfig.key === 'Name') {
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
-      });
-    } else {
-      // Default sorting when no sort is applied
-      sorted.sort((a, b) => {
-        let aDate = new Date(a.originalDate || a["Date"]);
-        let bDate = new Date(b.originalDate || b["Date"]);
-        if (isNaN(aDate.getTime())) aDate = new Date(0);
-        if (isNaN(bDate.getTime())) bDate = new Date(0);
-        if (aDate.getTime() !== bDate.getTime()) {
-          return aDate.getTime() - bDate.getTime();
-        }
-        const aEmpId = String(a["Employee ID"] || '').toLowerCase();
-        const bEmpId = String(b["Employee ID"] || '').toLowerCase();
-        return aEmpId.localeCompare(bEmpId);
-      });
-    }
-    
-    return sorted;
-  };
+      }
+      
+      return 0;
+    });
+  } else {
+    // Default sorting when no sort is applied
+    sorted.sort((a, b) => {
+      let aDate = new Date(a.originalDate || a["Date"]);
+      let bDate = new Date(b.originalDate || b["Date"]);
+      if (isNaN(aDate.getTime())) aDate = new Date(0);
+      if (isNaN(bDate.getTime())) bDate = new Date(0);
+      if (aDate.getTime() !== bDate.getTime()) {
+        return aDate.getTime() - bDate.getTime();
+      }
+      const aEmpId = String(a["Employee ID"] || '').toLowerCase();
+      const bEmpId = String(b["Employee ID"] || '').toLowerCase();
+      return aEmpId.localeCompare(bEmpId);
+    });
+  }
+  
+  return sorted;
+};
 
-  const handleSort = (key) => {
-    if (!['Date', 'Employee ID', 'Name'].includes(key)) return;
+//   const handleSort = (key) => {
+//     if (!['Date', 'Employee ID', 'Name'].includes(key)) return;
     
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  };
+//     let direction = 'asc';
+//     if (sortConfig.key === key && sortConfig.direction === 'asc') {
+//       direction = 'desc';
+//     }
+//     setSortConfig({ key, direction });
+//   };
+const handleSort = (key) => {
+  if (!['Date', 'Employee ID', 'Name', 'Status'].includes(key)) return;
+  
+  let direction = 'asc';
+  if (sortConfig.key === key && sortConfig.direction === 'asc') {
+    direction = 'desc';
+  }
+  setSortConfig({ key, direction });
+};
 
-  const getSortIcon = (columnKey) => {
-    if (!['Date', 'Employee ID', 'Name'].includes(columnKey)) return null;
+//   const getSortIcon = (columnKey) => {
+//     if (!['Date', 'Employee ID', 'Name'].includes(columnKey)) return null;
     
-    if (sortConfig.key === columnKey) {
-      return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
-    }
-    return ' ⇅';
-  };
+//     if (sortConfig.key === columnKey) {
+//       return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+//     }
+//     return ' ⇅';
+//   };
 
 //   const getStatusStyle = (status) => {
 //     switch (status?.toUpperCase()) {
@@ -11474,7 +11549,15 @@ export default function MainTable() {
 //         return { backgroundColor: '#f9fafb', color: '#6b7280', fontWeight: 'normal' };
 //     }
 //   };
+const getSortIcon = (columnKey) => {
+  if (!['Date', 'Employee ID', 'Name', 'Status'].includes(columnKey)) return null;
   
+  if (sortConfig.key === columnKey) {
+    return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+  }
+  return ' ⇅';
+};
+
 const getStatusStyle = (status) => {
   const statusUpper = status?.toUpperCase() || "PENDING";
   
@@ -11578,81 +11661,230 @@ const getStatusStyle = (status) => {
     if (userLoaded && currentUser && currentUser.username) fetchData();
   }, [userLoaded, currentUser, isAdmin]);
 
-  const fetchData = async () => {
-    if (!userLoaded || !currentUser || !currentUser.username) return;
-    try {
-      setLoading(true);
-      let apiUrl = "";
-      if (isAdmin) {
-        apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
-      } else if (isUser) {
-        apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
-      } else {
-        setRows([]);
-        setLoading(false);
-        return;
-      }
-      const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const apiData = await response.json();
-    //   const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
-    //     id: item.timesheetId || item.id || `fallback-${index}`,
-    //     requestId: item.requestId || item.id,
-    //     levelNo: item.levelNo || 1,
-    //     selected: false,
-    //     notifySelected: false,
-    //     isApproved: item.approvalStatus === 'APPROVED' || false,
-    //     isRejected: item.approvalStatus === 'REJECTED' || false,
-    //     isNotified: item.approvalStatus === 'NOTIFIED' || false,
-    //     status: item.approvalStatus?.toLowerCase() || 'pending',
-    //     originalDate: item.timesheetDate,
-    //     "Date": formatDate(item.timesheetDate),
-    //     "Employee ID": item.employee?.employeeId || item.employeeId || "",
-    //     "Timesheet Type Code": item.timesheetTypeCode || "",
-    //     "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
-    //     "Fiscal Year": item.fiscalYear || "",
-    //     "Period": item.period || "",
-    //     "Project ID": item.projectId || "",
-    //     "Account": item.accountId || "",
-    //     "Org": item.organizationId || "",
-    //     "PLC": item.projectLaborCategory || "",
-    //     "Pay Type": item.payType || "",
-    //     "Hours": formatHours(item.hours),
-    //     "Seq No": item.sequenceNumber || "",
-    //     // "Status": item.approvalStatus || "PENDING",
-    //     "Comment": item.comment || "",
-    //     "Status": item.status || "PENDING",  // ADD THIS LINE - Map the status field
-    //      isNotified: (item.status || "").toLowerCase() === "notified",  // ADD THIS LINE - Helper for disabled 
-    //     "IP Address": item.ipAddress || ""
-    //   })) : [];
-     const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
-  id: item.timesheetId || item.id || `timesheet-${index}`,
-  originalDate: item.timesheetDate,
-  originalItem: item,
-  "Date": formatDate(item.timesheetDate),
-  "Employee ID": item.employee?.employeeId || item.employeeId || "",
-  "Timesheet Type Code": item.timesheetTypeCode || "",
-  "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
-  "Fiscal Year": item.fiscalYear || "",
-  "Period": item.period || "",
-  "Project ID": item.projectId || "",
-  "PLC": item.projectLaborCategory || "",
-  "Pay Type": item.payType || "",
-  "Hours": formatHours(item.hours),
-  "Seq No": item.sequenceNumber || "",
-  "Comment": item.comment || "",
-  "Status": item.status || "PENDING",  // ADD THIS LINE - Map the status field
-  isNotified: (item.status || "").toLowerCase() === "notified",  // ADD THIS LINE - Helper for disabled checkboxes
-  notifySelected: false
-})) : [];
+//   const fetchData = async () => {
+//     if (!userLoaded || !currentUser || !currentUser.username) return;
+//     try {
+//       setLoading(true);
+//       let apiUrl = "";
+//       if (isAdmin) {
+//         apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+//       } else if (isUser) {
+//         apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
+//       } else {
+//         setRows([]);
+//         setLoading(false);
+//         return;
+//       }
+//       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+//       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+//       const apiData = await response.json();
+//     //   const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
+//     //     id: item.timesheetId || item.id || `fallback-${index}`,
+//     //     requestId: item.requestId || item.id,
+//     //     levelNo: item.levelNo || 1,
+//     //     selected: false,
+//     //     notifySelected: false,
+//     //     isApproved: item.approvalStatus === 'APPROVED' || false,
+//     //     isRejected: item.approvalStatus === 'REJECTED' || false,
+//     //     isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//     //     status: item.approvalStatus?.toLowerCase() || 'pending',
+//     //     originalDate: item.timesheetDate,
+//     //     "Date": formatDate(item.timesheetDate),
+//     //     "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//     //     "Timesheet Type Code": item.timesheetTypeCode || "",
+//     //     "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//     //     "Fiscal Year": item.fiscalYear || "",
+//     //     "Period": item.period || "",
+//     //     "Project ID": item.projectId || "",
+//     //     "Account": item.accountId || "",
+//     //     "Org": item.organizationId || "",
+//     //     "PLC": item.projectLaborCategory || "",
+//     //     "Pay Type": item.payType || "",
+//     //     "Hours": formatHours(item.hours),
+//     //     "Seq No": item.sequenceNumber || "",
+//     //     // "Status": item.approvalStatus || "PENDING",
+//     //     "Comment": item.comment || "",
+//     //     // "Status": item.status || "PENDING",  // ADD THIS LINE - Map the status field
+//     //      isNotified: (item.status || "").toLowerCase() === "notified",  // ADD THIS LINE - Helper for disabled 
+//     //     // "IP Address": item.ipAddress || ""
+//     //   })) : [];
+//       const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
+//   id: item.timesheetId || item.id || `fallback-${index}`,
+//   requestId: item.requestId || item.id,
+//   levelNo: item.levelNo || 1,
+//   selected: false,
+//   notifySelected: false,
+//   isApproved: item.approvalStatus === 'APPROVED' || false,
+//   isRejected: item.approvalStatus === 'REJECTED' || false,
+//   isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//   status: item.approvalStatus?.toLowerCase() || 'pending',
+//   originalDate: item.timesheetDate,
+//   "Date": formatDate(item.timesheetDate),
+//   "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//   "Timesheet Type Code": item.timesheetTypeCode || "",
+//   "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//   "Fiscal Year": item.fiscalYear || "",
+//   "Period": item.period || "",
+//   "Project ID": item.projectId || "",
+//   "Account": item.accountId || "",
+//   "Org": item.organizationId || "",
+//   "PLC": item.projectLaborCategory || "",
+//   "Pay Type": item.payType || "",
+//   "Hours": formatHours(item.hours),
+//   "Seq No": item.sequenceNumber || "",
+//   // ADD THIS LINE - Map approvalStatus to Status column
+//   "Status": item.approvalStatus || "PENDING",
+//   "Comment": item.comment || "",
+//   // Update isNotified logic
+//   isNotified: (item.approvalStatus || "").toLowerCase() === "notified",
+// })) : [];
+
+ 
+//     setRows(mappedData);
+//     } catch (error) {
+//       setRows([]);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+   
+const fetchData = async () => {
+  if (!userLoaded || !currentUser || !currentUser.username) return;
+  try {
+    setLoading(true);
+    let apiUrl = "";
+    if (isAdmin) {
+      apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+    } else if (isUser) {
+      apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
+    } else {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+    const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const apiData = await response.json();
+
+    const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
+      id: item.timesheetId || item.id || `fallback-${index}`,
+      requestId: item.requestId || item.id,
+      levelNo: item.levelNo || 1,
+      selected: false,
+      notifySelected: false,
+      isApproved: item.approvalStatus === 'APPROVED' || false,
+      isRejected: item.approvalStatus === 'REJECTED' || false,
+      isNotified: item.approvalStatus === 'NOTIFIED' || false,
+      // CONDITIONAL STATUS MAPPING: Admin uses item.status, User uses item.approvalStatus
+      status: isAdmin 
+        ? (item.status?.toLowerCase() || 'un-notified')
+        : (item.approvalStatus?.toLowerCase() || 'pending'),
+      originalDate: item.timesheetDate,
+      "Date": formatDate(item.timesheetDate),
+      "Employee ID": item.employee?.employeeId || item.employeeId || "",
+      "Timesheet Type Code": item.timesheetTypeCode || "",
+      "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+      "Fiscal Year": item.fiscalYear || "",
+      "Period": item.period || "",
+      "Project ID": item.projectId || "",
+      "Account": item.accountId || "",
+      "Org": item.organizationId || "",
+      "PLC": item.projectLaborCategory || "",
+      "Pay Type": item.payType || "",
+      "Hours": formatHours(item.hours),
+      "Seq No": item.sequenceNumber || "",
+      // CONDITIONAL STATUS COLUMN: Admin uses item.status, User uses item.approvalStatus
+      "Status": isAdmin 
+        ? (item.status || "Un-Notified")
+        : (item.approvalStatus || "PENDING"),
+      "Comment": item.comment || "",
+      // CONDITIONAL ISNOTIFIED LOGIC: Admin uses item.status, User uses item.approvalStatus
+    //   isNotified: isAdmin
+    //     ? ((item.status || "").toLowerCase() === "un-notified")
+    //     : ((item.approvalStatus || "").toLowerCase() === "notified"),
+    // })) : [];
+    isNotified: isAdmin
+      ? ((item.status || "").toLowerCase() === "notified")  // Only "notified" is disabled for Admin
+      : ((item.approvalStatus || "").toLowerCase() === "notified"), // Only "notified" is disabled for User
+  })) : [];
 
     setRows(mappedData);
-    } catch (error) {
-      setRows([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    setRows([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// const fetchData = async () => {
+//   if (!userLoaded || !currentUser || !currentUser.username) return;
+//   try {
+//     setLoading(true);
+//     let apiUrl = "";
+//     if (isAdmin) {
+//       apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+//     } else if (isUser) {
+//       apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
+//     } else {
+//       setRows([]);
+//       setLoading(false);
+//       return;
+//     }
+//     const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+//     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+//     const apiData = await response.json();
+
+//     const mappedData = Array.isArray(apiData) ? apiData.map((item, index) => ({
+//       id: item.timesheetId || item.id || `fallback-${index}`,
+//       requestId: item.requestId || item.id,
+//       levelNo: item.levelNo || 1,
+//       selected: false,
+//       notifySelected: false,
+//       isApproved: item.approvalStatus === 'APPROVED' || false,
+//       isRejected: item.approvalStatus === 'REJECTED' || false,
+//       isNotified: item.approvalStatus === 'NOTIFIED' || false,
+      
+//       // FIX: For User view, check BOTH approvalStatus AND status fields
+//       status: isAdmin 
+//         ? (item.status?.toLowerCase() || 'un-notified')
+//         : (item.approvalStatus?.toLowerCase() || item.status?.toLowerCase() || 'pending'),
+      
+//       originalDate: item.timesheetDate,
+//       "Date": formatDate(item.timesheetDate),
+//       "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//       "Timesheet Type Code": item.timesheetTypeCode || "",
+//       "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//       "Fiscal Year": item.fiscalYear || "",
+//       "Period": item.period || "",
+//       "Project ID": item.projectId || "",
+//       "Account": item.accountId || "",
+//       "Org": item.organizationId || "",
+//       "PLC": item.projectLaborCategory || "",
+//       "Pay Type": item.payType || "",
+//       "Hours": formatHours(item.hours),
+//       "Seq No": item.sequenceNumber || "",
+      
+//       // FIX: For User view, check BOTH approvalStatus AND status fields for display
+//       "Status": isAdmin 
+//         ? (item.status || "Un-Notified")
+//         : (item.approvalStatus || item.status || "PENDING"),
+      
+//       "Comment": item.comment || "",
+      
+//       // FIX: For User view, check BOTH fields for notification status
+//       isNotified: isAdmin
+//         ? ((item.status || "").toLowerCase() === "notified")
+//         : ((item.approvalStatus || "").toLowerCase() === "notified" || 
+//            (item.status || "").toLowerCase() === "notified"),
+//     })) : [];
+
+//     setRows(mappedData);
+//   } catch (error) {
+//     setRows([]);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 
   const getFilteredRows = () => {
     let filtered = rows;
@@ -11768,55 +12000,55 @@ if (searchDate) {
         }
         
         if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
-        //   const formattedImportedData = dataToProcess.map((item, index) => ({
-        //     id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
-        //     requestId: item.requestId || item.id,
-        //     levelNo: item.levelNo || 1,
-        //     selected: false,
-        //     notifySelected: false,
-        //     isApproved: item.approvalStatus === 'APPROVED' || false,
-        //     isRejected: item.approvalStatus === 'REJECTED' || false,
-        //     isNotified: item.approvalStatus === 'NOTIFIED' || false,
-        //     status: item.approvalStatus?.toLowerCase() || 'pending',
-        //     originalDate: item.timesheetDate,
-        //     "Date": formatDate(item.timesheetDate),
-        //     "Employee ID": item.employee?.employeeId || item.employeeId || "",
-        //     "Timesheet Type Code": item.timesheetTypeCode || "",
-        //     "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
-        //     "Fiscal Year": item.fiscalYear || "",
-        //     "Period": item.period || "",
-        //     "Project ID": item.projectId || "",
-        //     "Account": item.accountId || "",
-        //     "Org": item.organizationId || "",
-        //     "PLC": item.projectLaborCategory || "",
-        //     "Pay Type": item.payType || "",
-        //     "Hours": formatHours(item.hours),
-        //     "Seq No": item.sequenceNumber || "",
-        //     "Status": item.approvalStatus || "PENDING",
-        //     "Comment": item.comment || "",
-        //     "IP Address": item.ipAddress || ""
-        //   }));
+          const formattedImportedData = dataToProcess.map((item, index) => ({
+            id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+            requestId: item.requestId || item.id,
+            levelNo: item.levelNo || 1,
+            selected: false,
+            notifySelected: false,
+            isApproved: item.approvalStatus === 'APPROVED' || false,
+            isRejected: item.approvalStatus === 'REJECTED' || false,
+            isNotified: item.approvalStatus === 'NOTIFIED' || false,
+            status: item.approvalStatus?.toLowerCase() || 'pending',
+            originalDate: item.timesheetDate,
+            "Date": formatDate(item.timesheetDate),
+            "Employee ID": item.employee?.employeeId || item.employeeId || "",
+            "Timesheet Type Code": item.timesheetTypeCode || "",
+            "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+            "Fiscal Year": item.fiscalYear || "",
+            "Period": item.period || "",
+            "Project ID": item.projectId || "",
+            "Account": item.accountId || "",
+            "Org": item.organizationId || "",
+            "PLC": item.projectLaborCategory || "",
+            "Pay Type": item.payType || "",
+            "Hours": formatHours(item.hours),
+            "Seq No": item.sequenceNumber || "",
+            "Status": item.approvalStatus || "PENDING",
+            "Comment": item.comment || "",
+            "IP Address": item.ipAddress || ""
+          }));
           
-        const formattedImportedData = csvData.map((item, index) => ({
-  id: item.timesheetId || item.id || `imported-${index}`,
-  originalDate: item.timesheetDate || item["Timesheet Date"],
-  originalItem: item,
-  "Date": formatDate(item.timesheetDate || item["Timesheet Date"]),
-  "Employee ID": item.employeeId || item["Employee ID"] || "",
-  "Timesheet Type Code": item.timesheetTypeCode || item["Timesheet Type Code"] || "",
-  "Name": item.displayedName || item["Name"] || `Employee ${item.employeeId || item["Employee ID"]}` || "",
-  "Fiscal Year": item.fiscalYear || item["Fiscal Year"] || "",
-  "Period": item.period || item["Period"] || "",
-  "Project ID": item.projectId || item["Project ID"] || "",
-  "PLC": item.projectLaborCategory || item["PLC"] || "",
-  "Pay Type": item.payType || item["Pay Type"] || "",
-  "Hours": formatHours(item.hours || item["Hours"]),
-  "Seq No": item.sequenceNumber || item["Seq No"] || "",
-  "Comment": item.comment || item["Comment"] || "",
-  "Status": item.status || item["Status"] || "PENDING",  // ADD THIS LINE
-  isNotified: (item.status || item["Status"] || "").toLowerCase() === "notified",  // ADD THIS LINE
-  notifySelected: false
-}));
+//         const formattedImportedData = csvData.map((item, index) => ({
+//   id: item.timesheetId || item.id || `imported-${index}`,
+//   originalDate: item.timesheetDate || item["Timesheet Date"],
+//   originalItem: item,
+//   "Date": formatDate(item.timesheetDate || item["Timesheet Date"]),
+//   "Employee ID": item.employeeId || item["Employee ID"] || "",
+//   "Timesheet Type Code": item.timesheetTypeCode || item["Timesheet Type Code"] || "",
+//   "Name": item.displayedName || item["Name"] || `Employee ${item.employeeId || item["Employee ID"]}` || "",
+//   "Fiscal Year": item.fiscalYear || item["Fiscal Year"] || "",
+//   "Period": item.period || item["Period"] || "",
+//   "Project ID": item.projectId || item["Project ID"] || "",
+//   "PLC": item.projectLaborCategory || item["PLC"] || "",
+//   "Pay Type": item.payType || item["Pay Type"] || "",
+//   "Hours": formatHours(item.hours || item["Hours"]),
+//   "Seq No": item.sequenceNumber || item["Seq No"] || "",
+//   "Comment": item.comment || item["Comment"] || "",
+// "Status": item.status || item["Status"] || "PENDING",  // ADD THIS LINE
+//   isNotified: (item.status || item["Status"] || "").toLowerCase() === "notified",  // ADD THIS LINE
+//   notifySelected: false
+// }));
 
           setRows(prevRows => [...prevRows, ...formattedImportedData]);
           
@@ -11888,7 +12120,7 @@ if (searchDate) {
       if (response.ok) {
         showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
         const notifiedIds = selectedNotifyRows.map(row => row.id);
-        //setRows(prevRows => prevRows.filter(row => !notifiedIds.includes(row.id)));
+        // setRows(prevRows => prevRows.filter(row => !notifiedIds.includes(row.id)));
         setSelectedNotifyRows([]);
         setNotifySelectAll(false);
       } else {
@@ -11900,6 +12132,67 @@ if (searchDate) {
       setActionLoading(false);
     }
   };
+
+
+  
+// const handleNotifyClick = async (e) => {
+//   e.preventDefault();
+//   e.stopPropagation();
+//   if (actionLoading) return;
+//   if (selectedNotifyRows.length === 0) {
+//     showToast("Please select at least one timesheet to notify.", "warning");
+//     return;
+//   }
+  
+//   try {
+//     setActionLoading(true);
+//     const requestBody = selectedNotifyRows.map(row => ({
+//       requestType: "TIMESHEET",
+//       requesterId: 1,
+//       timesheetId: row.id,
+//       ProjectId: row["Project ID"],
+//       requestData: `Notification for timesheet ${row.id}`
+//     }));
+    
+//     const response = await fetch("https://timesheet-latest.onrender.com/api/Approval/BulkNotify", {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(requestBody)
+//     });
+    
+//     if (response.ok) {
+//       showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
+      
+//       // FIX: Don't remove rows! Update their status instead
+//       const notifiedIds = selectedNotifyRows.map(row => row.id);
+//       setRows(prevRows => prevRows.map(row => 
+//         notifiedIds.includes(row.id) 
+//           ? { 
+//               ...row, 
+//               status: "notified", 
+//               "Status": "NOTIFIED", 
+//               isNotified: true, 
+//               notifySelected: false 
+//             }
+//           : row
+//       ));
+      
+//       // FIX: Refresh data after 2 seconds to ensure User sees the changes
+//       setTimeout(() => {
+//         fetchData();
+//       }, 2000);
+      
+//       setSelectedNotifyRows([]);
+//       setNotifySelectAll(false);
+//     } else {
+//       showToast("Failed to send notifications. Please try again.", "error");
+//     }
+//   } catch (error) {
+//     showToast("Failed to send notifications. Please try again.", "error");
+//   } finally {
+//     setActionLoading(false);
+//   }
+// };
 
   const handleNotifyRowSelect = (rowIndex, isSelected) => {
 
@@ -12326,7 +12619,7 @@ if (searchDate) {
                           cursor: ['Date', 'Employee ID', 'Name'].includes(col) ? "pointer" : "default",
                           userSelect: "none"
                         }}
-                        onClick={() => ['Date', 'Employee ID', 'Name'].includes(col) && handleSort(col)}
+                        onClick={() => ['Date', 'Employee ID', 'Name', 'Status'].includes(col) && handleSort(col)}
                       >
                         {col === "Select" && isUser ? (
                           <div style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
