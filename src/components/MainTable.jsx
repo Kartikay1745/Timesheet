@@ -11259,12 +11259,12 @@ const getUserIPAddress = async () => {
 
 const columnsAdmin = [
   "Notify", "Status", "Date", "Employee ID", "Timesheet Type Code", "Name", "Fiscal Year", "Period",
-  "Project ID", "PLC", "Pay Type", "Hours", "Seq No"
+  "Project ID", "PLC", "Pay Type","RLSE Number", "PO Number", "PO Line Number", "Hours", "Seq No"
 ];
 
 const columnsViewer = [
   "Select", "Status", "Date", "Employee ID", "Timesheet Type Code", "Name", "Fiscal Year", "Period",
-  "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment"
+  "Project ID", "PLC", "Pay Type","RLSE Number", "PO Number", "PO Line Number", "Hours", "Seq No", "Comment"
 ];
 
 const ReasonModal = ({ isOpen, action, selectedCount, onConfirm, onCancel }) => {
@@ -11462,17 +11462,28 @@ export default function MainTable() {
         bVal = String(b["Name"] || '').toLowerCase();
       } else if (sortConfig.key === 'Status') {
         // Custom priority order: Un-Notified first, then Pending, then others
+        // const getStatusPriority = (status) => {
+        //   const statusUpper = String(status || 'PENDING').toUpperCase();
+        //   switch (statusUpper) {
+        //     case 'UN-NOTIFIED': 
+        //     case 'UNNOTIFIED': return 1;  // Un-Notified shows FIRST
+        //     case 'PENDING': return 2;     // Pending shows SECOND
+        //     case 'APPROVED': return 3;    // Approved shows THIRD
+        //     case 'REJECTED': return 4;    // Rejected shows FOURTH
+        //     default: return 5;            // Other statuses show LAST
+        //   }
+        // };
         const getStatusPriority = (status) => {
-          const statusUpper = String(status || 'PENDING').toUpperCase();
-          switch (statusUpper) {
-            case 'UN-NOTIFIED': 
-            case 'UNNOTIFIED': return 1;  // Un-Notified shows FIRST
-            case 'PENDING': return 2;     // Pending shows SECOND
-            case 'APPROVED': return 3;    // Approved shows THIRD
-            case 'REJECTED': return 4;    // Rejected shows FOURTH
-            default: return 5;            // Other statuses show LAST
-          }
-        };
+  const statusUpper = String(status || 'PENDING').toUpperCase();
+  switch (statusUpper) {
+    case 'OPEN': return 1;        // OPEN shows FIRST
+    case 'PENDING': return 2;     // Pending shows SECOND
+    case 'APPROVED': return 3;    // Approved shows THIRD
+    case 'REJECTED': return 4;    // Rejected shows FOURTH
+    default: return 5;            // Other statuses show LAST
+  }
+};
+
         
         aVal = getStatusPriority(a["Status"]);
         bVal = getStatusPriority(b["Status"]);
@@ -11558,37 +11569,111 @@ const getSortIcon = (columnKey) => {
   return ' ⇅';
 };
 
+// const getStatusStyle = (status) => {
+//   const statusUpper = status?.toUpperCase() || "PENDING";
+  
+//   switch (statusUpper) {
+//     case 'APPROVED':
+//       return {
+//         backgroundColor: '#dcfce7',
+//         color: '#16a34a',
+//         fontWeight: '600',
+//         padding: '4px 8px',
+//         // borderRadius: '9999px',
+//         fontSize: '11px',
+//         display: 'inline-block'
+//       };
+//     case 'REJECTED':
+//       return {
+//         backgroundColor: '#fef2f2',
+//         color: '#dc2626',
+//         fontWeight: '600',
+//         padding: '4px 8px',
+//         // borderRadius: '9999px',
+//         fontSize: '11px',
+//         display: 'inline-block'
+//       };
+//     case 'PENDING':
+//       return {
+//         backgroundColor: '#fef3c7',
+//         color: '#d97706',
+//         fontWeight: '600',
+//         padding: '4px 8px',
+//         // borderRadius: '9999px',
+//         fontSize: '11px',
+//         display: 'inline-block'
+//       };
+//     case 'NOTIFIED':
+//       return {
+//         backgroundColor: '#dbeafe',
+//         color: '#2563eb',
+//         fontWeight: '600',
+//         padding: '4px 8px',
+//         // borderRadius: '9999px',
+//         fontSize: '11px',
+//         display: 'inline-block'
+//       };
+//     case 'UN-NOTIFIED':
+//     case 'UNNOTIFIED':
+//       return {
+//         backgroundColor: '#dcfce7',  // Green background (same as APPROVED)
+//         color: '#16a34a',            // Green text (same as APPROVED)
+//         fontWeight: '600',
+//         padding: '4px 8px',
+//         // borderRadius: '9999px',
+//         fontSize: '11px',
+//         display: 'inline-block'
+//       };
+//     default:
+//       return {
+//         backgroundColor: '#f3f4f6',
+//         color: '#6b7280',
+//         fontWeight: '500',
+//         padding: '4px 8px',
+//         // borderRadius: '9999px',
+//         fontSize: '11px',
+//         display: 'inline-block'
+//       };
+//   }
+// };
+
 const getStatusStyle = (status) => {
   const statusUpper = status?.toUpperCase() || "PENDING";
   
   switch (statusUpper) {
+    case 'OPEN':
+      return {
+        backgroundColor: '#dbeafe',  // Blue background
+        color: '#2563eb',            // Blue text
+        fontWeight: '600',
+        padding: '4px 8px',
+        fontSize: '11px',
+        display: 'inline-block'
+      };
     case 'APPROVED':
       return {
         backgroundColor: '#dcfce7',
         color: '#16a34a',
         fontWeight: '600',
         padding: '4px 8px',
-        // borderRadius: '9999px',
         fontSize: '11px',
         display: 'inline-block'
       };
     case 'REJECTED':
       return {
-        backgroundColor: '#fef2f2',
-        color: '#dc2626',
+        backgroundColor: '#fce7f3',  // Pink background
+        color: '#ec4899',            // Pink text
         fontWeight: '600',
         padding: '4px 8px',
-        // borderRadius: '9999px',
         fontSize: '11px',
         display: 'inline-block'
       };
     case 'PENDING':
       return {
-        backgroundColor: '#fef3c7',
-        color: '#d97706',
+        backgroundColor: '#fef9c3',  // More yellow background
+        color: '#ca8a04',            // More yellow text
         fontWeight: '600',
         padding: '4px 8px',
-        // borderRadius: '9999px',
         fontSize: '11px',
         display: 'inline-block'
       };
@@ -11598,18 +11683,16 @@ const getStatusStyle = (status) => {
         color: '#2563eb',
         fontWeight: '600',
         padding: '4px 8px',
-        // borderRadius: '9999px',
         fontSize: '11px',
         display: 'inline-block'
       };
     case 'UN-NOTIFIED':
     case 'UNNOTIFIED':
       return {
-        backgroundColor: '#dcfce7',  // Green background (same as APPROVED)
-        color: '#16a34a',            // Green text (same as APPROVED)
+        backgroundColor: '#dcfce7',
+        color: '#16a34a',
         fontWeight: '600',
         padding: '4px 8px',
-        // borderRadius: '9999px',
         fontSize: '11px',
         display: 'inline-block'
       };
@@ -11619,7 +11702,6 @@ const getStatusStyle = (status) => {
         color: '#6b7280',
         fontWeight: '500',
         padding: '4px 8px',
-        // borderRadius: '9999px',
         fontSize: '11px',
         display: 'inline-block'
       };
