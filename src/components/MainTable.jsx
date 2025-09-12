@@ -11708,6 +11708,79 @@ const getStatusStyle = (status) => {
   }
 };
 
+// Helper function to convert array of objects to CSV string
+const arrayToCSV = (data) => {
+  if (!Array.isArray(data) || data.length === 0) return '';
+  
+  // Get headers from first object
+  const headers = Object.keys(data[0]);
+  const csvHeaders = headers.join(',');
+  
+  // Convert each row to CSV format
+  const csvRows = data.map(row => {
+    return headers.map(header => {
+      const value = row[header] || '';
+      // Escape quotes and wrap in quotes if contains comma, quote, or newline
+      const escaped = String(value).replace(/"/g, '""');
+      return /[",\n\r]/.test(escaped) ? `"${escaped}"` : escaped;
+    }).join(',');
+  });
+  
+  return [csvHeaders, ...csvRows].join('\n');
+};
+
+// Helper function to download CSV file
+const downloadCSV = (csvContent, filename = 'imported_data.csv') => {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Clean up the URL object
+  URL.revokeObjectURL(url);
+};
+
+// Helper function to parse CSV text to array of objects
+const parseCSVText = (csvText) => {
+  if (!csvText || typeof csvText !== 'string') return [];
+  
+  const lines = csvText.trim().split('\n').filter(line => line.trim());
+  if (lines.length === 0) return [];
+  
+  // Define headers based on your CSV structure
+  const headers = [
+    'Date', 'Employee ID', 'Timesheet Type Code', 'Name', 'Fiscal Year', 'Period',
+    'Project ID', 'Account', 'Org', 'PLC', 'Pay Type', 'RLSE Number', 'Hours',
+    'PO Number', 'PO Line Number', 'Field16', 'Field17', 'Field18', 'Field19',
+    'Field20', 'Field21', 'Field22', 'Field23', 'Seq No', 'Field25', 'Field26',
+    'Field27', 'Field28', 'Field29', 'Field30'
+  ];
+  
+  return lines.map((line, index) => {
+    const values = line.split(',').map(val => val.trim());
+    const obj = {};
+    
+    headers.forEach((header, i) => {
+      obj[header] = values[i] || '';
+    });
+    
+    // Add additional fields for tracking
+    obj.id = `csv-row-${index}`;
+    obj.Status = 'IMPORTED';
+    obj.Comment = `Imported from CSV at ${new Date().toLocaleString()}`;
+    
+    return obj;
+  });
+};
+
+
   useEffect(() => {
     getUserIPAddress().then(ip => setUserIpAddress(ip || ''));
   }, []);
@@ -12030,151 +12103,1120 @@ if (searchDate) {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  const handleImportFile = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.csv')) {
-      showToast('Please select a CSV file', "error");
-      return;
-    }
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      setActionLoading(true);
-      let projectId = null;
-      try {
-        const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
-        if (pendingResponse.ok) {
-          const pendingData = await pendingResponse.json();
-          if (Array.isArray(pendingData) && pendingData.length > 0) {
-            projectId = pendingData[0].projectId;
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to fetch projectId, proceeding without it');
-      }
+//   const handleImportFile = async (e) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
+//     if (!file.name.toLowerCase().endsWith('.csv')) {
+//       showToast('Please select a CSV file', "error");
+//       return;
+//     }
+//     const formData = new FormData();
+//     formData.append('file', file);
+//     try {
+//       setActionLoading(true);
+//       let projectId = null;
+//       try {
+//         const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
+//         if (pendingResponse.ok) {
+//           const pendingData = await pendingResponse.json();
+//           if (Array.isArray(pendingData) && pendingData.length > 0) {
+//             projectId = pendingData[0].projectId;
+//           }
+//         }
+//       } catch (error) {
+//         console.warn('Failed to fetch projectId, proceeding without it');
+//       }
       
-      const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
-        method: 'POST',
-        body: formData
-      });
+//       const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//         method: 'POST',
+//         body: formData
+//       });
       
-      if (importResponse.ok) {
-        const importedData = await importResponse.json();
+//       if (importResponse.ok) {
+//         const importedData = await importResponse.json();
         
-        let dataToProcess = null;
-        let successMessage = '';
+//         let dataToProcess = null;
+//         let successMessage = '';
         
-        if (importedData && importedData.message) {
-          successMessage = importedData.message;
-          showToast(successMessage, "success");
+//         if (importedData && importedData.message) {
+//           successMessage = importedData.message;
+//           showToast(successMessage, "success");
           
-          if (importedData.data && Array.isArray(importedData.data)) {
-            dataToProcess = importedData.data;
-          }
-        } else if (Array.isArray(importedData)) {
-          dataToProcess = importedData;
-          successMessage = `Successfully imported ${importedData.length} records from: ${file.name}`;
-          showToast(successMessage, "success");
-        } else {
-          successMessage = `Successfully imported: ${file.name}`;
-          showToast(successMessage, "success");
-        }
+//           if (importedData.data && Array.isArray(importedData.data)) {
+//             dataToProcess = importedData.data;
+//           }
+//         } else if (Array.isArray(importedData)) {
+//           dataToProcess = importedData;
+//           successMessage = `Successfully imported ${importedData.length} records from: ${file.name}`;
+//           showToast(successMessage, "success");
+//         } else {
+//           successMessage = `Successfully imported: ${file.name}`;
+//           showToast(successMessage, "success");
+//         }
         
-        if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
-          const formattedImportedData = dataToProcess.map((item, index) => ({
-            id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
-            requestId: item.requestId || item.id,
-            levelNo: item.levelNo || 1,
-            selected: false,
-            notifySelected: false,
-            isApproved: item.approvalStatus === 'APPROVED' || false,
-            isRejected: item.approvalStatus === 'REJECTED' || false,
-            isNotified: item.approvalStatus === 'NOTIFIED' || false,
-            status: item.approvalStatus?.toLowerCase() || 'pending',
-            originalDate: item.timesheetDate,
-            "Date": formatDate(item.timesheetDate),
-            "Employee ID": item.employee?.employeeId || item.employeeId || "",
-            "Timesheet Type Code": item.timesheetTypeCode || "",
-            "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
-            "Fiscal Year": item.fiscalYear || "",
-            "Period": item.period || "",
-            "Project ID": item.projectId || "",
-            "Account": item.accountId || "",
-            "Org": item.organizationId || "",
-            "PLC": item.projectLaborCategory || "",
-            "Pay Type": item.payType || "",
-            "Hours": formatHours(item.hours),
-            "Seq No": item.sequenceNumber || "",
-            "Status": item.approvalStatus || "PENDING",
-            "Comment": item.comment || "",
-            "IP Address": item.ipAddress || ""
-          }));
+//         if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//           const formattedImportedData = dataToProcess.map((item, index) => ({
+//             id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+//             requestId: item.requestId || item.id,
+//             levelNo: item.levelNo || 1,
+//             selected: false,
+//             notifySelected: false,
+//             isApproved: item.approvalStatus === 'APPROVED' || false,
+//             isRejected: item.approvalStatus === 'REJECTED' || false,
+//             isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//             status: item.approvalStatus?.toLowerCase() || 'pending',
+//             originalDate: item.timesheetDate,
+//             "Date": formatDate(item.timesheetDate),
+//             "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//             "Timesheet Type Code": item.timesheetTypeCode || "",
+//             "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//             "Fiscal Year": item.fiscalYear || "",
+//             "Period": item.period || "",
+//             "Project ID": item.projectId || "",
+//             "Account": item.accountId || "",
+//             "Org": item.organizationId || "",
+//             "PLC": item.projectLaborCategory || "",
+//             "Pay Type": item.payType || "",
+//             "Hours": formatHours(item.hours),
+//             "Seq No": item.sequenceNumber || "",
+//             "Status": item.approvalStatus || "PENDING",
+//             "Comment": item.comment || "",
+//             "IP Address": item.ipAddress || ""
+//           }));
           
-//         const formattedImportedData = csvData.map((item, index) => ({
-//   id: item.timesheetId || item.id || `imported-${index}`,
-//   originalDate: item.timesheetDate || item["Timesheet Date"],
-//   originalItem: item,
-//   "Date": formatDate(item.timesheetDate || item["Timesheet Date"]),
-//   "Employee ID": item.employeeId || item["Employee ID"] || "",
-//   "Timesheet Type Code": item.timesheetTypeCode || item["Timesheet Type Code"] || "",
-//   "Name": item.displayedName || item["Name"] || `Employee ${item.employeeId || item["Employee ID"]}` || "",
-//   "Fiscal Year": item.fiscalYear || item["Fiscal Year"] || "",
-//   "Period": item.period || item["Period"] || "",
-//   "Project ID": item.projectId || item["Project ID"] || "",
-//   "PLC": item.projectLaborCategory || item["PLC"] || "",
-//   "Pay Type": item.payType || item["Pay Type"] || "",
-//   "Hours": formatHours(item.hours || item["Hours"]),
-//   "Seq No": item.sequenceNumber || item["Seq No"] || "",
-//   "Comment": item.comment || item["Comment"] || "",
-// "Status": item.status || item["Status"] || "PENDING",  // ADD THIS LINE
-//   isNotified: (item.status || item["Status"] || "").toLowerCase() === "notified",  // ADD THIS LINE
-//   notifySelected: false
-// }));
+// //         const formattedImportedData = csvData.map((item, index) => ({
+// //   id: item.timesheetId || item.id || `imported-${index}`,
+// //   originalDate: item.timesheetDate || item["Timesheet Date"],
+// //   originalItem: item,
+// //   "Date": formatDate(item.timesheetDate || item["Timesheet Date"]),
+// //   "Employee ID": item.employeeId || item["Employee ID"] || "",
+// //   "Timesheet Type Code": item.timesheetTypeCode || item["Timesheet Type Code"] || "",
+// //   "Name": item.displayedName || item["Name"] || `Employee ${item.employeeId || item["Employee ID"]}` || "",
+// //   "Fiscal Year": item.fiscalYear || item["Fiscal Year"] || "",
+// //   "Period": item.period || item["Period"] || "",
+// //   "Project ID": item.projectId || item["Project ID"] || "",
+// //   "PLC": item.projectLaborCategory || item["PLC"] || "",
+// //   "Pay Type": item.payType || item["Pay Type"] || "",
+// //   "Hours": formatHours(item.hours || item["Hours"]),
+// //   "Seq No": item.sequenceNumber || item["Seq No"] || "",
+// //   "Comment": item.comment || item["Comment"] || "",
+// // "Status": item.status || item["Status"] || "PENDING",  // ADD THIS LINE
+// //   isNotified: (item.status || item["Status"] || "").toLowerCase() === "notified",  // ADD THIS LINE
+// //   notifySelected: false
+// // }));
 
-          setRows(prevRows => [...prevRows, ...formattedImportedData]);
+//           setRows(prevRows => [...prevRows, ...formattedImportedData]);
           
-          const requestBody = dataToProcess.map(item => ({
-            requestType: "TIMESHEET",
-            requesterId: 1,
-            timesheetId: item.timesheetId || item.id,
-            projectId: projectId,
-            requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
-          }));
+//           const requestBody = dataToProcess.map(item => ({
+//             requestType: "TIMESHEET",
+//             requesterId: 1,
+//             timesheetId: item.timesheetId || item.id,
+//             projectId: projectId,
+//             requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
+//           }));
           
-          const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestBody)
-          });
+//           const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(requestBody)
+//           });
           
-          if (notifyResponse.ok) {
-            showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
-          } else {
-            showToast('Import successful but notifications failed', "warning");
-          }
-        }
+//           if (notifyResponse.ok) {
+//             showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
+//           } else {
+//             showToast('Import successful but notifications failed', "warning");
+//           }
+//         }
         
-      } else {
-        try {
-          const errorResponse = await importResponse.json();
-          const errorText = errorResponse?.message || JSON.stringify(errorResponse);
-          showToast('Import failed: ' + errorText, "error");
-        } catch {
-          const errorText = await importResponse.text();
-          showToast('Import failed: ' + errorText, "error");
+//       } else {
+//         try {
+//           const errorResponse = await importResponse.json();
+//           const errorText = errorResponse?.message || JSON.stringify(errorResponse);
+//           showToast('Import failed: ' + errorText, "error");
+//         } catch {
+//           const errorText = await importResponse.text();
+//           showToast('Import failed: ' + errorText, "error");
+//         }
+//       }
+//     } catch (error) {
+//       console.error('Import error:', error);
+//       showToast('Import failed. Please try again.', "error");
+//     } finally {
+//       setActionLoading(false);
+//       if (fileInputRef.current) {
+//         fileInputRef.current.value = '';
+//       }
+//     }
+//   };
+  
+// const handleImportFile = async (e) => {
+//   const file = e.target.files?.[0];
+//   if (!file) return;
+//   if (!file.name.toLowerCase().endsWith('.csv')) {
+//     showToast('Please select a CSV file', "error");
+//     return;
+//   }
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   try {
+//     setActionLoading(true);
+//     let projectId = null;
+//     try {
+//       const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
+//       if (pendingResponse.ok) {
+//         const pendingData = await pendingResponse.json();
+//         if (Array.isArray(pendingData) && pendingData.length > 0) {
+//           projectId = pendingData[0].projectId;
+//         }
+//       }
+//     } catch (error) {
+//       console.warn('Failed to fetch projectId, proceeding without it');
+//     }
+    
+//     const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//       method: 'POST',
+//       body: formData
+//     });
+    
+//     if (importResponse.ok) {
+//       const importedData = await importResponse.json();
+      
+//       let dataToProcess = null;
+//       let successMessage = '';
+      
+//       if (importedData && importedData.message) {
+//         successMessage = importedData.message;
+//         showToast(successMessage, "success");
+        
+//         if (importedData.data && Array.isArray(importedData.data)) {
+//           dataToProcess = importedData.data;
+//         }
+//       } else if (Array.isArray(importedData)) {
+//         dataToProcess = importedData;
+//         successMessage = `Successfully imported ${importedData.length} records from: ${file.name}`;
+//         showToast(successMessage, "success");
+//       } else {
+//         successMessage = `Successfully imported: ${file.name}`;
+//         showToast(successMessage, "success");
+//       }
+      
+//       // CHECK FOR DOWNLOADABLE CSV DATA
+//       if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//         try {
+//           // Convert data to CSV and trigger download
+//           const csvContent = arrayToCSV(dataToProcess);
+//           if (csvContent) {
+//             const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//             downloadCSV(csvContent, filename);
+//             showToast(`CSV file downloaded: ${filename}`, "success");
+//           }
+//         } catch (downloadError) {
+//           console.warn('Failed to download CSV:', downloadError);
+//           showToast('Import successful but download failed', "warning");
+//         }
+//       } else if (importedData) {
+//         // Try to download even if dataToProcess is null but importedData exists
+//         try {
+//           let downloadData = importedData.data || importedData;
+//           if (Array.isArray(downloadData) && downloadData.length > 0) {
+//             const csvContent = arrayToCSV(downloadData);
+//             if (csvContent) {
+//               const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//               downloadCSV(csvContent, filename);
+//               showToast(`CSV file downloaded: ${filename}`, "success");
+//             }
+//           }
+//         } catch (downloadError) {
+//           console.warn('Failed to download CSV from alternative data:', downloadError);
+//         }
+//       }
+      
+//       if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//         const formattedImportedData = dataToProcess.map((item, index) => ({
+//           id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+//           requestId: item.requestId || item.id,
+//           levelNo: item.levelNo || 1,
+//           selected: false,
+//           notifySelected: false,
+//           isApproved: item.approvalStatus === 'APPROVED' || false,
+//           isRejected: item.approvalStatus === 'REJECTED' || false,
+//           isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//           status: item.approvalStatus?.toLowerCase() || 'pending',
+//           originalDate: item.timesheetDate,
+//           "Date": formatDate(item.timesheetDate),
+//           "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//           "Timesheet Type Code": item.timesheetTypeCode || "",
+//           "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//           "Fiscal Year": item.fiscalYear || "",
+//           "Period": item.period || "",
+//           "Project ID": item.projectId || "",
+//           "Account": item.accountId || "",
+//           "Org": item.organizationId || "",
+//           "PLC": item.projectLaborCategory || "",
+//           "Pay Type": item.payType || "",
+//           "Hours": formatHours(item.hours),
+//           "Seq No": item.sequenceNumber || "",
+//           "Status": item.approvalStatus || "PENDING",
+//           "Comment": item.comment || "",
+//           "IP Address": item.ipAddress || ""
+//         }));
+
+//         setRows(prevRows => [...prevRows, ...formattedImportedData]);
+        
+//         const requestBody = dataToProcess.map(item => ({
+//           requestType: "TIMESHEET",
+//           requesterId: 1,
+//           timesheetId: item.timesheetId || item.id,
+//           projectId: projectId,
+//           requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
+//         }));
+        
+//         const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(requestBody)
+//         });
+        
+//         if (notifyResponse.ok) {
+//           showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
+//         } else {
+//           showToast('Import successful but notifications failed', "warning");
+//         }
+//       }
+      
+//     } else {
+//       try {
+//         const errorResponse = await importResponse.json();
+        
+//         // CHECK IF ERROR RESPONSE CONTAINS DOWNLOADABLE DATA
+//         if (errorResponse && (errorResponse.data || Array.isArray(errorResponse))) {
+//           try {
+//             let downloadData = errorResponse.data || errorResponse;
+//             if (Array.isArray(downloadData) && downloadData.length > 0) {
+//               const csvContent = arrayToCSV(downloadData);
+//               if (csvContent) {
+//                 const filename = `error_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//                 downloadCSV(csvContent, filename);
+//                 showToast(`Import failed but data downloaded: ${filename}`, "warning");
+//                 return; // Exit early since we found downloadable data
+//               }
+//             }
+//           } catch (downloadError) {
+//             console.warn('Failed to download CSV from error response:', downloadError);
+//           }
+//         }
+        
+//         const errorText = errorResponse?.message || JSON.stringify(errorResponse);
+//         showToast('Import failed: ' + errorText, "error");
+//       } catch (parseError) {
+//         const errorText = await importResponse.text();
+        
+//         // CHECK IF TEXT RESPONSE IS CSV DATA
+//         if (errorText && (errorText.includes(',') || errorText.includes('\n'))) {
+//           try {
+//             // First try to parse as CSV and convert to array
+//             const parsedData = parseCSVText(errorText);
+//             if (parsedData && parsedData.length > 0) {
+//               const csvContent = arrayToCSV(parsedData);
+//               const filename = `parsed_csv_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//               downloadCSV(csvContent, filename);
+//               showToast(`CSV response parsed and downloaded: ${filename}`, "success");
+//               return;
+//             }
+            
+//             // If parsing fails, download raw CSV text
+//             const filename = `raw_csv_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//             downloadCSV(errorText, filename);
+//             showToast(`Raw CSV response downloaded: ${filename}`, "warning");
+//             return;
+//           } catch (downloadError) {
+//             console.warn('Failed to download CSV from text response:', downloadError);
+//           }
+//         }
+        
+//         showToast('Import failed: ' + errorText, "error");
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Import error:', error);
+//     showToast('Import failed. Please try again.', "error");
+//   } finally {
+//     setActionLoading(false);
+//     if (fileInputRef.current) {
+//       fileInputRef.current.value = '';
+//     }
+//   }
+// };
+
+// const handleImportFile = async (e) => {
+//   const file = e.target.files?.[0];
+//   if (!file) return;
+//   if (!file.name.toLowerCase().endsWith('.csv')) {
+//     showToast('Please select a CSV file', "error");
+//     return;
+//   }
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   try {
+//     setActionLoading(true);
+//     let projectId = null;
+//     try {
+//       const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
+//       if (pendingResponse.ok) {
+//         const pendingData = await pendingResponse.json();
+//         if (Array.isArray(pendingData) && pendingData.length > 0) {
+//           projectId = pendingData[0].projectId;
+//         }
+//       }
+//     } catch (error) {
+//       console.warn('Failed to fetch projectId, proceeding without it');
+//     }
+    
+//     const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//       method: 'POST',
+//       body: formData
+//     });
+    
+//     if (importResponse.ok) {
+//       const importedData = await importResponse.json();
+      
+//       let dataToProcess = null;
+//       let successMessage = '';
+      
+//       if (importedData && importedData.message) {
+//         successMessage = importedData.message;
+//         showToast(successMessage, "success");
+        
+//         if (importedData.data && Array.isArray(importedData.data)) {
+//           dataToProcess = importedData.data;
+//         }
+//       } else if (Array.isArray(importedData)) {
+//         dataToProcess = importedData;
+//         successMessage = `Successfully imported ${importedData.length} records from: ${file.name}`;
+//         showToast(successMessage, "success");
+//       } else {
+//         successMessage = `Successfully imported: ${file.name}`;
+//         showToast(successMessage, "success");
+//       }
+      
+//       // CHECK FOR DOWNLOADABLE CSV DATA
+//       if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//         try {
+//           // Convert data to CSV and trigger download
+//           const csvContent = arrayToCSV(dataToProcess);
+//           if (csvContent) {
+//             const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//             downloadCSV(csvContent, filename);
+//             showToast(`CSV file downloaded: ${filename}`, "success");
+//           }
+//         } catch (downloadError) {
+//           console.warn('Failed to download CSV:', downloadError);
+//           showToast('Import successful but download failed', "warning");
+//         }
+//       } else if (importedData) {
+//         // Try to download even if dataToProcess is null but importedData exists
+//         try {
+//           let downloadData = importedData.data || importedData;
+//           if (Array.isArray(downloadData) && downloadData.length > 0) {
+//             const csvContent = arrayToCSV(downloadData);
+//             if (csvContent) {
+//               const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//               downloadCSV(csvContent, filename);
+//               showToast(`CSV file downloaded: ${filename}`, "success");
+//             }
+//           }
+//         } catch (downloadError) {
+//           console.warn('Failed to download CSV from alternative data:', downloadError);
+//         }
+//       }
+      
+//       if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//         const formattedImportedData = dataToProcess.map((item, index) => ({
+//           id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+//           requestId: item.requestId || item.id,
+//           levelNo: item.levelNo || 1,
+//           selected: false,
+//           notifySelected: false,
+//           isApproved: item.approvalStatus === 'APPROVED' || false,
+//           isRejected: item.approvalStatus === 'REJECTED' || false,
+//           isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//           status: item.approvalStatus?.toLowerCase() || 'pending',
+//           originalDate: item.timesheetDate,
+//           "Date": formatDate(item.timesheetDate),
+//           "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//           "Timesheet Type Code": item.timesheetTypeCode || "",
+//           "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//           "Fiscal Year": item.fiscalYear || "",
+//           "Period": item.period || "",
+//           "Project ID": item.projectId || "",
+//           "Account": item.accountId || "",
+//           "Org": item.organizationId || "",
+//           "PLC": item.projectLaborCategory || "",
+//           "Pay Type": item.payType || "",
+//           "Hours": formatHours(item.hours),
+//           "Seq No": item.sequenceNumber || "",
+//           "Status": item.approvalStatus || "PENDING",
+//           "Comment": item.comment || "",
+//           "IP Address": item.ipAddress || ""
+//         }));
+
+//         setRows(prevRows => [...prevRows, ...formattedImportedData]);
+        
+//         const requestBody = dataToProcess.map(item => ({
+//           requestType: "TIMESHEET",
+//           requesterId: 1,
+//           timesheetId: item.timesheetId || item.id,
+//           projectId: projectId,
+//           requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
+//         }));
+        
+//         const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(requestBody)
+//         });
+        
+//         if (notifyResponse.ok) {
+//           showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
+//         } else {
+//           showToast('Import successful but notifications failed', "warning");
+//         }
+//       }
+      
+//     } else {
+//       // FIRST TRY TO GET TEXT RESPONSE (FOR CSV DATA)
+//       try {
+//         const textResponse = await importResponse.text();
+        
+//         // CHECK IF TEXT RESPONSE IS CSV DATA
+//         if (textResponse && (textResponse.includes(',') || textResponse.includes('\n'))) {
+//           console.log('Detected CSV text response:', textResponse.substring(0, 200) + '...');
+          
+//           try {
+//             // Download the raw CSV text directly
+//             const filename = `api_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//             downloadCSV(textResponse, filename);
+//             showToast(`CSV response downloaded: ${filename}`, "success");
+            
+//             // ALSO try to parse and process the CSV data
+//             const parsedData = parseCSVText(textResponse);
+//             if (parsedData && parsedData.length > 0) {
+//               showToast(`Successfully parsed ${parsedData.length} records from CSV response`, "info");
+//               // You can also add these to your table if needed
+//             }
+            
+//             return; // Exit early since we successfully handled the CSV
+//           } catch (downloadError) {
+//             console.warn('Failed to download CSV from text response:', downloadError);
+//             showToast('Received CSV data but download failed', "warning");
+//           }
+//         } else {
+//           // Not CSV data, treat as error message
+//           showToast('Import failed: ' + textResponse, "error");
+//         }
+//       } catch (textError) {
+//         // Fallback: try to parse as JSON error response
+//         try {
+//           importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//             method: 'POST',
+//             body: formData
+//           });
+//           const errorResponse = await importResponse.json();
+//           const errorText = errorResponse?.message || JSON.stringify(errorResponse);
+//           showToast('Import failed: ' + errorText, "error");
+//         } catch (finalError) {
+//           showToast('Import failed: Unable to parse response', "error");
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Import error:', error);
+//     showToast('Import failed. Please try again.', "error");
+//   } finally {
+//     setActionLoading(false);
+//     if (fileInputRef.current) {
+//       fileInputRef.current.value = '';
+//     }
+//   }
+// };
+
+// const handleImportFile = async (e) => {
+//   const file = e.target.files?.[0];
+//   if (!file) return;
+//   if (!file.name.toLowerCase().endsWith('.csv')) {
+//     showToast('Please select a CSV file', "error");
+//     return;
+//   }
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   try {
+//     setActionLoading(true);
+//     let projectId = null;
+//     try {
+//       const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
+//       if (pendingResponse.ok) {
+//         const pendingData = await pendingResponse.json();
+//         if (Array.isArray(pendingData) && pendingData.length > 0) {
+//           projectId = pendingData[0].projectId;
+//         }
+//       }
+//     } catch (error) {
+//       console.warn('Failed to fetch projectId, proceeding without it');
+//     }
+    
+//     const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//       method: 'POST',
+//       body: formData
+//     });
+    
+//     if (importResponse.ok) {
+//       // FIX: First check content type, then try text first for CSV responses
+//       const contentType = importResponse.headers.get('content-type');
+//       console.log('Response Content-Type:', contentType);
+      
+//       let responseData;
+//       let isCSVResponse = false;
+      
+//       // Check if response is CSV or text
+//       if (contentType && (contentType.includes('text/csv') || contentType.includes('text/plain'))) {
+//         responseData = await importResponse.text();
+//         isCSVResponse = true;
+//         console.log('Detected CSV/text response');
+//       } else {
+//         // Try JSON first, fallback to text if it fails
+//         try {
+//           responseData = await importResponse.json();
+//           console.log('Successfully parsed JSON response');
+//         } catch (jsonError) {
+//           console.log('JSON parsing failed, trying text...', jsonError.message);
+//           // Reset the response by making a new request (since response can only be consumed once)
+//           const retryResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//             method: 'POST',
+//             body: formData
+//           });
+//           responseData = await retryResponse.text();
+//           isCSVResponse = true;
+//           console.log('Fallback to text response successful');
+//         }
+//       }
+      
+//       // Handle CSV text response
+//       if (isCSVResponse && typeof responseData === 'string') {
+//         console.log('Processing CSV text response:', responseData.substring(0, 200) + '...');
+        
+//         // Download the raw CSV text directly
+//         const filename = `api_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//         downloadCSV(responseData, filename);
+//         showToast(`CSV file downloaded: ${filename}`, "success");
+        
+//         // Optional: Also try to parse and display the CSV data in your table
+//         try {
+//           const parsedData = parseCSVText(responseData);
+//           if (parsedData && parsedData.length > 0) {
+//             // showToast(`Successfully parsed ${parsedData.length} records from CSV`, "info");
+//             // You could also add these to your table here if needed
+//           }
+//         } catch (parseError) {
+//           console.warn('Could not parse CSV for display:', parseError);
+//         }
+        
+//         return; // Exit since we handled the CSV response
+//       }
+      
+//       // Handle JSON response (original logic)
+//       let dataToProcess = null;
+//       let successMessage = '';
+      
+//       if (responseData && responseData.message) {
+//         successMessage = responseData.message;
+//         showToast(successMessage, "success");
+        
+//         if (responseData.data && Array.isArray(responseData.data)) {
+//           dataToProcess = responseData.data;
+//         }
+//       } else if (Array.isArray(responseData)) {
+//         dataToProcess = responseData;
+//         successMessage = `Successfully imported ${responseData.length} records from: ${file.name}`;
+//         showToast(successMessage, "success");
+//       } else {
+//         successMessage = `Successfully imported: ${file.name}`;
+//         showToast(successMessage, "success");
+//       }
+      
+//       // Process JSON data (rest of your existing logic)
+//       if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//         try {
+//           const csvContent = arrayToCSV(dataToProcess);
+//           if (csvContent) {
+//             const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//             downloadCSV(csvContent, filename);
+//             showToast(`CSV file downloaded: ${filename}`, "success");
+//           }
+//         } catch (downloadError) {
+//           console.warn('Failed to download CSV:', downloadError);
+//           showToast('Import successful but download failed', "warning");
+//         }
+        
+//         // Add to table and notify (your existing logic)
+//         const formattedImportedData = dataToProcess.map((item, index) => ({
+//           id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+//           requestId: item.requestId || item.id,
+//           levelNo: item.levelNo || 1,
+//           selected: false,
+//           notifySelected: false,
+//           isApproved: item.approvalStatus === 'APPROVED' || false,
+//           isRejected: item.approvalStatus === 'REJECTED' || false,
+//           isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//           status: item.approvalStatus?.toLowerCase() || 'pending',
+//           originalDate: item.timesheetDate,
+//           "Date": formatDate(item.timesheetDate),
+//           "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//           "Timesheet Type Code": item.timesheetTypeCode || "",
+//           "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//           "Fiscal Year": item.fiscalYear || "",
+//           "Period": item.period || "",
+//           "Project ID": item.projectId || "",
+//           "Account": item.accountId || "",
+//           "Org": item.organizationId || "",
+//           "PLC": item.projectLaborCategory || "",
+//           "Pay Type": item.payType || "",
+//           "Hours": formatHours(item.hours),
+//           "Seq No": item.sequenceNumber || "",
+//           "Status": item.approvalStatus || "PENDING",
+//           "Comment": item.comment || "",
+//           "IP Address": item.ipAddress || ""
+//         }));
+
+//         setRows(prevRows => [...prevRows, ...formattedImportedData]);
+        
+//         const requestBody = dataToProcess.map(item => ({
+//           requestType: "TIMESHEET",
+//           requesterId: 1,
+//           timesheetId: item.timesheetId || item.id,
+//           projectId: projectId,
+//           requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
+//         }));
+        
+//         const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(requestBody)
+//         });
+        
+//         if (notifyResponse.ok) {
+//           showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
+//         } else {
+//           showToast('Import successful but notifications failed', "warning");
+//         }
+//       }
+      
+//     } else {
+//       // Handle failed response (your existing error handling)
+//       try {
+//         const textResponse = await importResponse.text();
+        
+//         if (textResponse && (textResponse.includes(',') || textResponse.includes('\n'))) {
+//           console.log('Detected CSV text in error response:', textResponse.substring(0, 200) + '...');
+          
+//           const filename = `error_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//           downloadCSV(textResponse, filename);
+//         //   showToast(`CSV response downloaded: ${filename}`, "warning");
+//         showToast("CSV response downloaded", "warning");
+//           return;
+//         } else {
+//           showToast('Import failed: ' + textResponse, "error");
+//         }
+//       } catch (textError) {
+//         showToast('Import failed: Unable to parse response', "error");
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Import error:', error);
+//     showToast('Import failed. Please try again.', "error");
+//   } finally {
+//     setActionLoading(false);
+//     if (fileInputRef.current) {
+//       fileInputRef.current.value = '';
+//     }
+//   }
+// };
+
+// const handleImportFile = async (e) => {
+//   const file = e.target.files?.[0];
+//   if (!file) return;
+//   if (!file.name.toLowerCase().endsWith('.csv')) {
+//     showToast('Please select a CSV file', "error");
+//     return;
+//   }
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   try {
+//     setActionLoading(true);
+//     let projectId = null;
+//     try {
+//       const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
+//       if (pendingResponse.ok) {
+//         const pendingData = await pendingResponse.json();
+//         if (Array.isArray(pendingData) && pendingData.length > 0) {
+//           projectId = pendingData[0].projectId;
+//         }
+//       }
+//     } catch (error) {
+//       console.warn('Failed to fetch projectId, proceeding without it');
+//     }
+    
+//     const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//       method: 'POST',
+//       body: formData
+//     });
+    
+//     if (importResponse.ok) {
+//       // FIX: First check content type, then try text first for CSV responses
+//       const contentType = importResponse.headers.get('content-type');
+//       console.log('Response Content-Type:', contentType);
+      
+//       let responseData;
+//       let isCSVResponse = false;
+      
+//       // Check if response is CSV or text
+//       if (contentType && (contentType.includes('text/csv') || contentType.includes('text/plain'))) {
+//         responseData = await importResponse.text();
+//         isCSVResponse = true;
+//         console.log('Detected CSV/text response');
+//       } else {
+//         // Try JSON first, fallback to text if it fails
+//         try {
+//           responseData = await importResponse.json();
+//           console.log('Successfully parsed JSON response');
+//         } catch (jsonError) {
+//           console.log('JSON parsing failed, trying text...', jsonError.message);
+//           // Reset the response by making a new request (since response can only be consumed once)
+//           const retryResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+//             method: 'POST',
+//             body: formData
+//           });
+//           responseData = await retryResponse.text();
+//           isCSVResponse = true;
+//           console.log('Fallback to text response successful');
+//         }
+//       }
+      
+//       // Handle CSV text response
+//       if (isCSVResponse && typeof responseData === 'string') {
+//         console.log('Processing CSV text response:', responseData.substring(0, 200) + '...');
+        
+//         // Download the raw CSV text directly
+//         const filename = `api_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//         downloadCSV(responseData, filename);
+//         showToast("CSV File Downloaded", "success");
+        
+//         // DON'T add downloaded CSV to table - only show import success message
+//         showToast("Import completed successfully", "info");
+        
+//         return; // Exit since we handled the CSV response
+//       }
+      
+//       // Handle JSON response (original logic) - THIS is where imported data gets added to table
+//       let dataToProcess = null;
+//       let successMessage = '';
+      
+//       if (responseData && responseData.message) {
+//         successMessage = responseData.message;
+//         showToast(successMessage, "success");
+        
+//         if (responseData.data && Array.isArray(responseData.data)) {
+//           dataToProcess = responseData.data;
+//         }
+//       } else if (Array.isArray(responseData)) {
+//         dataToProcess = responseData;
+//         successMessage = `Successfully imported ${responseData.length} records from: ${file.name}`;
+//         showToast(successMessage, "success");
+//       } else {
+//         successMessage = `Successfully imported: ${file.name}`;
+//         showToast(successMessage, "success");
+//       }
+      
+//       // Process JSON data (rest of your existing logic) - THIS adds imported data to table
+//       if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+//         try {
+//           const csvContent = arrayToCSV(dataToProcess);
+//           if (csvContent) {
+//             const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//             downloadCSV(csvContent, filename);
+//             showToast("CSV File Downloaded", "success");
+//           }
+//         } catch (downloadError) {
+//           console.warn('Failed to download CSV:', downloadError);
+//           showToast('Import successful but download failed', "warning");
+//         }
+        
+//         // Add to table and notify (your existing logic) - THIS IS THE IMPORTANT PART
+//         const formattedImportedData = dataToProcess.map((item, index) => ({
+//           id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+//           requestId: item.requestId || item.id,
+//           levelNo: item.levelNo || 1,
+//           selected: false,
+//           notifySelected: false,
+//           isApproved: item.approvalStatus === 'APPROVED' || false,
+//           isRejected: item.approvalStatus === 'REJECTED' || false,
+//           isNotified: item.approvalStatus === 'NOTIFIED' || false,
+//           status: item.approvalStatus?.toLowerCase() || 'pending',
+//           originalDate: item.timesheetDate,
+//           "Date": formatDate(item.timesheetDate),
+//           "Employee ID": item.employee?.employeeId || item.employeeId || "",
+//           "Timesheet Type Code": item.timesheetTypeCode || "",
+//           "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+//           "Fiscal Year": item.fiscalYear || "",
+//           "Period": item.period || "",
+//           "Project ID": item.projectId || "",
+//           "Account": item.accountId || "",
+//           "Org": item.organizationId || "",
+//           "PLC": item.projectLaborCategory || "",
+//           "Pay Type": item.payType || "",
+//           "Hours": formatHours(item.hours),
+//           "Seq No": item.sequenceNumber || "",
+//           "Status": item.approvalStatus || "PENDING",
+//           "Comment": item.comment || "",
+//           "IP Address": item.ipAddress || ""
+//         }));
+
+//         // FIX: This adds the imported data to your table immediately (no reload needed)
+//         setRows(prevRows => [...prevRows, ...formattedImportedData]);
+        
+//         const requestBody = dataToProcess.map(item => ({
+//           requestType: "TIMESHEET",
+//           requesterId: 1,
+//           timesheetId: item.timesheetId || item.id,
+//           projectId: projectId,
+//           requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
+//         }));
+        
+//         const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(requestBody)
+//         });
+        
+//         if (notifyResponse.ok) {
+//           showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
+//         } else {
+//           showToast('Import successful but notifications failed', "warning");
+//         }
+//       }
+      
+//     } else {
+//       // Handle failed response (your existing error handling)
+//       try {
+//         const textResponse = await importResponse.text();
+        
+//         if (textResponse && (textResponse.includes(',') || textResponse.includes('\n'))) {
+//           console.log('Detected CSV text in error response:', textResponse.substring(0, 200) + '...');
+          
+//           const filename = `error_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+//           downloadCSV(textResponse, filename);
+//           showToast("CSV File Downloaded", "success");
+//           return;
+//         } else {
+//           showToast('Import failed: ' + textResponse, "error");
+//         }
+//       } catch (textError) {
+//         showToast('Import failed: Unable to parse response', "error");
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Import error:', error);
+//     showToast('Import failed. Please try again.', "error");
+//   } finally {
+//     setActionLoading(false);
+//     if (fileInputRef.current) {
+//       fileInputRef.current.value = '';
+//     }
+//   }
+// };
+
+const handleImportFile = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    showToast('Please select a CSV file', "error");
+    return;
+  }
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    setActionLoading(true);
+    let projectId = null;
+    try {
+      const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
+      if (pendingResponse.ok) {
+        const pendingData = await pendingResponse.json();
+        if (Array.isArray(pendingData) && pendingData.length > 0) {
+          projectId = pendingData[0].projectId;
         }
       }
     } catch (error) {
-      console.error('Import error:', error);
-      showToast('Import failed. Please try again.', "error");
-    } finally {
-      setActionLoading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      console.warn('Failed to fetch projectId, proceeding without it');
+    }
+    
+    const importResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (importResponse.ok) {
+      // Try JSON first, fallback to text if it fails
+      let responseData;
+      let isCSVResponse = false;
+      
+      try {
+        responseData = await importResponse.json();
+        console.log('Successfully parsed JSON response');
+      } catch (jsonError) {
+        console.log('JSON parsing failed, trying text...', jsonError.message);
+        // Reset the response by making a new request (since response can only be consumed once)
+        const retryResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/import-csv', {
+          method: 'POST',
+          body: formData
+        });
+        responseData = await retryResponse.text();
+        isCSVResponse = true;
+        console.log('Fallback to text response successful');
+      }
+      
+      // Handle CSV/text response - ONLY download, don't add to table
+      if (isCSVResponse && typeof responseData === 'string') {
+        console.log('Processing CSV text response:', responseData.substring(0, 200) + '...');
+        
+        // Download the raw CSV text directly
+        const filename = `api_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+        downloadCSV(responseData, filename);
+        showToast("Downloaded Successfully", "success");
+        
+        return; // Exit - don't add CSV/text response to table
+      }
+      
+      // Handle JSON response - THIS adds imported data to table
+      let dataToProcess = null;
+      let successMessage = '';
+      
+      if (responseData && responseData.message) {
+        successMessage = responseData.message;
+        showToast(successMessage, "success");
+        
+        if (responseData.data && Array.isArray(responseData.data)) {
+          dataToProcess = responseData.data;
+        }
+      } else if (Array.isArray(responseData)) {
+        dataToProcess = responseData;
+        successMessage = `Successfully imported ${responseData.length} records from: ${file.name}`;
+        showToast(successMessage, "success");
+      } else {
+        successMessage = `Successfully imported: ${file.name}`;
+        showToast(successMessage, "success");
+      }
+      
+      // Process JSON data and add to table
+      if (dataToProcess && Array.isArray(dataToProcess) && dataToProcess.length > 0) {
+        try {
+          const csvContent = arrayToCSV(dataToProcess);
+          if (csvContent) {
+            const filename = `imported_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+            downloadCSV(csvContent, filename);
+            showToast("Downloaded Successfully", "success");
+          }
+        } catch (downloadError) {
+          console.warn('Failed to download CSV:', downloadError);
+          showToast('Import successful but download failed', "warning");
+        }
+        
+        // Add imported JSON data to table
+        const formattedImportedData = dataToProcess.map((item, index) => ({
+          id: item.timesheetId || item.id || `imported-${Date.now()}-${index}`,
+          requestId: item.requestId || item.id,
+          levelNo: item.levelNo || 1,
+          selected: false,
+          notifySelected: false,
+          isApproved: item.approvalStatus === 'APPROVED' || false,
+          isRejected: item.approvalStatus === 'REJECTED' || false,
+          isNotified: item.approvalStatus === 'NOTIFIED' || false,
+          status: item.approvalStatus?.toLowerCase() || 'pending',
+          originalDate: item.timesheetDate,
+          "Date": formatDate(item.timesheetDate),
+          "Employee ID": item.employee?.employeeId || item.employeeId || "",
+          "Timesheet Type Code": item.timesheetTypeCode || "",
+          "Name": item.displayedName || item.employeeName || `Employee ${item.employee?.employeeId || item.employeeId}` || "",
+          "Fiscal Year": item.fiscalYear || "",
+          "Period": item.period || "",
+          "Project ID": item.projectId || "",
+          "Account": item.accountId || "",
+          "Org": item.organizationId || "",
+          "PLC": item.projectLaborCategory || "",
+          "Pay Type": item.payType || "",
+          "Hours": formatHours(item.hours),
+          "Seq No": item.sequenceNumber || "",
+          "Status": item.approvalStatus || "PENDING",
+          "Comment": item.comment || "",
+          "IP Address": item.ipAddress || ""
+        }));
+
+        // FIX: Add imported data to table immediately (no reload needed)
+        setRows(prevRows => [...prevRows, ...formattedImportedData]);
+        
+        const requestBody = dataToProcess.map(item => ({
+          requestType: "TIMESHEET",
+          requesterId: 1,
+          timesheetId: item.timesheetId || item.id,
+          projectId: projectId,
+          requestData: `Notification for imported timesheet ${item.timesheetId || item.id}`
+        }));
+        
+        const notifyResponse = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        if (notifyResponse.ok) {
+          showToast(`Notifications sent for ${dataToProcess.length} imported timesheets!`, "success");
+        } else {
+          showToast('Import successful but notifications failed', "warning");
+        }
+      }
+      
+    } else {
+      // Handle failed response
+      try {
+        const textResponse = await importResponse.text();
+        
+        if (textResponse && (textResponse.includes(',') || textResponse.includes('\n'))) {
+          console.log('Detected CSV text in error response:', textResponse.substring(0, 200) + '...');
+          
+          const filename = `error_response_${file.name.replace('.csv', '')}_${Date.now()}.csv`;
+          downloadCSV(textResponse, filename);
+          showToast("Downloaded Successfully", "success");
+          return;
+        } else {
+          showToast('Import failed: ' + textResponse, "error");
+        }
+      } catch (textError) {
+        showToast('Import failed: Unable to parse response', "error");
       }
     }
-  };
+  } catch (error) {
+    console.error('Import error:', error);
+    showToast('Import failed. Please try again.', "error");
+  } finally {
+    setActionLoading(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+};
+
+
+
+
+
 
   const handleNotifyClick = async (e) => {
     e.preventDefault();

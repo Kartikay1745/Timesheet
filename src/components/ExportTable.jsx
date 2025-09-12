@@ -2010,7 +2010,10 @@ const showToast = (message, type = 'info') => {
 
 const columnsExport = [
   "Date", "Employee ID","Timesheet Type Code", "Name", "Fiscal Year", "Period",
-  "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment",
+  "Project ID", "PLC", "Pay Type","RLSE Number", 
+"PO Number",
+"PO Line Number",
+  "Hours", "Seq No", "Comment",
 ];
 
 export default function ExportTable() {
