@@ -13723,44 +13723,44 @@ const handleImportFile = async (e) => {
 
 
 
-  const handleNotifyClick = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (actionLoading) return;
+//   const handleNotifyClick = async (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     if (actionLoading) return;
     
-    if (selectedNotifyRows.length === 0) {
-      showToast('Please select at least one timesheet to notify.', "warning");
-      return;
-    }
-    try {
-      setActionLoading(true);
-      const requestBody = selectedNotifyRows.map(row => ({
-        requestType: "TIMESHEET",
-        requesterId: 1,
-        timesheetId: row.id,
-        ProjectId: row["Project ID"],
-        requestData: `Notification for timesheet ${row.id}`
-      }));
-      const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-      if (response.ok) {
-        showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
-        const notifiedIds = selectedNotifyRows.map(row => row.id);
-        // setRows(prevRows => prevRows.filter(row => !notifiedIds.includes(row.id)));
-        setSelectedNotifyRows([]);
-        setNotifySelectAll(false);
-      } else {
-        showToast('Failed to send notifications. Please try again.', "error");
-      }
-    } catch (error) {
-      showToast('Failed to send notifications. Please try again.', "error");
-    } finally {
-      setActionLoading(false);
-    }
-  };
+//     if (selectedNotifyRows.length === 0) {
+//       showToast('Please select at least one timesheet to notify.', "warning");
+//       return;
+//     }
+//     try {
+//       setActionLoading(true);
+//       const requestBody = selectedNotifyRows.map(row => ({
+//         requestType: "TIMESHEET",
+//         requesterId: 1,
+//         timesheetId: row.id,
+//         ProjectId: row["Project ID"],
+//         requestData: `Notification for timesheet ${row.id}`
+//       }));
+//       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(requestBody)
+//       });
+//       if (response.ok) {
+//         showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
+//         const notifiedIds = selectedNotifyRows.map(row => row.id);
+//         // setRows(prevRows => prevRows.filter(row => !notifiedIds.includes(row.id)));
+//         setSelectedNotifyRows([]);
+//         setNotifySelectAll(false);
+//       } else {
+//         showToast('Failed to send notifications. Please try again.', "error");
+//       }
+//     } catch (error) {
+//       showToast('Failed to send notifications. Please try again.', "error");
+//     } finally {
+//       setActionLoading(false);
+//     }
+//   };
 
 
   
@@ -13822,6 +13822,68 @@ const handleImportFile = async (e) => {
 //     setActionLoading(false);
 //   }
 // };
+
+const handleNotifyClick = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (actionLoading) return;
+  
+  if (selectedNotifyRows.length === 0) {
+    showToast('Please select at least one timesheet to notify.', "warning");
+    return;
+  }
+  
+  try {
+    setActionLoading(true);
+    const requestBody = selectedNotifyRows.map(row => ({
+      requestType: "TIMESHEET",
+      requesterId: 1,
+      timesheetId: row.id,
+      ProjectId: row["Project ID"],
+      requestData: `Notification for timesheet ${row.id}`
+    }));
+    
+    const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+    
+    if (response.ok) {
+      showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
+      
+      // **FIX: Update status in real-time without page reload**
+      const notifiedIds = selectedNotifyRows.map(row => row.id);
+      setRows(prevRows => prevRows.map(row => 
+        notifiedIds.includes(row.id) 
+          ? { 
+              ...row, 
+              status: "notified", 
+              "Status": "NOTIFIED", 
+              isNotified: true, 
+              notifySelected: false 
+            }
+          : row
+      ));
+      
+      // Clear selections
+      setSelectedNotifyRows([]);
+      setNotifySelectAll(false);
+      
+      // **Optional: Refresh data after a short delay to sync with server**
+      setTimeout(() => {
+        fetchData();
+      }, 1000);
+      
+    } else {
+      showToast('Failed to send notifications. Please try again.', "error");
+    }
+  } catch (error) {
+    showToast('Failed to send notifications. Please try again.', "error");
+  } finally {
+    setActionLoading(false);
+  }
+};
 
   const handleNotifyRowSelect = (rowIndex, isSelected) => {
 
