@@ -11332,6 +11332,8 @@ export default function MainTable() {
   const [searchDate, setSearchDate] = useState('');
   const [searchEmployeeId, setSearchEmployeeId] = useState('');
   const [searchEmployeeName, setSearchEmployeeName] = useState('');
+  const [searchStatus, setSearchStatus] = useState('');
+
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const fileInputRef = useRef(null);
 
@@ -12082,6 +12084,13 @@ if (searchDate) {
         (row["Name"] || "").toLowerCase().includes(searchEmployeeName.trim().toLowerCase())
       );
     }
+
+     // Add this status filter logic
+  if (searchStatus.trim()) {
+    filtered = filtered.filter(row => 
+      row['Status'].toLowerCase().includes(searchStatus.trim().toLowerCase())
+    );
+  }
     
     return getSortedRows(filtered);
   };
@@ -13972,6 +13981,14 @@ const handleImportFile = async (e) => {
                 placeholder="Employee Name"
                 className="border border-gray-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
+              <input
+  type="text"
+  value={searchStatus}
+  onChange={(e) => setSearchStatus(e.target.value)}
+  placeholder="Status"
+  className="border border-gray-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+/>
+
             </div>
             {/* <div className="flex gap-2 items-center">
               <select
