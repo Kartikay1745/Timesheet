@@ -11332,7 +11332,14 @@ export default function MainTable() {
   const [searchDate, setSearchDate] = useState('');
   const [searchEmployeeId, setSearchEmployeeId] = useState('');
   const [searchEmployeeName, setSearchEmployeeName] = useState('');
-  const [searchStatus, setSearchStatus] = useState('');
+  const [statusFilters, setStatusFilters] = useState({
+  OPEN: false,
+  PENDING: false,
+  REJECTED: false,
+//   APPROVED: false,
+//   NOTIFIED: false
+});
+//   const [searchStatus, setSearchStatus] = useState('');
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const fileInputRef = useRef(null);
@@ -11443,82 +11450,82 @@ export default function MainTable() {
 //     return sorted;
 //   };
   
-  const getSortedRows = (rowsToSort) => {
-  let sorted = [...rowsToSort];
+//   const getSortedRows = (rowsToSort) => {
+//   let sorted = [...rowsToSort];
   
-  if (sortConfig.key) {
-    sorted.sort((a, b) => {
-      let aVal, bVal;
+//   if (sortConfig.key) {
+//     sorted.sort((a, b) => {
+//       let aVal, bVal;
       
-      if (sortConfig.key === 'Date') {
-        aVal = new Date(a.originalDate || a["Date"]);
-        bVal = new Date(b.originalDate || b["Date"]);
-        if (isNaN(aVal.getTime())) aVal = new Date(0);
-        if (isNaN(bVal.getTime())) bVal = new Date(0);
-        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
-      } else if (sortConfig.key === 'Employee ID') {
-        aVal = String(a["Employee ID"] || '').toLowerCase();
-        bVal = String(b["Employee ID"] || '').toLowerCase();
-      } else if (sortConfig.key === 'Name') {
-        aVal = String(a["Name"] || '').toLowerCase();
-        bVal = String(b["Name"] || '').toLowerCase();
-      } else if (sortConfig.key === 'Status') {
-        // Custom priority order: Un-Notified first, then Pending, then others
-        // const getStatusPriority = (status) => {
-        //   const statusUpper = String(status || 'PENDING').toUpperCase();
-        //   switch (statusUpper) {
-        //     case 'UN-NOTIFIED': 
-        //     case 'UNNOTIFIED': return 1;  // Un-Notified shows FIRST
-        //     case 'PENDING': return 2;     // Pending shows SECOND
-        //     case 'APPROVED': return 3;    // Approved shows THIRD
-        //     case 'REJECTED': return 4;    // Rejected shows FOURTH
-        //     default: return 5;            // Other statuses show LAST
-        //   }
-        // };
-        const getStatusPriority = (status) => {
-  const statusUpper = String(status || 'PENDING').toUpperCase();
-  switch (statusUpper) {
-    case 'OPEN': return 1;        // OPEN shows FIRST
-    case 'PENDING': return 2;     // Pending shows SECOND
-    case 'APPROVED': return 3;    // Approved shows THIRD
-    case 'REJECTED': return 4;    // Rejected shows FOURTH
-    default: return 5;            // Other statuses show LAST
-  }
-};
+//       if (sortConfig.key === 'Date') {
+//         aVal = new Date(a.originalDate || a["Date"]);
+//         bVal = new Date(b.originalDate || b["Date"]);
+//         if (isNaN(aVal.getTime())) aVal = new Date(0);
+//         if (isNaN(bVal.getTime())) bVal = new Date(0);
+//         return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+//       } else if (sortConfig.key === 'Employee ID') {
+//         aVal = String(a["Employee ID"] || '').toLowerCase();
+//         bVal = String(b["Employee ID"] || '').toLowerCase();
+//       } else if (sortConfig.key === 'Name') {
+//         aVal = String(a["Name"] || '').toLowerCase();
+//         bVal = String(b["Name"] || '').toLowerCase();
+//       } else if (sortConfig.key === 'Status') {
+//         // Custom priority order: Un-Notified first, then Pending, then others
+//         // const getStatusPriority = (status) => {
+//         //   const statusUpper = String(status || 'PENDING').toUpperCase();
+//         //   switch (statusUpper) {
+//         //     case 'UN-NOTIFIED': 
+//         //     case 'UNNOTIFIED': return 1;  // Un-Notified shows FIRST
+//         //     case 'PENDING': return 2;     // Pending shows SECOND
+//         //     case 'APPROVED': return 3;    // Approved shows THIRD
+//         //     case 'REJECTED': return 4;    // Rejected shows FOURTH
+//         //     default: return 5;            // Other statuses show LAST
+//         //   }
+//         // };
+//         const getStatusPriority = (status) => {
+//   const statusUpper = String(status || 'PENDING').toUpperCase();
+//   switch (statusUpper) {
+//     case 'OPEN': return 1;        // OPEN shows FIRST
+//     case 'PENDING': return 2;     // Pending shows SECOND
+//     case 'APPROVED': return 3;    // Approved shows THIRD
+//     case 'REJECTED': return 4;    // Rejected shows FOURTH
+//     default: return 5;            // Other statuses show LAST
+//   }
+// };
 
         
-        aVal = getStatusPriority(a["Status"]);
-        bVal = getStatusPriority(b["Status"]);
+//         aVal = getStatusPriority(a["Status"]);
+//         bVal = getStatusPriority(b["Status"]);
         
-        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
-      }
+//         return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+//       }
       
-      if (sortConfig.key === 'Employee ID' || sortConfig.key === 'Name') {
-        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-        return 0;
-      }
+//       if (sortConfig.key === 'Employee ID' || sortConfig.key === 'Name') {
+//         if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+//         if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+//         return 0;
+//       }
       
-      return 0;
-    });
-  } else {
-    // Default sorting when no sort is applied
-    sorted.sort((a, b) => {
-      let aDate = new Date(a.originalDate || a["Date"]);
-      let bDate = new Date(b.originalDate || b["Date"]);
-      if (isNaN(aDate.getTime())) aDate = new Date(0);
-      if (isNaN(bDate.getTime())) bDate = new Date(0);
-      if (aDate.getTime() !== bDate.getTime()) {
-        return aDate.getTime() - bDate.getTime();
-      }
-      const aEmpId = String(a["Employee ID"] || '').toLowerCase();
-      const bEmpId = String(b["Employee ID"] || '').toLowerCase();
-      return aEmpId.localeCompare(bEmpId);
-    });
-  }
+//       return 0;
+//     });
+//   } else {
+//     // Default sorting when no sort is applied
+//     sorted.sort((a, b) => {
+//       let aDate = new Date(a.originalDate || a["Date"]);
+//       let bDate = new Date(b.originalDate || b["Date"]);
+//       if (isNaN(aDate.getTime())) aDate = new Date(0);
+//       if (isNaN(bDate.getTime())) bDate = new Date(0);
+//       if (aDate.getTime() !== bDate.getTime()) {
+//         return aDate.getTime() - bDate.getTime();
+//       }
+//       const aEmpId = String(a["Employee ID"] || '').toLowerCase();
+//       const bEmpId = String(b["Employee ID"] || '').toLowerCase();
+//       return aEmpId.localeCompare(bEmpId);
+//     });
+//   }
   
-  return sorted;
-};
+//   return sorted;
+// };
 
 //   const handleSort = (key) => {
 //     if (!['Date', 'Employee ID', 'Name'].includes(key)) return;
@@ -11529,15 +11536,91 @@ export default function MainTable() {
 //     }
 //     setSortConfig({ key, direction });
 //   };
-const handleSort = (key) => {
-  if (!['Date', 'Employee ID', 'Name', 'Status'].includes(key)) return;
+// const handleSort = (key) => {
+//   if (!['Date', 'Employee ID', 'Name', 'Status'].includes(key)) return;
   
+//   let direction = 'asc';
+//   if (sortConfig.key === key && sortConfig.direction === 'asc') {
+//     direction = 'desc';
+//   }
+//   setSortConfig({ key, direction });
+// };
+
+const getSortedRows = (rowsToSort) => {
+  let sorted = [...rowsToSort];
+  
+  if (sortConfig.key) {
+    sorted.sort((a, b) => {
+      let aVal, bVal;
+      
+      // Handle different column types
+      if (sortConfig.key === 'Date') {
+        aVal = new Date(a.originalDate || a['Date']);
+        bVal = new Date(b.originalDate || b['Date']);
+        if (isNaN(aVal.getTime())) aVal = new Date(0);
+        if (isNaN(bVal.getTime())) bVal = new Date(0);
+        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+      } 
+      else if (sortConfig.key === 'Hours') {
+        // Parse numeric hours for proper sorting
+        aVal = parseFloat(a[sortConfig.key]) || 0;
+        bVal = parseFloat(b[sortConfig.key]) || 0;
+        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+      else if (sortConfig.key === 'Status') {
+        // Custom priority order for status
+        const getStatusPriority = (status) => {
+          const statusUpper = String(status || 'PENDING').toUpperCase();
+          switch (statusUpper) {
+            case 'OPEN': return 1;
+            case 'PENDING': return 2;
+            case 'APPROVED': return 3;
+            case 'REJECTED': return 4;
+            case 'NOTIFIED': return 5;
+            default: return 6;
+          }
+        };
+        
+        aVal = getStatusPriority(a['Status']);
+        bVal = getStatusPriority(b['Status']);
+        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+      else {
+        // Generic string/text sorting for all other columns
+        aVal = String(a[sortConfig.key] || '').toLowerCase();
+        bVal = String(b[sortConfig.key] || '').toLowerCase();
+        
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      }
+    });
+  } else {
+    // Default sorting when no sort is applied
+    sorted.sort((a, b) => {
+      let aDate = new Date(a.originalDate || a['Date']);
+      let bDate = new Date(b.originalDate || b['Date']);
+      if (isNaN(aDate.getTime())) aDate = new Date(0);
+      if (isNaN(bDate.getTime())) bDate = new Date(0);
+      if (aDate.getTime() !== bDate.getTime()) return aDate.getTime() - bDate.getTime();
+      const aEmpId = String(a['Employee ID'] || '').toLowerCase();
+      const bEmpId = String(b['Employee ID'] || '').toLowerCase();
+      return aEmpId.localeCompare(bEmpId);
+    });
+  }
+  
+  return sorted;
+};
+
+const handleSort = (key) => {
+  // Remove the restriction - allow sorting for ANY column
   let direction = 'asc';
   if (sortConfig.key === key && sortConfig.direction === 'asc') {
     direction = 'desc';
   }
   setSortConfig({ key, direction });
 };
+
 
 //   const getSortIcon = (columnKey) => {
 //     if (!['Date', 'Employee ID', 'Name'].includes(columnKey)) return null;
@@ -11562,14 +11645,25 @@ const handleSort = (key) => {
 //         return { backgroundColor: '#f9fafb', color: '#6b7280', fontWeight: 'normal' };
 //     }
 //   };
+// const getSortIcon = (columnKey) => {
+//   if (!['Date', 'Employee ID', 'Name', 'Status'].includes(columnKey)) return null;
+  
+//   if (sortConfig.key === columnKey) {
+//     return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+//   }
+//   return ' ⇅';
+// };
+
 const getSortIcon = (columnKey) => {
-  if (!['Date', 'Employee ID', 'Name', 'Status'].includes(columnKey)) return null;
+  // Allow sort icons for ALL columns except Select and Notify
+  if (['Select', 'Notify'].includes(columnKey)) return null;
   
   if (sortConfig.key === columnKey) {
-    return sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+    return sortConfig.direction === 'asc' ? '↑' : '↓';
   }
-  return ' ⇅';
+  return '⇅'; // Show sortable indicator for all other columns
 };
+
 
 // const getStatusStyle = (status) => {
 //   const statusUpper = status?.toUpperCase() || "PENDING";
@@ -12086,9 +12180,20 @@ if (searchDate) {
     }
 
      // Add this status filter logic
-  if (searchStatus.trim()) {
+//   if (searchStatus.trim()) {
+//     filtered = filtered.filter(row => 
+//       row['Status'].toLowerCase().includes(searchStatus.trim().toLowerCase())
+//     );
+//   }
+const selectedStatuses = Object.entries(statusFilters)
+    .filter(([status, checked]) => checked)
+    .map(([status]) => status);
+
+  if (selectedStatuses.length > 0) {
     filtered = filtered.filter(row => 
-      row['Status'].toLowerCase().includes(searchStatus.trim().toLowerCase())
+      selectedStatuses.some(status => 
+        row['Status'].toUpperCase().includes(status.toUpperCase())
+      )
     );
   }
     
@@ -13981,13 +14086,30 @@ const handleImportFile = async (e) => {
                 placeholder="Employee Name"
                 className="border border-gray-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
-              <input
+               <div className="flex gap-2 items-center border border-gray-300 rounded px-3 py-1.5">
+    <span className="text-xs font-medium text-gray-600">Status:</span>
+    {Object.entries(statusFilters).map(([status, checked]) => (
+      <label key={status} className="flex items-center gap-1 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => setStatusFilters(prev => ({
+            ...prev,
+            [status]: e.target.checked
+          }))}
+          className="text-xs"
+        />
+        <span className="text-xs">{status}</span>
+      </label>
+    ))}
+  </div>
+              {/* <input
   type="text"
   value={searchStatus}
   onChange={(e) => setSearchStatus(e.target.value)}
   placeholder="Status"
   className="border border-gray-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
-/>
+/> */}
 
             </div>
             {/* <div className="flex gap-2 items-center">
@@ -14114,49 +14236,50 @@ const handleImportFile = async (e) => {
                 <thead style={{ position: "sticky", top: 0, backgroundColor: "#f8fafc", zIndex: 10, borderBottom: "2px solid #e2e8f0" }}>
                   <tr>
                     {columns.map(col => (
-                      <th
-                        key={col}
-                        style={{
-                          border: "1px solid #d1d5db",
-                          padding: "8px",
-                          fontSize: "12px",
-                          minWidth: (col === "Select" || col === "Notify") ? "80px" : `${colWidth}px`,
-                          fontWeight: "bold",
-                          color: "#1e40af",
-                          textAlign: "center",
-                          whiteSpace: "nowrap",
-                          backgroundColor: "#f1f5f9",
-                          cursor: ['Date', 'Employee ID', 'Name'].includes(col) ? "pointer" : "default",
-                          userSelect: "none"
-                        }}
-                        onClick={() => ['Date', 'Employee ID', 'Name', 'Status'].includes(col) && handleSort(col)}
-                      >
-                        {col === "Select" && isUser ? (
-                          <div style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
-                            <input
-                              type="checkbox"
-                              checked={selectAll}
-                              onChange={e => handleSelectAll(e.target.checked)}
-                              className="cursor-pointer"
-                              disabled={!hasPendingRows}
-                            />
-                            <span style={{ fontSize: "11px", fontWeight: "normal" }}>All</span>
-                          </div>
-                        ) : col === "Notify" && isAdmin ? (
-                          <div style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
-                            <input
-                              type="checkbox"
-                              checked={notifySelectAll}
-                              onChange={e => handleNotifySelectAll(e.target.checked)}
-                              className="cursor-pointer"
-                            //   disabled={row.isNotified || row.status === 'notified' || row["Status"] === 'NOTIFIED'}
-                            />
-                            <span style={{ fontSize: "11px", fontWeight: "normal" }}>All</span>
-                          </div>
-                        ) : (
-                          <span>{col}{getSortIcon(col)}</span>
-                        )}
-                      </th>
+                     <th
+  key={col}
+  style={{
+    border: "1px solid #d1d5db",
+    padding: "8px",
+    fontSize: "12px",
+    minWidth: (col === "Select" || col === "Notify") ? "80px" : `${colWidth}px`,
+    fontWeight: "bold",
+    color: "#1e40af",
+    textAlign: "center",
+    whiteSpace: "nowrap",
+    backgroundColor: "#f1f5f9",
+    cursor: (['Select', 'Notify'].includes(col)) ? "default" : "pointer", // All columns except Select/Notify are clickable
+    userSelect: "none"
+  }}
+  onClick={() => !['Select', 'Notify'].includes(col) && handleSort(col)} // Allow sorting on ALL columns except Select/Notify
+>
+  {col === "Select" && isUser ? (
+    <div style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
+      <input
+        type="checkbox"
+        checked={selectAll}
+        onChange={e => handleSelectAll(e.target.checked)}
+        className="cursor-pointer"
+        disabled={!hasPendingRows}
+      />
+      <span style={{ fontSize: "11px", fontWeight: "normal" }}>All</span>
+    </div>
+  ) : col === "Notify" && isAdmin ? (
+    <div style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>
+      <input
+        type="checkbox"
+        checked={notifySelectAll}
+        onChange={e => handleNotifySelectAll(e.target.checked)}
+        className="cursor-pointer"
+        // disabled={row.isNotified || row.status === 'notified' || row["Status"] === 'NOTIFIED'}
+      />
+      <span style={{ fontSize: "11px", fontWeight: "normal" }}>All</span>
+    </div>
+  ) : (
+    <span>{col}{getSortIcon(col)}</span>
+  )}
+</th>
+
                     ))}
                   </tr>
                 </thead>
