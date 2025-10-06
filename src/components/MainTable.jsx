@@ -11332,13 +11332,17 @@ export default function MainTable() {
   const [searchDate, setSearchDate] = useState('');
   const [searchEmployeeId, setSearchEmployeeId] = useState('');
   const [searchEmployeeName, setSearchEmployeeName] = useState('');
-  const [statusFilters, setStatusFilters] = useState({
-  OPEN: false,
-  PENDING: false,
-  REJECTED: false,
+  // Remove the old statusFilters state and replace with this:
+  const [statusFilters, setStatusFilters] = useState({});
+
+//   const [statusFilters, setStatusFilters] = useState({
+//   OPEN: false,
+//   PENDING: false,
 //   APPROVED: false,
-//   NOTIFIED: false
-});
+//   REJECTED: false,
+ 
+// //   NOTIFIED: false
+// });
 //   const [searchStatus, setSearchStatus] = useState('');
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -11353,6 +11357,24 @@ export default function MainTable() {
   const columns = isAdmin ? columnsAdmin : columnsViewer;
   const colWidth = 120;
   const minTableWidth = columns.length * colWidth;
+
+  // Initialize status filters based on user role
+useEffect(() => {
+  if (isAdmin) {
+    setStatusFilters({
+      OPEN: false,
+      PENDING: false,
+      REJECTED: false
+    });
+  } else if (isUser) {
+    setStatusFilters({
+      APPROVED: false,
+      PENDING: false,
+      REJECTED: false
+    });
+  }
+}, [isAdmin, isUser, currentUser]); // Re-run when user role changes
+
 
   // Format date to MM/DD/YYYY with leading zeros
   const formatDate = (dateString) => {
