@@ -11334,6 +11334,10 @@ export default function MainTable() {
   const [searchEmployeeName, setSearchEmployeeName] = useState('');
   // Remove the old statusFilters state and replace with this:
   const [statusFilters, setStatusFilters] = useState({});
+  const [importLoading, setImportLoading] = useState(false);
+  const [notifyLoading, setNotifyLoading] = useState(false);
+  const [approveLoading, setApproveLoading] = useState(false);
+  const [rejectLoading, setRejectLoading] = useState(false);
 
 //   const [statusFilters, setStatusFilters] = useState({
 //   OPEN: false,
@@ -12235,7 +12239,8 @@ const selectedStatuses = Object.entries(statusFilters)
   const handleImportClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (actionLoading) return;
+    // if (actionLoading) return;
+     if (importLoading) return;
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
@@ -13570,7 +13575,8 @@ const handleImportFile = async (e) => {
   const formData = new FormData();
   formData.append('file', file);
   try {
-    setActionLoading(true);
+    // setActionLoading(true);
+    setImportLoading(true);
     let projectId = null;
     try {
       const pendingResponse = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals');
@@ -13707,7 +13713,8 @@ const handleImportFile = async (e) => {
     console.error('Import error:', error);
     showToast('Import failed. Please try again.', "error");
   } finally {
-    setActionLoading(false);
+    // setActionLoading(false);
+     setImportLoading(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -13823,10 +13830,137 @@ const handleImportFile = async (e) => {
 //   }
 // };
 
+// const handleNotifyClick = async (e) => {
+//   e.preventDefault();
+//   e.stopPropagation();
+// //   if (actionLoading) return;
+//  if (notifyLoading) return;
+  
+//   if (selectedNotifyRows.length === 0) {
+//     showToast('Please select at least one timesheet to notify.', "warning");
+//     return;
+//   }
+  
+//   try {
+//     // setActionLoading(true);
+//     setNotifyLoading(true);
+//     const requestBody = selectedNotifyRows.map(row => ({
+//       requestType: "TIMESHEET",
+//       requesterId: 1,
+//       timesheetId: row.id,
+//       ProjectId: row["Project ID"],
+//       requestData: `Notification for timesheet ${row.id}`
+//     }));
+    
+//     const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(requestBody)
+//     });
+    
+//     if (response.ok) {
+//       showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
+      
+//       // **FIX: Update status in real-time without page reload**
+//       const notifiedIds = selectedNotifyRows.map(row => row.id);
+//       setRows(prevRows => prevRows.map(row => 
+//         notifiedIds.includes(row.id) 
+//           ? { 
+//               ...row, 
+//               status: "notified", 
+//               "Status": "NOTIFIED", 
+//               isNotified: true, 
+//             //   notifySelected: false 
+//             }
+//           : row
+//       ));
+      
+//       // Clear selections
+//       setSelectedNotifyRows([]);
+//       setNotifySelectAll(false);
+      
+//       // **Optional: Refresh data after a short delay to sync with server**
+//     //   setTimeout(() => {
+//     //     fetchData();
+//     //   }, 1000);
+      
+//     } else {
+//       showToast('Failed to send notifications. Please try again.', "error");
+//     }
+//   } catch (error) {
+//     showToast('Failed to send notifications. Please try again.', "error");
+//   } finally {
+//     // setActionLoading(false);
+//     setNotifyLoading(false);
+//   }
+// };
+
+// const handleNotifyClick = async (e) => {
+//   e.preventDefault();
+//   e.stopPropagation();
+//   if (actionLoading) return;
+  
+//   if (selectedNotifyRows.length === 0) {
+//     showToast('Please select at least one timesheet to notify.', "warning");
+//     return;
+//   }
+  
+//   try {
+//     setActionLoading(true);
+//     const requestBody = selectedNotifyRows.map(row => ({
+//       requestType: "TIMESHEET",
+//       requesterId: 1,
+//       timesheetId: row.id,
+//       ProjectId: row["Project ID"],
+//       requestData: `Notification for timesheet ${row.id}`
+//     }));
+    
+//     const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(requestBody)
+//     });
+    
+//     if (response.ok) {
+//       showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
+      
+//       // **FIX: Update status in real-time without page reload**
+//       const notifiedIds = selectedNotifyRows.map(row => row.id);
+//       setRows(prevRows => prevRows.map(row => 
+//         notifiedIds.includes(row.id) 
+//           ? { 
+//               ...row, 
+//               status: "notified", 
+//               "Status": "NOTIFIED", 
+//               isNotified: true, 
+//               notifySelected: false 
+//             }
+//           : row
+//       ));
+      
+//       // Clear selections
+//       setSelectedNotifyRows([]);
+//       setNotifySelectAll(false);
+      
+//       // **Optional: Refresh data after a short delay to sync with server**
+//     //   setTimeout(() => {
+//     //     fetchData();
+//     //   }, 1000);
+      
+//     } else {
+//       showToast('Failed to send notifications. Please try again.', "error");
+//     }
+//   } catch (error) {
+//     showToast('Failed to send notifications. Please try again.', "error");
+//   } finally {
+//     setActionLoading(false);
+//   }
+// };
+
 const handleNotifyClick = async (e) => {
   e.preventDefault();
   e.stopPropagation();
-  if (actionLoading) return;
+  if (notifyLoading) return;
   
   if (selectedNotifyRows.length === 0) {
     showToast('Please select at least one timesheet to notify.', "warning");
@@ -13834,7 +13968,7 @@ const handleNotifyClick = async (e) => {
   }
   
   try {
-    setActionLoading(true);
+    setNotifyLoading(true);
     const requestBody = selectedNotifyRows.map(row => ({
       requestType: "TIMESHEET",
       requesterId: 1,
@@ -13852,28 +13986,13 @@ const handleNotifyClick = async (e) => {
     if (response.ok) {
       showToast(`Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`, "success");
       
-      // **FIX: Update status in real-time without page reload**
-      const notifiedIds = selectedNotifyRows.map(row => row.id);
-      setRows(prevRows => prevRows.map(row => 
-        notifiedIds.includes(row.id) 
-          ? { 
-              ...row, 
-              status: "notified", 
-              "Status": "NOTIFIED", 
-              isNotified: true, 
-              notifySelected: false 
-            }
-          : row
-      ));
-      
-      // Clear selections
+      // **FIX: DON'T update the status - keep original behavior**
+      // Just clear selections and let the data remain as is
       setSelectedNotifyRows([]);
       setNotifySelectAll(false);
       
-      // **Optional: Refresh data after a short delay to sync with server**
-      setTimeout(() => {
-        fetchData();
-      }, 1000);
+      // **Optional: Show temporary visual feedback without changing status**
+    //   showToast('Notification sent!', "info");
       
     } else {
       showToast('Failed to send notifications. Please try again.', "error");
@@ -13881,9 +14000,11 @@ const handleNotifyClick = async (e) => {
   } catch (error) {
     showToast('Failed to send notifications. Please try again.', "error");
   } finally {
-    setActionLoading(false);
+    setNotifyLoading(false);
   }
 };
+
+
 
   const handleNotifyRowSelect = (rowIndex, isSelected) => {
 
@@ -13995,7 +14116,8 @@ const handleNotifyClick = async (e) => {
   };
 
   const performBulkApprove = async (reason) => {
-    setActionLoading(true);
+    // setActionLoading(true);
+     setApproveLoading(true);
     try {
       const requestBody = buildBulkRequestBody(selectedRows, 'approve', reason, userIpAddress);
       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkApprove', {
@@ -14014,12 +14136,14 @@ const handleNotifyClick = async (e) => {
     } catch (error) {
       showToast('Failed to approve timesheets. Please check your connection.', "error");
     } finally {
-      setActionLoading(false);
+    //   setActionLoading(false);
+    setApproveLoading(false);
     }
   };
 
   const performBulkReject = async (reason) => {
-    setActionLoading(true);
+    // setActionLoading(true);
+     setRejectLoading(true); 
     try {
       const requestBody = buildBulkRequestBody(selectedRows, 'reject', reason, userIpAddress);
       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkReject', {
@@ -14038,7 +14162,8 @@ const handleNotifyClick = async (e) => {
     } catch (error) {
       showToast('Failed to reject timesheets. Please check your connection.', "error");
     } finally {
-      setActionLoading(false);
+    //   setActionLoading(false);
+    setRejectLoading(false);
     }
   };
 
@@ -14252,17 +14377,17 @@ const handleNotifyClick = async (e) => {
                   <>
                     <button
                       onClick={handleBulkApproveClick}
-                      disabled={actionLoading || selectedRows.length === 0}
+                      disabled={approveLoading || selectedRows.length === 0}
                       className="bg-green-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-green-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {actionLoading ? "Processing..." : `Approve (${selectedRows.length})`}
+                     {approveLoading ? 'Processing...' : `Approve (${selectedRows.length})`}
                     </button>
                     <button
                       onClick={handleBulkRejectClick}
-                      disabled={actionLoading || selectedRows.length === 0}
+                     disabled={rejectLoading || selectedRows.length === 0}
                       className="bg-red-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-red-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {actionLoading ? "Processing..." : `Reject (${selectedRows.length})`}
+                      {rejectLoading ? 'Processing...' : `Reject (${selectedRows.length})`}
                     </button>
                   </>
                 )}
@@ -14271,8 +14396,10 @@ const handleNotifyClick = async (e) => {
                 {isAdmin && (
                   <>
                     <button
+                    type="button"
                       onClick={handleNotifyClick}
-                      disabled={actionLoading || selectedNotifyRows.length === 0}
+                    //   disabled={actionLoading || selectedNotifyRows.length === 0}
+                    disabled={notifyLoading || selectedNotifyRows.length === 0}
                       className="bg-orange-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-orange-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {actionLoading ? "Sending..." : `Notify (${selectedNotifyRows.length})`}
@@ -14280,10 +14407,10 @@ const handleNotifyClick = async (e) => {
                     <button
                       onClick={handleImportClick}
                       type="button"
-                      disabled={actionLoading}
+                      disabled={importLoading}
                       className="bg-blue-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-blue-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {actionLoading ? "Processing..." : "Import"}
+                     {importLoading ? 'Processing...' : 'Import'}
                     </button>
                     <input
                       ref={fileInputRef}
