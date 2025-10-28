@@ -2818,7 +2818,7 @@ export default function ExportTable() {
     if (!userLoaded || !currentUser) return;
     try {
       setLoading(true);
-      const apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=ALL&status=APPROVED";
+      const apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved";
       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const apiData = await response.json();
