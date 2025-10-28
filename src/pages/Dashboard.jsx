@@ -305,7 +305,7 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                  Timesheet Approval Workflow
+                  Timesheets
                 </h1>
                 <p className="text-gray-500 text-sm">
                   Choose an option from the menu

@@ -1182,7 +1182,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             sidebarOpen ? "opacity-100" : "opacity-0 hidden"
           }`}
         >
-          TimeTracker
+          Timesheets
         </span>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}

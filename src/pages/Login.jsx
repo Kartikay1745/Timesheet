@@ -40,7 +40,7 @@ export default function Login() {
   const location = useLocation();
   const urlParams = useURLParams();
 
-  const userSuggestions = ["john.doe", "jane.smith"];
+  // const userSuggestions = ["john.doe", "jane.smith"];
 
   // Effect to set username from URL parameter
   useEffect(() => {
@@ -178,7 +178,7 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-indigo-900 to-blue-950">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-xs relative">
         <h2 className="text-xl font-bold text-center mb-6 text-blue-900">
-           Timesheet Approval Workflow
+           Timesheets
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="relative">
