@@ -13,7 +13,11 @@ export default function UserTable() {
       <div className="flex-1 flex flex-col items-center justify-start pt-8">
         <div className="w-full flex flex-col items-center">
           <div className="border border-gray-300 rounded bg-white shadow"
-               style={{ marginLeft: 24, marginRight: 24, width: "calc(100vw - 220px)", minWidth: 300, padding: "0.5rem", minHeight: "220px", maxHeight: "70vh", overflow: "hidden", marginBottom: "0px" }}>
+               style={{ 
+                // marginLeft: 24, 
+                // marginRight: 24, 
+                // width: "calc(100vw - 220px)", 
+                minWidth: 300, padding: "0.5rem", minHeight: "220px", maxHeight: "70vh", overflow: "hidden", marginBottom: "0px" }}>
             <div
               style={{
                 overflowX: "auto",

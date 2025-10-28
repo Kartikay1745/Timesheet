@@ -15,9 +15,9 @@ export default function WorkFlow() {
           <div
             className="border border-gray-300 rounded bg-white shadow"
             style={{
-              marginLeft: 24,
-              marginRight: 24,
-              width: "calc(100vw - 220px)",
+              // marginLeft: 24,
+              // marginRight: 24,
+              // width: "calc(100vw - 220px)",
               minWidth: 300,
               padding: "0.5rem",
               minHeight: "220px",
