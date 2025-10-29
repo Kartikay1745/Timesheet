@@ -30,12 +30,10 @@ const AboutPage = ({ handleLogout }) => {
         <div className="text-center mb-8">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                    About TimeTracker {/* Updated Title */}
+                 Timesheets {/* Updated Title */}
                 </span>
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-                An integrated platform designed to simplify timesheet submission, approval workflows, and provide management tools for your organization. {/* Updated Description */}
-            </p>
+            
         </div>
 
         {/* Key Features Section (similar to reference, using Timesheet icons) */}

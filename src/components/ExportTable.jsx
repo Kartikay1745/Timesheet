@@ -3228,7 +3228,7 @@ const handleRowSelect = (rowIndex, isSelected) => {
         <div className="w-full flex flex-col items-center">
 
          {/* --- Improved Header Section with Logo --- */}
-          <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-white border-b border-gray-200 shadow-sm rounded-t-lg">
+          <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-gray-800 border-b border-gray-200 shadow-sm rounded-t-lg">
             
             {/* Left: Page Title (1/3 width) */}
             <div className="w-1/3">
@@ -3264,7 +3264,7 @@ const handleRowSelect = (rowIndex, isSelected) => {
 
           {/* --- Improved Filters Section --- */}
           <div
-            className="w-full bg-white p-4 rounded-lg shadow border border-gray-200 mb-4 flex flex-wrap items-center justify-between gap-4"
+            className="w-full bg-gray-800 p-4 rounded-lg shadow border border-gray-200 mb-4 flex flex-wrap items-center justify-between gap-4"
           >
             {/* Left side: Search Inputs */}
             <div className="flex flex-wrap items-center gap-3">
@@ -3318,7 +3318,7 @@ const handleRowSelect = (rowIndex, isSelected) => {
           {/* --- End of Improved Filters Section --- */}
 
           <div
-            className="border border-gray-300 rounded bg-white shadow"
+            className="border border-gray-300 rounded bg-gray-800 shadow"
             style={{
               width: "100%",
               maxWidth: "none",

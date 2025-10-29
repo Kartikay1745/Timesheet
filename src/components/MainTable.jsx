@@ -4101,11 +4101,11 @@ const handleSelectAll = (isSelected) => {
         <div className="w-full flex flex-col items-center">
 
           {/* --- Improved Header Section with Logo --- */}
-          <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-white border-b border-gray-200 shadow-sm rounded-t-lg">
+          <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-gray-800 border-b border-gray-200 shadow-sm rounded-t-lg">
             
             {/* Left: Welcome Message (1/3 width) */}
             <div className="w-1/3">
-              <h1 className="text-xl font-semibold text-gray-800">
+              <h1 className="text-xl font-semibold text-white">
                 Welcome, <span className="font-bold text-blue-600">{currentUser?.name}</span>
               </h1>
             </div>
@@ -4140,7 +4140,7 @@ const handleSelectAll = (isSelected) => {
 
           {/* --- Improved Filters Section (Single Line) --- */}
           <div
-            className="w-full bg-white p-4 rounded-lg shadow border border-gray-200 mb-4 flex flex-wrap items-center gap-3"
+            className="w-full bg-gray-800 p-4 rounded-lg shadow border border-gray-200 mb-4 flex flex-wrap items-center gap-3"
           >
             {/* --- Global Search --- */}
             <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
@@ -4248,7 +4248,7 @@ const handleSelectAll = (isSelected) => {
 
           {/* --- Table Container Card --- */}
           <div
-            className="border border-gray-300 rounded bg-white shadow w-full" // Added w-full
+            className="border border-gray-300 rounded bg-gray-800 shadow w-full" // Added w-full
             style={{
               maxWidth: "none",
               minWidth: 300,
