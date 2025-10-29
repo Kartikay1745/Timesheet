@@ -4319,7 +4319,8 @@ const handleSelectAll = (isSelected) => {
                 width: "100%",     // Take full width of parent
                 flex: "1 1 auto",  // Grow and shrink appropriately
                 border: "1px solid #e5e7eb",
-                borderRadius: "4px"
+                borderRadius: "4px",
+                maxHeight: "700px"
               }}
             >
               <table

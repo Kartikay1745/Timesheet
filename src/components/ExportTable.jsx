@@ -2680,7 +2680,8 @@ export default function ExportTable() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(new Set()); // Use a Set for IDs
   const [selectAll, setSelectAll] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoaded, setUserLoaded] = useState(false);
@@ -2827,6 +2828,7 @@ export default function ExportTable() {
         id: item.timesheetId || item.id || `fallback-${index}`,
         requestId: item.requestId || item.id,
         levelNo: item.levelNo || 1,
+        originalItem: item, // <-- ADD THIS LINE to store the raw API object
         selected: false,
         originalDate: item.timesheetDate,
         "Date": formatDate(item.timesheetDate),
@@ -2886,62 +2888,303 @@ export default function ExportTable() {
     navigate("/");
   };
 
-  const handleRowSelect = (rowIndex, isSelected) => {
-    const updatedRows = [...rows];
-    const actualRowIndex = rows.findIndex(row => row.id === filteredRows[rowIndex].id);
-    updatedRows[actualRowIndex].selected = isSelected;
-    setRows(updatedRows);
-    const rowData = filteredRows[rowIndex];
+  // const handleRowSelect = (rowIndex, isSelected) => {
+  //   const updatedRows = [...rows];
+  //   const actualRowIndex = rows.findIndex(row => row.id === filteredRows[rowIndex].id);
+  //   updatedRows[actualRowIndex].selected = isSelected;
+  //   setRows(updatedRows);
+  //   const rowData = filteredRows[rowIndex];
+  //   if (isSelected) {
+  //     setSelectedRows(prev => [...prev, rowData]);
+  //   } else {
+  //     setSelectedRows(prev => prev.filter(item => item.id !== rowData.id));
+  //     setSelectAll(false);
+  //   }
+  // };
+const handleRowSelect = (rowIndex, isSelected) => {
+  const rowData = filteredRows[rowIndex];
+  const rowId = rowData.id;
+
+  // Update the visual state in the main 'rows' array
+  const updatedRows = rows.map(row =>
+    row.id === rowId ? { ...row, selected: isSelected } : row
+  );
+  setRows(updatedRows);
+
+  // Update the Set of selected IDs
+  setSelectedRows(prev => {
+    const newSet = new Set(prev);
     if (isSelected) {
-      setSelectedRows(prev => [...prev, rowData]);
+      newSet.add(rowId);
     } else {
-      setSelectedRows(prev => prev.filter(item => item.id !== rowData.id));
-      setSelectAll(false);
+      newSet.delete(rowId);
     }
-  };
+    return newSet;
+  });
+
+  // Uncheck "Select All" if any item is deselected
+  if (!isSelected) {
+    setSelectAll(false);
+  }
+};
+
+
+  // const handleSelectAll = (isSelected) => {
+  //   setSelectAll(isSelected);
+  //   const updatedRows = [...rows];
+  //   filteredRows.forEach(filteredRow => {
+  //     const actualRowIndex = rows.findIndex(row => row.id === filteredRow.id);
+  //     if (actualRowIndex !== -1) updatedRows[actualRowIndex].selected = isSelected;
+  //   });
+  //   setRows(updatedRows);
+  //   setSelectedRows(isSelected ? [...filteredRows] : []);
+  // };
 
   const handleSelectAll = (isSelected) => {
-    setSelectAll(isSelected);
-    const updatedRows = [...rows];
-    filteredRows.forEach(filteredRow => {
-      const actualRowIndex = rows.findIndex(row => row.id === filteredRow.id);
-      if (actualRowIndex !== -1) updatedRows[actualRowIndex].selected = isSelected;
-    });
-    setRows(updatedRows);
-    setSelectedRows(isSelected ? [...filteredRows] : []);
-  };
+  setSelectAll(isSelected);
 
-  const handleExportClick = async () => {
-    if (selectedRows.length === 0) {
-      showToast("Please select at least one row to export.", "warning");
+  // Create a Set of IDs for the currently filtered rows
+  const filteredRowIds = new Set(filteredRows.map(row => row.id));
+
+  // Update the visual state in the main 'rows' array
+  const updatedRows = rows.map(row => {
+     // Only change selection if the row is currently visible
+    if (filteredRowIds.has(row.id)) {
+       return { ...row, selected: isSelected };
+    }
+    return row; // Keep others as they are
+  });
+  setRows(updatedRows);
+
+  // Update the Set of selected IDs - only add currently filtered rows
+  setSelectedRows(isSelected ? filteredRowIds : new Set());
+};
+
+  // const handleExportClick = async () => {
+  //   if (selectedRows.length === 0) {
+  //     showToast("Please select at least one row to export.", "warning");
+  //     return;
+  //   }
+  //   setActionLoading(true);
+  //   try {
+  //     const timesheetIds = selectedRows.map(row => row.id);
+  //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-to-csv', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(timesheetIds)
+  //     });
+  //     if (response.ok) {
+  //       const blob = await response.blob();
+  //       const url = window.URL.createObjectURL(blob);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  //       a.download = `Exported_Timesheets_${timestamp}.csv`;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       a.remove();
+  //       window.URL.revokeObjectURL(url);
+  //       showToast("Exported successfully!", "success");
+  //     } else {
+  //       const errorText = await response.text();
+  //       showToast(`Export failed: ${errorText}`, "error");
+  //     }
+  //   } catch (error) {
+  //     showToast("An error occurred during export. Please try again.", "error");
+  //   } finally {
+  //     setActionLoading(false);
+  //   }
+  // };
+
+  // const handleExportClick = async (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   if (actionLoading) return;
+
+  //   if (selectedRows.size === 0) {
+  //     showToast('Please select at least one timesheet to export', 'warning');
+  //     return;
+  //   }
+
+  //   try {
+  //     setActionLoading(true);
+
+  //     // Get selected row data
+  //     const selectedData = filteredRows.filter(row => selectedRows.has(row.id));
+
+  //     if (selectedData.length === 0) {
+  //       showToast('No selected data to export', 'warning');
+  //       return;
+  //     }
+
+  //     // Prepare payload with selected row data
+  //     const payload = {
+  //       selectedTimesheets: selectedData.map(row => row.originalItem), // Send original API data
+  //       exportRequest: {
+  //         requestedBy: currentUser?.username || currentUser?.id || 'admin',
+  //         requestDate: new Date().toISOString(),
+  //         totalRecords: selectedData.length,
+  //         filters: {
+  //           date: searchDate || null,
+  //           employeeId: searchEmployeeId || null,
+  //           employeeName: searchEmployeeName || null,
+  //         }
+  //       }
+  //     };
+
+  //     // Send POST request with selected data
+  //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(payload.selectedTimesheets)
+  //     });
+
+  //     if (response.ok) {
+  //       const contentType = response.headers.get('content-type');
+  //       if (contentType && contentType.includes('text/csv')) {
+  //         const csvData = await response.text();
+  //         const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+  //         const url = window.URL.createObjectURL(blob);
+  //         const a = document.createElement('a');
+  //         a.href = url;
+  //         a.download = `exported_selected_timesheets_${new Date().toISOString().split('T')[0]}.csv`;
+  //         document.body.appendChild(a);
+  //         a.click();
+  //         a.remove();
+  //         window.URL.revokeObjectURL(url);
+  //         showToast(`Exported ${selectedData.length} selected timesheets successfully`, 'success');
+  //       } else {
+  //         const csvHeaders = columnsExport.join(',');
+  //         const csvRows = selectedData.map(row =>
+  //           columnsExport.map(col => {
+  //             const value = row[col] || '';
+  //             return `"${String(value).replace(/"/g, '""')}"`;
+  //           }).join(',')
+  //         );
+  //         const csvContent = [csvHeaders, ...csvRows].join('\n');
+  //         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  //         const url = window.URL.createObjectURL(blob);
+  //         const a = document.createElement('a');
+  //         a.href = url;
+  //         a.download = `exported_selected_timesheets_${new Date().toISOString().split('T')[0]}.csv`;
+  //         document.body.appendChild(a);
+  //         a.click();
+  //         a.remove();
+  //         window.URL.revokeObjectURL(url);
+  //         showToast(`Exported ${selectedData.length} selected timesheets successfully`, 'success');
+  //       }
+  //     } else {
+  //       throw new Error(`Export API failed with status: ${response.status}`);
+  //     }
+  //   } catch (error) {
+  //     console.error('Export error:', error);
+  //     showToast('Export failed. Please try again.', 'error');
+  //   } finally {
+  //     setActionLoading(false);
+  //   }
+  // };
+  const handleExportClick = async (e) => {
+    // e.preventDefault(); // Not needed if button type="button"
+    // e.stopPropagation(); // Not usually needed here
+    if (actionLoading) return;
+
+    if (selectedRows.size === 0) { // Check size of the Set
+      showToast('Please select at least one timesheet to export', 'warning');
       return;
     }
-    setActionLoading(true);
+
     try {
-      const timesheetIds = selectedRows.map(row => row.id);
-      const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-to-csv', {
+      setActionLoading(true);
+
+      // Get selected row data by filtering the main 'rows' array using the IDs in the Set
+      const selectedData = rows.filter(row => selectedRows.has(row.id));
+
+      if (selectedData.length === 0) {
+        // This check might be redundant if selectedRows.size > 0, but good for safety
+        showToast('No selected data found to export', 'warning');
+        return;
+      }
+
+      // Prepare payload - Sending ONLY the original items as per your code structure
+      const payloadToSend = selectedData.map(row => row.originalItem); // Send original API data stored earlier
+
+      // Optional: If you needed the extra metadata payload structure from your example:
+      // const fullPayload = {
+      //   selectedTimesheets: payloadToSend,
+      //   exportRequest: {
+      //     requestedBy: currentUser?.username || currentUser?.id || 'admin',
+      //     requestDate: new Date().toISOString(),
+      //     totalRecords: selectedData.length,
+      //     filters: {
+      //       date: searchDate || null,
+      //       employeeId: searchEmployeeId || null,
+      //       employeeName: searchEmployeeName || null,
+      //     }
+      //   }
+      // };
+
+      // Send POST request with selected original data items
+      const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', { // Note: Endpoint changed slightly in your example
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timesheetIds)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payloadToSend) // Sending the array of original items
       });
+
       if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        a.download = `Exported_Timesheets_${timestamp}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-        showToast("Exported successfully!", "success");
+        const contentType = response.headers.get('content-type');
+        // Check if API returned CSV data directly
+        if (contentType && contentType.includes('text/csv')) {
+          const csvData = await response.text();
+          const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `exported_selected_timesheets_${new Date().toISOString().split('T')[0]}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          showToast(`Exported ${selectedData.length} selected timesheets successfully`, 'success');
+        } else {
+          // Fallback: Generate CSV locally from the selected (formatted) data
+          // This part uses the formatted data shown in the table, not necessarily the originalItem
+          console.warn("API did not return CSV, generating fallback CSV locally.");
+          const csvHeaders = columnsExport.filter(col => col !== 'Select').join(','); // Exclude 'Select' column header
+          const csvRows = selectedData.map(row =>
+            columnsExport
+              .filter(col => col !== 'Select') // Exclude 'Select' column data
+              .map(col => {
+                const value = row[col] || '';
+                // Basic CSV escaping: double quotes for values containing comma, newline, or double quote
+                const escaped = String(value).replace(/"/g, '""');
+                 return /[",\n\r]/.test(escaped) ? `"${escaped}"` : escaped;
+              }).join(',')
+          );
+          const csvContent = [csvHeaders, ...csvRows].join('\n');
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `exported_selected_timesheets_fallback_${new Date().toISOString().split('T')[0]}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          showToast(`Exported ${selectedData.length} selected timesheets successfully (local fallback)`, 'success');
+        }
       } else {
-        const errorText = await response.text();
-        showToast(`Export failed: ${errorText}`, "error");
+         const errorText = await response.text();
+         console.error('Export API Error:', errorText);
+         showToast(`Export API failed: ${errorText || response.statusText}`, 'error');
+        // throw new Error(`Export API failed with status: ${response.status}`); // Optionally throw
       }
     } catch (error) {
-      showToast("An error occurred during export. Please try again.", "error");
+      console.error('Export error:', error);
+      showToast('Export failed. Please try again.', 'error');
     } finally {
       setActionLoading(false);
     }
@@ -3095,7 +3338,8 @@ export default function ExportTable() {
                 disabled={actionLoading || selectedRows.length === 0}
                 className="bg-blue-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-blue-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {actionLoading ? "Exporting..." : `Export Selected (${selectedRows.length})`}
+                {/* {actionLoading ? "Exporting..." : `Export Selected (${selectedRows.length})`} */}
+                {actionLoading ? "Exporting..." : `Export Selected (${selectedRows.size})`}
               </button>
             </div>
 
