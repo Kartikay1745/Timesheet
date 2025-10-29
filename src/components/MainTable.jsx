@@ -4571,7 +4571,7 @@ const columnsAdmin = [
   "Hours",
   "Seq No",
   "Approver Name",
-//   "Approve Timestamp",
+  "Approve Timestamp",
   "Imported By",
 ];
 
@@ -4594,7 +4594,7 @@ const columnsViewer = [
   "Seq No",
   "Comment",
   // "Approver Name",
-//   "Approve Timestamp",
+  "Approve Timestamp",
   "Imported By",
 ];
 
