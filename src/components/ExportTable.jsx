@@ -175,7 +175,7 @@
 // // // //     e.preventDefault();
 // // // //     e.stopPropagation();
 // // // //     if (actionLoading) return;
-    
+
 // // // //     try {
 // // // //       setActionLoading(true);
 // // // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
@@ -261,7 +261,7 @@
 // // // //               </button>
 // // // //             </div>
 // // // //           </div>
-          
+
 // // // //           {/* Filters - Same as Timesheet */}
 // // // //           <div className="flex gap-3 mb-3 items-center" style={{ marginLeft: 24, marginRight: 24, width: "calc(100vw - 220px)" }}>
 // // // //             <div className="flex gap-2">
@@ -316,7 +316,7 @@
 // // // //                 </button>
 // // // //               </div>
 // // // //             </div>
-            
+
 // // // //             <div
 // // // //               style={{
 // // // //                 overflowX: "auto",
@@ -414,7 +414,6 @@
 // // // // import { useState, useEffect } from "react";
 // // // // import { useNavigate } from "react-router-dom";
 
-
 // // // // const showToast = (message, type = 'info') => {
 // // // //   const bgColor = type === 'success' ? '#4ade80'
 // // // //     : type === 'error' ? '#ef4444'
@@ -434,12 +433,10 @@
 // // // //   }, 1000);
 // // // // };
 
-
 // // // // const columnsExport = [
 // // // //   "Date", "Employee ID", "Name", "Fiscal Year", "Period",
 // // // //   "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment", "IP Address"
 // // // // ];
-
 
 // // // // export default function ExportTable() {
 // // // //   const navigate = useNavigate();
@@ -453,12 +450,10 @@
 // // // //   const [selectedRows, setSelectedRows] = useState(new Set());
 // // // //   const [selectAll, setSelectAll] = useState(false);
 
-
 // // // //   const isAdmin = currentUser?.role === "Admin";
 // // // //   const columns = ['Select', ...columnsExport];
 // // // //   const colWidth = 120;
 // // // //   const minTableWidth = columns.length * colWidth;
-
 
 // // // //   // Format date to MM/DD/YYYY with leading zeros
 // // // //   const formatDate = (dateString) => {
@@ -475,14 +470,12 @@
 // // // //     }
 // // // //   };
 
-
 // // // //   const formatHours = (hours) => {
 // // // //     if (!hours && hours !== 0) return '';
 // // // //     const numHours = parseFloat(hours);
 // // // //     if (isNaN(numHours)) return hours;
 // // // //     return numHours.toFixed(2);
 // // // //   };
-
 
 // // // //   const getSortedRows = (rowsToSort) => {
 // // // //     return [...rowsToSort].sort((a, b) => {
@@ -498,7 +491,6 @@
 // // // //       return aEmpId.localeCompare(bEmpId);
 // // // //     });
 // // // //   };
-
 
 // // // //   useEffect(() => {
 // // // //     const userInfo = localStorage.getItem('currentUser');
@@ -520,22 +512,20 @@
 // // // //     }
 // // // //   }, [navigate]);
 
-
 // // // //   useEffect(() => {
 // // // //     if (userLoaded && currentUser) {
 // // // //       fetchExportData();
 // // // //     }
 // // // //   }, [userLoaded, currentUser]);
 
-
 // // // //   const fetchExportData = async () => {
 // // // //     if (!userLoaded || !currentUser) return;
 // // // //     try {
 // // // //       setLoading(true);
 // // // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved`;
-// // // //       const response = await fetch(apiUrl, { 
-// // // //         method: 'GET', 
-// // // //         headers: { 'Content-Type': 'application/json' } 
+// // // //       const response = await fetch(apiUrl, {
+// // // //         method: 'GET',
+// // // //         headers: { 'Content-Type': 'application/json' }
 // // // //       });
 // // // //       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 // // // //       const apiData = await response.json();
@@ -567,7 +557,6 @@
 // // // //     }
 // // // //   };
 
-
 // // // //   const getFilteredRows = () => {
 // // // //     let filtered = rows;
 // // // //     if (!Array.isArray(filtered)) return [];
@@ -592,9 +581,7 @@
 // // // //     return getSortedRows(filtered);
 // // // //   };
 
-
 // // // //   const filteredRows = getFilteredRows();
-
 
 // // // //   // Handle individual row selection
 // // // //   const handleRowSelect = (rowId) => {
@@ -608,7 +595,6 @@
 // // // //     setSelectAll(newSelectedRows.size === filteredRows.length && filteredRows.length > 0);
 // // // //   };
 
-
 // // // //   // Handle select all
 // // // //   const handleSelectAll = () => {
 // // // //     if (selectAll) {
@@ -621,7 +607,6 @@
 // // // //     }
 // // // //   };
 
-
 // // // //   // Update selectAll state when filteredRows change
 // // // //   useEffect(() => {
 // // // //     if (filteredRows.length > 0) {
@@ -632,7 +617,6 @@
 // // // //     }
 // // // //   }, [filteredRows, selectedRows]);
 
-
 // // // //   const handleLogout = () => {
 // // // //     localStorage.removeItem('currentUser');
 // // // //     setCurrentUser(null);
@@ -641,33 +625,32 @@
 // // // //     navigate("/");
 // // // //   };
 
-
 // // // //   const handleExportClick = async (e) => {
 // // // //     e.preventDefault();
 // // // //     e.stopPropagation();
 // // // //     if (actionLoading) return;
-    
+
 // // // //     if (selectedRows.size === 0) {
 // // // //       showToast('Please select at least one timesheet to export', 'warning');
 // // // //       return;
 // // // //     }
-    
+
 // // // //     try {
 // // // //       setActionLoading(true);
-      
+
 // // // //       // Get selected row data
 // // // //       const selectedData = filteredRows.filter(row => selectedRows.has(row.id));
-      
+
 // // // //       // Convert to CSV
 // // // //       const csvHeaders = columnsExport.join(',');
-// // // //       const csvRows = selectedData.map(row => 
+// // // //       const csvRows = selectedData.map(row =>
 // // // //         columnsExport.map(col => {
 // // // //           const value = row[col] || '';
 // // // //           // Escape commas and quotes in CSV
 // // // //           return `"${String(value).replace(/"/g, '""')}"`;
 // // // //         }).join(',')
 // // // //       );
-      
+
 // // // //       const csvContent = [csvHeaders, ...csvRows].join('\n');
 // // // //       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 // // // //       const url = window.URL.createObjectURL(blob);
@@ -678,7 +661,7 @@
 // // // //       a.click();
 // // // //       a.remove();
 // // // //       window.URL.revokeObjectURL(url);
-      
+
 // // // //       showToast(`Exported ${selectedRows.size} selected timesheets successfully`, 'success');
 // // // //     } catch (error) {
 // // // //       showToast('Export failed', 'error');
@@ -686,7 +669,6 @@
 // // // //       setActionLoading(false);
 // // // //     }
 // // // //   };
-
 
 // // // //   // Only show for Admin
 // // // //   if (!userLoaded || !currentUser) {
@@ -701,7 +683,6 @@
 // // // //       </div>
 // // // //     );
 // // // //   }
-
 
 // // // //   if (!isAdmin) {
 // // // //     return (
@@ -718,7 +699,6 @@
 // // // //     );
 // // // //   }
 
-
 // // // //   if (loading) {
 // // // //     return (
 // // // //       <div className="min-h-screen bg-[#f9fafd] flex flex-col pl-44 pr-4">
@@ -731,7 +711,6 @@
 // // // //       </div>
 // // // //     );
 // // // //   }
-
 
 // // // //   return (
 // // // //     <div className="min-h-screen bg-[#f9fafd] flex flex-col pl-44 pr-4 overflow-auto">
@@ -750,7 +729,7 @@
 // // // //               </button>
 // // // //             </div>
 // // // //           </div>
-          
+
 // // // //           {/* Filters */}
 // // // //           <div className="flex gap-3 mb-3 items-center" style={{ marginLeft: 24, marginRight: 24, width: "calc(100vw - 220px)" }}>
 // // // //             <div className="flex gap-2">
@@ -770,7 +749,6 @@
 // // // //               />
 // // // //             </div>
 // // // //           </div>
-
 
 // // // //           <div
 // // // //             className="border border-gray-300 rounded bg-white shadow"
@@ -801,7 +779,7 @@
 // // // //                 </button>
 // // // //               </div>
 // // // //             </div>
-            
+
 // // // //             <div
 // // // //               style={{
 // // // //                 overflowX: "auto",
@@ -918,7 +896,6 @@
 // // // // import { useState, useEffect } from "react";
 // // // // import { useNavigate } from "react-router-dom";
 
-
 // // // // const showToast = (message, type = 'info') => {
 // // // //   const bgColor = type === 'success' ? '#4ade80'
 // // // //     : type === 'error' ? '#ef4444'
@@ -938,12 +915,10 @@
 // // // //   }, 1000);
 // // // // };
 
-
 // // // // const columnsExport = [
 // // // //   "Date", "Employee ID", "Name", "Fiscal Year", "Period",
 // // // //   "Project ID", "PLC", "Pay Type", "Hours", "Seq No", "Comment", "IP Address"
 // // // // ];
-
 
 // // // // export default function ExportTable() {
 // // // //   const navigate = useNavigate();
@@ -957,12 +932,10 @@
 // // // //   const [selectedRows, setSelectedRows] = useState(new Set());
 // // // //   const [selectAll, setSelectAll] = useState(false);
 
-
 // // // //   const isAdmin = currentUser?.role === "Admin";
 // // // //   const columns = ['Select', ...columnsExport];
 // // // //   const colWidth = 120;
 // // // //   const minTableWidth = columns.length * colWidth;
-
 
 // // // //   // Format date to MM/DD/YYYY with leading zeros
 // // // //   const formatDate = (dateString) => {
@@ -979,14 +952,12 @@
 // // // //     }
 // // // //   };
 
-
 // // // //   const formatHours = (hours) => {
 // // // //     if (!hours && hours !== 0) return '';
 // // // //     const numHours = parseFloat(hours);
 // // // //     if (isNaN(numHours)) return hours;
 // // // //     return numHours.toFixed(2);
 // // // //   };
-
 
 // // // //   const getSortedRows = (rowsToSort) => {
 // // // //     return [...rowsToSort].sort((a, b) => {
@@ -1002,7 +973,6 @@
 // // // //       return aEmpId.localeCompare(bEmpId);
 // // // //     });
 // // // //   };
-
 
 // // // //   useEffect(() => {
 // // // //     const userInfo = localStorage.getItem('currentUser');
@@ -1024,22 +994,20 @@
 // // // //     }
 // // // //   }, [navigate]);
 
-
 // // // //   useEffect(() => {
 // // // //     if (userLoaded && currentUser) {
 // // // //       fetchExportData();
 // // // //     }
 // // // //   }, [userLoaded, currentUser]);
 
-
 // // // //   const fetchExportData = async () => {
 // // // //     if (!userLoaded || !currentUser) return;
 // // // //     try {
 // // // //       setLoading(true);
 // // // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved`;
-// // // //       const response = await fetch(apiUrl, { 
-// // // //         method: 'GET', 
-// // // //         headers: { 'Content-Type': 'application/json' } 
+// // // //       const response = await fetch(apiUrl, {
+// // // //         method: 'GET',
+// // // //         headers: { 'Content-Type': 'application/json' }
 // // // //       });
 // // // //       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 // // // //       const apiData = await response.json();
@@ -1071,7 +1039,6 @@
 // // // //     }
 // // // //   };
 
-
 // // // //   const getFilteredRows = () => {
 // // // //     let filtered = rows;
 // // // //     if (!Array.isArray(filtered)) return [];
@@ -1096,9 +1063,7 @@
 // // // //     return getSortedRows(filtered);
 // // // //   };
 
-
 // // // //   const filteredRows = getFilteredRows();
-
 
 // // // //   // Handle individual row selection
 // // // //   const handleRowSelect = (rowId) => {
@@ -1112,7 +1077,6 @@
 // // // //     setSelectAll(newSelectedRows.size === filteredRows.length && filteredRows.length > 0);
 // // // //   };
 
-
 // // // //   // Handle select all
 // // // //   const handleSelectAll = () => {
 // // // //     if (selectAll) {
@@ -1125,7 +1089,6 @@
 // // // //     }
 // // // //   };
 
-
 // // // //   // Update selectAll state when filteredRows change
 // // // //   useEffect(() => {
 // // // //     if (filteredRows.length > 0) {
@@ -1136,7 +1099,6 @@
 // // // //     }
 // // // //   }, [filteredRows, selectedRows]);
 
-
 // // // //   const handleLogout = () => {
 // // // //     localStorage.removeItem('currentUser');
 // // // //     setCurrentUser(null);
@@ -1145,20 +1107,19 @@
 // // // //     navigate("/");
 // // // //   };
 
-
 // // // //   const handleExportClick = async (e) => {
 // // // //     e.preventDefault();
 // // // //     e.stopPropagation();
 // // // //     if (actionLoading) return;
-    
+
 // // // //     if (selectedRows.size === 0) {
 // // // //       showToast('Please select at least one timesheet to export', 'warning');
 // // // //       return;
 // // // //     }
-    
+
 // // // //     try {
 // // // //       setActionLoading(true);
-      
+
 // // // //       // Get the full CSV from the export API
 // // // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
 // // // //         method: 'GET',
@@ -1166,21 +1127,21 @@
 // // // //           'Content-Type': 'application/json',
 // // // //         }
 // // // //       });
-      
+
 // // // //       if (!response.ok) {
 // // // //         throw new Error(`Export API failed with status: ${response.status}`);
 // // // //       }
-      
+
 // // // //       const fullCsvData = await response.text();
-      
+
 // // // //       // Get selected employee IDs for filtering
 // // // //       const selectedData = filteredRows.filter(row => selectedRows.has(row.id));
 // // // //       const selectedEmployeeIds = new Set(selectedData.map(row => row["Employee ID"]));
-      
+
 // // // //       // Parse and filter the CSV data
 // // // //       const csvLines = fullCsvData.split('\n').filter(line => line.trim());
 // // // //       const filteredCsvLines = [];
-      
+
 // // // //       csvLines.forEach(line => {
 // // // //         const columns = line.split(',');
 // // // //         if (columns.length > 1) {
@@ -1190,15 +1151,15 @@
 // // // //           }
 // // // //         }
 // // // //       });
-      
+
 // // // //       if (filteredCsvLines.length === 0) {
 // // // //         showToast('No matching data found in export for selected items', 'warning');
 // // // //         return;
 // // // //       }
-      
+
 // // // //       // Create the filtered CSV content
 // // // //       const filteredCsvContent = filteredCsvLines.join('\n');
-      
+
 // // // //       // Download the filtered CSV
 // // // //       const blob = new Blob([filteredCsvContent], { type: 'text/csv;charset=utf-8;' });
 // // // //       const url = window.URL.createObjectURL(blob);
@@ -1209,7 +1170,7 @@
 // // // //       a.click();
 // // // //       a.remove();
 // // // //       window.URL.revokeObjectURL(url);
-      
+
 // // // //       showToast(`Exported ${filteredCsvLines.length} selected timesheet records successfully`, 'success');
 // // // //     } catch (error) {
 // // // //       console.error('Export error:', error);
@@ -1218,7 +1179,6 @@
 // // // //       setActionLoading(false);
 // // // //     }
 // // // //   };
-
 
 // // // //   // Only show for Admin
 // // // //   if (!userLoaded || !currentUser) {
@@ -1233,7 +1193,6 @@
 // // // //       </div>
 // // // //     );
 // // // //   }
-
 
 // // // //   if (!isAdmin) {
 // // // //     return (
@@ -1250,7 +1209,6 @@
 // // // //     );
 // // // //   }
 
-
 // // // //   if (loading) {
 // // // //     return (
 // // // //       <div className="min-h-screen bg-[#f9fafd] flex flex-col pl-44 pr-4">
@@ -1263,7 +1221,6 @@
 // // // //       </div>
 // // // //     );
 // // // //   }
-
 
 // // // //   return (
 // // // //     <div className="min-h-screen bg-[#f9fafd] flex flex-col pl-44 pr-4 overflow-auto">
@@ -1282,7 +1239,7 @@
 // // // //               </button>
 // // // //             </div>
 // // // //           </div>
-          
+
 // // // //           {/* Filters */}
 // // // //           <div className="flex gap-3 mb-3 items-center" style={{ marginLeft: 24, marginRight: 24, width: "calc(100vw - 220px)" }}>
 // // // //             <div className="flex gap-2">
@@ -1302,7 +1259,6 @@
 // // // //               />
 // // // //             </div>
 // // // //           </div>
-
 
 // // // //           <div
 // // // //             className="border border-gray-300 rounded bg-white shadow"
@@ -1333,7 +1289,7 @@
 // // // //                 </button>
 // // // //               </div>
 // // // //             </div>
-            
+
 // // // //             <div
 // // // //               style={{
 // // // //                 overflowX: "auto",
@@ -1674,7 +1630,7 @@
 
 // // // //       // Get selected row data
 // // // //       const selectedData = filteredRows.filter(row => selectedRows.has(row.id));
-      
+
 // // // //       if (selectedData.length === 0) {
 // // // //         showToast('No selected data to export', 'warning');
 // // // //         return;
@@ -1708,11 +1664,11 @@
 // // // //       if (response.ok) {
 // // // //         // Check if response is CSV (text) or blob
 // // // //         const contentType = response.headers.get('content-type');
-        
+
 // // // //         if (contentType && contentType.includes('text/csv')) {
 // // // //           // Server returns CSV directly
 // // // //           const csvData = await response.text();
-          
+
 // // // //           const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
 // // // //           const url = window.URL.createObjectURL(blob);
 // // // //           const a = document.createElement('a');
@@ -1722,12 +1678,12 @@
 // // // //           a.click();
 // // // //           a.remove();
 // // // //           window.URL.revokeObjectURL(url);
-          
+
 // // // //           showToast(`Exported ${selectedData.length} selected timesheets successfully`, 'success');
 // // // //         } else {
 // // // //           // Server doesn't return CSV, generate client-side
 // // // //           const csvHeaders = columnsExport.join(',');
-// // // //           const csvRows = selectedData.map(row => 
+// // // //           const csvRows = selectedData.map(row =>
 // // // //             columnsExport.map(col => {
 // // // //               const value = row[col] || '';
 // // // //               return `"${String(value).replace(/"/g, '""')}"`;
@@ -1818,7 +1774,7 @@
 // // // //               </button>
 // // // //             </div>
 // // // //           </div>
-          
+
 // // // //           {/* Filters */}
 // // // //           <div className="flex gap-3 mb-3 items-center" style={{ marginLeft: 24, marginRight: 24, width: "calc(100vw - 220px)" }}>
 // // // //             <div className="flex gap-2">
@@ -1868,7 +1824,7 @@
 // // // //                 </button>
 // // // //               </div>
 // // // //             </div>
-            
+
 // // // //             <div
 // // // //               style={{
 // // // //                 overflowX: "auto",
@@ -2011,7 +1967,7 @@
 
 // // // const columnsExport = [
 // // //   "Date", "Employee ID","Timesheet Type Code", "Name", "Fiscal Year", "Period",
-// // //   "Project ID", "PLC", "Pay Type","RLSE Number", 
+// // //   "Project ID", "PLC", "Pay Type","RLSE Number",
 // // // "PO Number",
 // // // "PO Line Number",
 // // //   "Hours", "Seq No", "Comment",
@@ -2468,8 +2424,6 @@
 // // //                 showPopperArrow={false}
 // // //                 autoComplete="off"
 // // //               />
-              
-              
 
 // // //               {/* <input
 // // //                 type="date"
@@ -2641,7 +2595,6 @@
 // // //     </div>
 // // //   );
 // // // }
-
 
 // // import { useState, useEffect, useRef } from "react";
 // // import { useNavigate } from "react-router-dom";
@@ -2927,7 +2880,6 @@
 // //     setSelectAll(false);
 // //   }
 // // };
-
 
 // //   // const handleSelectAll = (isSelected) => {
 // //   //   setSelectAll(isSelected);
@@ -3229,21 +3181,21 @@
 
 // //          {/* --- Improved Header Section with Logo --- */}
 // //           <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-gray-800 border-b border-gray-200 shadow-sm rounded-t-lg">
-            
+
 // //             {/* Left: Page Title (1/3 width) */}
 // //             <div className="w-1/3">
 // //               <h1 className="text-xl font-semibold text-gray-800">
 // //                 Export Approved Timesheets
 // //               </h1>
 // //             </div>
-            
+
 // //             {/* Center: Logo (1/3 width) */}
 // //             <div className="w-1/3 flex justify-center">
 // //               {/* This is the background for your white logo. Use the one you picked (e.g., bg-slate-800) */}
 // //               <div className="bg-slate-800 rounded-md p-2 shadow-inner">
-// //                 <img 
+// //                 <img
 // //                   src="/Columbus_Logo.png"  /* <-- MAKE SURE TO USE YOUR LOGO PATH */
-// //                   alt="Logo" 
+// //                   alt="Logo"
 // //                   className="h-10" /* Adjust height as needed */
 // //                 />
 // //               </div>
@@ -3464,9 +3416,7 @@
 // //   );
 // // }
 
-
-
-// // Stable 1 ends 
+// // Stable 1 ends
 
 // import { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -4416,8 +4366,6 @@
 
 //  STABLE 2 ENDS
 
-
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, X } from "lucide-react";
@@ -4456,17 +4404,18 @@ const columnsExport = [
   "Status",
   "Date",
   "Employee ID",
-  "Timesheet Type Code",
   "Name",
+  "Timesheet Type Code",
+
   "Approver Name",
   "Fiscal Year",
   "Period",
   "Project ID",
   "PLC",
   "Pay Type",
-  "RLSE Number",
-  "PO Number",
-  "PO Line Number",
+  // "RLSE Number",
+  // "PO Number",
+  // "PO Line Number",
   "Hours",
   "Seq No",
   "Approve Timestamp",
@@ -5215,8 +5164,9 @@ export default function ExportTable() {
                 style={{
                   borderCollapse: "collapse",
                   fontSize: "11px",
-                  minWidth: `${minTableWidth}px`,
-                  width: "max-content",
+                  minWidth: `${minTableWidth}px`, // Ensure it expands if needed
+                  width: "100%", // Make table try to fit container
+                  tableLayout: "auto", // Allow browser to determine column widths initially
                 }}
               >
                 <thead

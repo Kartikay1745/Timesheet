@@ -1,8 +1,15 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
-export default function App() {
+function App() {
+  if (import.meta.env.VITE_CHECK === "production") {
+    console.log = () => {};
+    console.info = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -13,3 +20,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+export default App;

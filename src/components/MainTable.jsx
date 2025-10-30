@@ -278,7 +278,6 @@
 // // //     setSortConfig({ key, direction });
 // // //   };
 
-
 // // //   const getSortIcon = (columnKey) => {
 // // //     if (['Select', 'Notify'].includes(columnKey)) return null;
 
@@ -287,7 +286,6 @@
 // // //     }
 // // //     return '⇅';
 // // //   };
-
 
 // // //   const getStatusStyle = (status) => {
 // // //     const statusUpper = status?.toUpperCase() || "PENDING";
@@ -516,7 +514,6 @@
 // // //           ? ((item.status || "").toLowerCase() === "notified")
 // // //           : ((item.approvalStatus || "").toLowerCase() === "notified"),
 // // //       })) : [];
-
 
 // // //       setRows(mappedData);
 // // //     } catch (error) {
@@ -1001,7 +998,6 @@
 // // //     setSearchEmployeeName && setSearchEmployeeName('');
 // // //   };
 
-
 // // //   if (!userLoaded || !currentUser) {
 // // //     return (
 // // //       <div className="min-h-screen bg-[#f9fafd] flex flex-col pl-44 pr-4">
@@ -1060,14 +1056,14 @@
 
 // // //           {/* --- Improved Header Section with Logo --- */}
 // // //           <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-white border-b border-gray-200 shadow-sm rounded-t-lg">
-            
+
 // // //             {/* Left: Welcome Message (1/3 width) */}
 // // //             <div className="w-1/3">
 // // //               <h1 className="text-xl font-semibold text-gray-800">
 // // //                 Welcome, <span className="font-bold text-blue-600">{currentUser?.name}</span>
 // // //               </h1>
 // // //             </div>
-            
+
 // // //             {/* Center: Logo (1/3 width) */}
 // // //             <div className="w-1/3 flex justify-center">
 // // //             <div className="bg-slate-800 rounded-md p-2 shadow-inner">
@@ -1075,9 +1071,9 @@
 // // //                 Change this 'src' path to your actual logo.
 // // //                 I'm using '/vite.svg' as a placeholder from your public folder.
 // // //               */}
-// // //               <img 
-// // //                 src="/Columbus_Logo.png" 
-// // //                 alt="Logo" 
+// // //               <img
+// // //                 src="/Columbus_Logo.png"
+// // //                 alt="Logo"
 // // //                 className="h-10" /* Adjust height as needed (e.g., h-8, h-10, h-12) */
 // // //               />
 // // //             </div>
@@ -1175,11 +1171,11 @@
 // // //                   Status:
 // // //                 </span>
 // // //                 {Object.entries(statusFilters).map(([status, checked]) => (
-// // //                   <label 
-// // //                     key={status} 
+// // //                   <label
+// // //                     key={status}
 // // //                     className={`flex items-center gap-1.5 cursor-pointer text-xs font-medium px-2 py-0.5 rounded-full transition-all ${
-// // //                       checked 
-// // //                         ? 'bg-blue-600 text-white shadow' 
+// // //                       checked
+// // //                         ? 'bg-blue-600 text-white shadow'
 // // //                         : 'bg-white text-gray-600 hover:bg-gray-200 border border-gray-300'
 // // //                     }`}
 // // //                   >
@@ -1427,10 +1423,7 @@
 
 // // //Stable version ends //
 
-
-// // // Stable version 2 start // 
-
-
+// // // Stable version 2 start //
 
 // // // import { useState, useRef, useEffect } from "react";
 // // // import { useNavigate } from "react-router-dom";
@@ -1553,7 +1546,7 @@
 // // //   const [notifySelectAll, setNotifySelectAll] = useState(false);
 // // //   const [currentUser, setCurrentUser] = useState(null);
 // // //   const [userLoaded, setUserLoaded] = useState(false);
-  
+
 // // //   // State for filters
 // // //   const [searchDate, setSearchDate] = useState('');
 // // //   const [searchEmployeeId, setSearchEmployeeId] = useState('');
@@ -1716,7 +1709,6 @@
 // // //     setSortConfig({ key, direction });
 // // //   };
 
-
 // // //   const getSortIcon = (columnKey) => {
 // // //     if (['Select', 'Notify'].includes(columnKey)) return null;
 
@@ -1725,7 +1717,6 @@
 // // //     }
 // // //     return '⇅';
 // // //   };
-
 
 // // //   const getStatusStyle = (status) => {
 // // //     const statusUpper = status?.toUpperCase() || "PENDING";
@@ -1956,7 +1947,6 @@
 // // //           : ((item.approvalStatus || "").toLowerCase() === "notified"),
 // // //       })) : [];
 
-
 // // //       setRows(mappedData);
 // // //     } catch (error) {
 // // //       setRows([]);
@@ -2020,7 +2010,6 @@
 
 // // //     return getSortedRows(filtered);
 // // //   };
-
 
 // // //   const filteredRows = getFilteredRows();
 
@@ -2458,7 +2447,6 @@
 // // //     }, {}));
 // // //   };
 
-
 // // //   if (!userLoaded || !currentUser) {
 // // //     return (
 // // //       <div className="min-h-screen bg-[#f9fafd] flex flex-col">
@@ -2497,17 +2485,17 @@
 
 // // //       <div className="flex-1 flex flex-col items-center justify-start p-6">
 // // //         <div className="w-full flex flex-col items-center">
-          
+
 // // //           {/* --- Improved Header Section with Logo --- */}
 // // //           <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-white border-b border-gray-200 shadow-sm rounded-t-lg">
-            
+
 // // //             {/* Left: Welcome Message (1/3 width) */}
 // // //             <div className="w-1/3">
 // // //               <h1 className="text-xl font-semibold text-gray-800">
 // // //                 Welcome, <span className="font-bold text-blue-600">{currentUser?.name}</span>
 // // //               </h1>
 // // //             </div>
-            
+
 // // //             {/* Center: Logo (1/3 width) */}
 // // //             <div className="w-1/3 flex justify-center">
 // // //               {/* !!! IMPORTANT !!!
@@ -2515,9 +2503,9 @@
 // // //                 2. Change 'bg-slate-800' to the color you want behind your white logo.
 // // //               */}
 // // //               <div className="bg-slate-800 rounded-md p-2 shadow-inner">
-// // //                 <img 
-// // //                   src="/Columbus_Logo.png" 
-// // //                   alt="Logo" 
+// // //                 <img
+// // //                   src="/Columbus_Logo.png"
+// // //                   alt="Logo"
 // // //                   className="h-10" /* Adjust height as needed */
 // // //                 />
 // // //               </div>
@@ -2605,7 +2593,6 @@
 // // //               )}
 // // //             </div> */}
 
-            
 // // //            {/* Left side: Search & Advanced Filters */}
 // // //             <div className="flex flex-wrap items-center gap-3"> {/* Changed flex-col to flex-wrap, removed inner div */}
 // // //               {/* --- Global Search --- */}
@@ -2685,7 +2672,7 @@
 // // //               />
 // // //               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
 // // //             </div>
-            
+
 // // //             {/* --- Advanced Filter Toggle --- */}
 // // //             <button
 // // //               onClick={() => setShowAdvanced(!showAdvanced)}
@@ -2735,7 +2722,7 @@
 // // //             )}
 
 // // //             {/* Spacer to push remaining items to the right */}
-// // //             <div className="flex-grow"></div> 
+// // //             <div className="flex-grow"></div>
 
 // // //             {/* --- Status Filters --- */}
 // // //             <div className="flex gap-2 items-center border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 shadow-sm">
@@ -2744,11 +2731,11 @@
 // // //                 Status:
 // // //               </span>
 // // //               {Object.entries(statusFilters).map(([status, checked]) => (
-// // //                 <label 
-// // //                   key={status} 
+// // //                 <label
+// // //                   key={status}
 // // //                   className={`flex items-center gap-1.5 cursor-pointer text-xs font-medium px-2 py-0.5 rounded-full transition-all ${
-// // //                     checked 
-// // //                       ? 'bg-blue-600 text-white shadow' 
+// // //                     checked
+// // //                       ? 'bg-blue-600 text-white shadow'
 // // //                       : 'bg-white text-gray-600 hover:bg-gray-200 border border-gray-300'
 // // //                   }`}
 // // //                 >
@@ -2765,7 +2752,7 @@
 // // //                 </label>
 // // //               ))}
 // // //             </div>
-            
+
 // // //             {/* --- Clear Button --- */}
 // // //             <button
 // // //               onClick={handleClearAllFilters}
@@ -2787,7 +2774,7 @@
 // // //               padding: "0.5rem",
 // // //               minHeight: "350px",
 // // //               maxHeight: "calc(100vh - 260px)", // Adjusted max height
-// // //             //   overflow: "hidden", 
+// // //             //   overflow: "hidden",
 // // //               marginBottom: "20px",
 // // //               display: "flex",
 // // //               flexDirection: "column",
@@ -2997,10 +2984,7 @@
 // // //   );
 // // // }
 
-
-
-// // // Stable version 2 ends 
-
+// // // Stable version 2 ends
 
 // // import { useState, useRef, useEffect } from "react";
 // // import { useNavigate } from "react-router-dom";
@@ -3201,11 +3185,6 @@
 // //   }
 // // };
 
-
-
-
-
-
 // //   const formatHours = (hours) => {
 // //     if (!hours && hours !== 0) return '';
 // //     const numHours = parseFloat(hours);
@@ -3310,7 +3289,6 @@
 // //     setSortConfig({ key, direction });
 // //   };
 
-
 // //   const getSortIcon = (columnKey) => {
 // //     if (['Select', 'Notify'].includes(columnKey)) return null;
 
@@ -3319,7 +3297,6 @@
 // //     }
 // //     return '⇅';
 // //   };
-
 
 // //   const getStatusStyle = (status) => {
 // //     const statusUpper = status?.toUpperCase() || "PENDING";
@@ -3550,7 +3527,6 @@
 // //           : ((item.approvalStatus || "").toLowerCase() === "notified"),
 // //       })) : [];
 
-
 // //       setRows(mappedData);
 // //     } catch (error) {
 // //       setRows([]);
@@ -3614,7 +3590,6 @@
 
 // //     return getSortedRows(filtered);
 // //   };
-
 
 // //   const filteredRows = getFilteredRows();
 
@@ -3963,11 +3938,11 @@
 // //           ...row,
 // //           // Set selected to true ONLY if isSelected is true AND the status is PENDING
 // //           // Otherwise, set it to false (this handles unchecking too)
-// //           selected: isSelected && isPending 
+// //           selected: isSelected && isPending
 // //         };
 // //     }
 // //     // If the row isn't in the current filter, keep its selected state unchanged
-// //     return row; 
+// //     return row;
 // //   });
 
 // //   setRows(updatedRows);
@@ -4083,7 +4058,6 @@
 // //     }, {}));
 // //   };
 
-
 // //   if (!userLoaded || !currentUser) {
 // //     return (
 // //       <div className="min-h-screen bg-[#f9fafd] flex flex-col">
@@ -4127,14 +4101,14 @@
 
 // //           {/* --- Improved Header Section with Logo --- */}
 // //           <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-gray-800 border-b border-gray-200 shadow-sm rounded-t-lg">
-            
+
 // //             {/* Left: Welcome Message (1/3 width) */}
 // //             <div className="w-1/3">
 // //               <h1 className="text-xl font-semibold text-white">
 // //                 Welcome, <span className="font-bold text-blue-600">{currentUser?.name}</span>
 // //               </h1>
 // //             </div>
-            
+
 // //             {/* Center: Logo (1/3 width) */}
 // //             <div className="w-1/3 flex justify-center">
 // //               {/* !!! IMPORTANT !!!
@@ -4142,9 +4116,9 @@
 // //                 2. Change 'bg-slate-800' to the color you want behind your white logo.
 // //               */}
 // //               <div className="bg-slate-800 rounded-md p-2 shadow-inner">
-// //                 <img 
-// //                   src="/Columbus_Logo.png" 
-// //                   alt="Logo" 
+// //                 <img
+// //                   src="/Columbus_Logo.png"
+// //                   alt="Logo"
 // //                   className="h-10" /* Adjust height as needed */
 // //                 />
 // //               </div>
@@ -4178,7 +4152,7 @@
 // //               />
 // //               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
 // //             </div>
-            
+
 // //             {/* --- Advanced Filter Toggle --- */}
 // //             <button
 // //               onClick={() => setShowAdvanced(!showAdvanced)}
@@ -4228,7 +4202,7 @@
 // //             )}
 
 // //             {/* Spacer to push remaining items to the right */}
-// //             <div className="flex-grow"></div> 
+// //             <div className="flex-grow"></div>
 
 // //             {/* --- Status Filters --- */}
 // //             <div className="flex gap-2 items-center border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 shadow-sm">
@@ -4237,11 +4211,11 @@
 // //                 Status:
 // //               </span>
 // //               {Object.entries(statusFilters).map(([status, checked]) => (
-// //                 <label 
-// //                   key={status} 
+// //                 <label
+// //                   key={status}
 // //                   className={`flex items-center gap-1.5 cursor-pointer text-xs font-medium px-2 py-0.5 rounded-full transition-all ${
-// //                     checked 
-// //                       ? 'bg-blue-600 text-white shadow' 
+// //                     checked
+// //                       ? 'bg-blue-600 text-white shadow'
 // //                       : 'bg-white text-gray-600 hover:bg-gray-200 border border-gray-300'
 // //                   }`}
 // //                 >
@@ -4259,7 +4233,7 @@
 // //                 </label>
 // //               ))}
 // //             </div>
-            
+
 // //             {/* --- Clear Button --- */}
 // //             <button
 // //               onClick={handleClearAllFilters}
@@ -4493,9 +4467,7 @@
 // //   );
 // // }
 
-
-
-// // STABLE 1 ENDSS 
+// // STABLE 1 ENDSS
 
 // import { useState, useRef, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -6316,9 +6288,7 @@
 //   );
 // }
 
-
-// STABLE VERSION ENDS 
-
+// STABLE VERSION ENDS
 
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6381,16 +6351,16 @@ const columnsAdmin = [
   "Exported",
   "Date",
   "Employee ID",
-  "Timesheet Type Code",
   "Name",
+  "Timesheet Type Code",
   "Fiscal Year",
   "Period",
   "Project ID",
   "PLC",
   "Pay Type",
-  "RLSE Number",
-  "PO Number",
-  "PO Line Number",
+  // "RLSE Number",
+  // "PO Number",
+  // "PO Line Number",
   "Hours",
   "Seq No",
   "Approver Name",
@@ -6404,16 +6374,16 @@ const columnsViewer = [
   "Status",
   "Date",
   "Employee ID",
-  "Timesheet Type Code",
   "Name",
+  "Timesheet Type Code",
   "Fiscal Year",
   "Period",
   "Project ID",
   "PLC",
   "Pay Type",
-  "RLSE Number",
-  "PO Number",
-  "PO Line Number",
+  // "RLSE Number",
+  // "PO Number",
+  // "PO Line Number",
   "Hours",
   "Seq No",
   "Comment",
@@ -7324,8 +7294,9 @@ export default function MainTable() {
   const handleNotifyRowSelect = (rowIndex, isSelected) => {
     const rowData = filteredRows[rowIndex];
 
+    //|| rowData.Status === "PENDING"
     // Prevent selection if already Notified or Pending (already notified or actionable)
-    if (rowData.Status === "NOTIFIED" || rowData.Status === "PENDING") {
+    if (rowData.Status === "NOTIFIED") {
       return;
     }
     const updatedRows = [...rows];
@@ -7368,7 +7339,7 @@ export default function MainTable() {
     const selectableRows = filteredRows.filter(
       (row) =>
         row.Status !== "NOTIFIED" &&
-        row.Status !== "PENDING" &&
+        // row.Status !== "PENDING" &&
         row.Status !== "APPROVED" &&
         row.Status !== "REJECTED"
     );
@@ -8099,8 +8070,8 @@ export default function MainTable() {
                                   row.isNotified ||
                                   (row["Status"] || "").toUpperCase() ===
                                     "NOTIFIED" ||
-                                  (row["Status"] || "").toUpperCase() ===
-                                    "PENDING" ||
+                                  // (row["Status"] || "").toUpperCase() ===
+                                  //   "PENDING" ||
                                   (row["Status"] || "").toUpperCase() ===
                                     "APPROVED" ||
                                   (row["Status"] || "").toUpperCase() ===

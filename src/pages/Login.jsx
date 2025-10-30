@@ -3,10 +3,10 @@
 
 // // Simple toast function without container
 // const showToast = (message, type = 'info') => {
-//   const bgColor = type === 'success' ? '#4ade80' : 
-//                  type === 'error' ? '#ef4444' : 
+//   const bgColor = type === 'success' ? '#4ade80' :
+//                  type === 'error' ? '#ef4444' :
 //                  type === 'warning' ? '#f59e0b' : '#3b82f6';
-  
+
 //   const toast = document.createElement('div');
 //   toast.textContent = message;
 //   toast.style.cssText = `
@@ -15,7 +15,7 @@
 //     border-radius: 6px; font-size: 14px; max-width: 300px;
 //     box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
 //   `;
-  
+
 //   document.body.appendChild(toast);
 //   setTimeout(() => {
 //     toast.style.opacity = '0';
@@ -52,7 +52,7 @@
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
-    
+
 //     if (!user || !pass) {
 //       showToast("Please enter username and password", "error");
 //       return;
@@ -75,7 +75,7 @@
 
 //       if (loginResponse.ok) {
 //         const loginData = await loginResponse.json();
-        
+
 //         // Create user info based on API response
 //         const userInfo = {
 //           id: loginData.id || user.toLowerCase().replace(/[^a-zA-Z0-9]/g, ''),
@@ -86,10 +86,10 @@
 //         };
 
 //         console.log('Storing user info:', userInfo);
-        
+
 //         // Store user info in localStorage
 //         localStorage.setItem('currentUser', JSON.stringify(userInfo));
-        
+
 //         // Show success message and navigate to dashboard (same route for both roles)
 //         if (loginData.Role === "User") {
 //           showToast("Welcome User! Redirecting to timesheet portal...", "success");
@@ -98,7 +98,7 @@
 //         } else {
 //           showToast("Welcome! Logging you in...", "success");
 //         }
-        
+
 //         // Navigate to dashboard for both roles - MainTable will handle the role-based UI and API calls
 //         setTimeout(() => {
 //           navigate("/dashboard");
@@ -247,20 +247,22 @@
 //   );
 // }
 
-
-
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { User, Lock } from 'lucide-react'; // Added icons
+import { User, Lock } from "lucide-react"; // Added icons
 
 // Simple toast function without container
-const showToast = (message, type = 'info') => {
-  const bgColor = type === 'success' ? '#4ade80' :
-    type === 'error' ? '#ef4444' :
-      type === 'warning' ? '#f59e0b' : '#3b82f6';
+const showToast = (message, type = "info") => {
+  const bgColor =
+    type === "success"
+      ? "#4ade80"
+      : type === "error"
+      ? "#ef4444"
+      : type === "warning"
+      ? "#f59e0b"
+      : "#3b82f6";
 
-  const toast = document.createElement('div');
+  const toast = document.createElement("div");
   toast.textContent = message;
   toast.style.cssText = `
     position: fixed; top: 20px; right: 20px; z-index: 9999;
@@ -271,7 +273,7 @@ const showToast = (message, type = 'info') => {
 
   document.body.appendChild(toast);
   setTimeout(() => {
-    toast.style.opacity = '0';
+    toast.style.opacity = "0";
     setTimeout(() => document.body.removeChild(toast), 300);
   }, 3000);
 };
@@ -293,13 +295,13 @@ export default function Login() {
   const location = useLocation();
   const urlParams = useURLParams();
 
-  // const userSuggestions = ["john.doe", "jane.smith"]; 
+  // const userSuggestions = ["john.doe", "jane.smith"];
   // Suggestions are disabled for now, but logic remains if you want to re-enable
-  const userSuggestions = []; 
+  const userSuggestions = [];
 
   // Effect to set username from URL parameter
   useEffect(() => {
-    const useridFromUrl = urlParams.get('userid');
+    const useridFromUrl = urlParams.get("userid");
     if (useridFromUrl) {
       setUser(useridFromUrl);
     }
@@ -317,37 +319,43 @@ export default function Login() {
 
     try {
       // Call the login API
-      const loginResponse = await fetch('https://timesheet-latest.onrender.com/api/User/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: user,
-          password: pass
-        })
-      });
+      const loginResponse = await fetch(
+        "https://timesheet-latest.onrender.com/api/User/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: user,
+            password: pass,
+          }),
+        }
+      );
 
       if (loginResponse.ok) {
         const loginData = await loginResponse.json();
 
         // Create user info based on API response
         const userInfo = {
-          id: loginData.id || user.toLowerCase().replace(/[^a-zA-Z0-9]/g, ''),
+          id: loginData.id || user.toLowerCase().replace(/[^a-zA-Z0-9]/g, ""),
           name: loginData.fullName || user,
           role: loginData.Role, // Use Role from API response (User/Admin)
           username: loginData.username || user.toLowerCase(),
-          ...loginData // Include any additional data from API
+          ...loginData, // Include any additional data from API
         };
 
-        console.log('Storing user info:', userInfo);
+        console.log("Storing user info:", userInfo);
 
         // Store user info in localStorage
-        localStorage.setItem('currentUser', JSON.stringify(userInfo));
+        localStorage.setItem("currentUser", JSON.stringify(userInfo));
 
         // Show success message and navigate to dashboard (same route for both roles)
         if (loginData.Role === "User") {
-          showToast("Welcome User! Redirecting to timesheet portal...", "success");
+          showToast(
+            "Welcome User! Redirecting to timesheet portal...",
+            "success"
+          );
         } else if (loginData.Role === "Admin") {
           showToast("Welcome Admin! Redirecting to admin portal...", "success");
         } else {
@@ -356,18 +364,22 @@ export default function Login() {
 
         // Navigate to dashboard for both roles
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/dashboard/timesheet");
         }, 1000);
-
       } else {
         // Handle login failure
         const errorData = await loginResponse.json().catch(() => null);
-        const errorMessage = errorData?.message || 'Invalid credentials. Please check your username and password.';
+        const errorMessage =
+          errorData?.message ||
+          "Invalid credentials. Please check your username and password.";
         showToast(errorMessage, "error");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      showToast('Login failed. Please check your connection and try again.', "error");
+      console.error("Login error:", error);
+      showToast(
+        "Login failed. Please check your connection and try again.",
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -381,7 +393,7 @@ export default function Login() {
 
     // Filter suggestions based on input
     if (value.length > 0) {
-      const filtered = userSuggestions.filter(suggestion =>
+      const filtered = userSuggestions.filter((suggestion) =>
         suggestion.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredSuggestions(filtered);
@@ -421,13 +433,13 @@ export default function Login() {
   const handleKeyDown = (e) => {
     if (!showSuggestions || filteredSuggestions.length === 0) return;
 
-    if (e.key === 'ArrowDown') {
+    if (e.key === "ArrowDown") {
       e.preventDefault();
       // You can add keyboard navigation here if needed
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowUp") {
       e.preventDefault(); // Fixed typo from 'preventDefault-name'
       // You can add keyboard navigation here if needed
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setShowSuggestions(false);
     }
   };
@@ -435,7 +447,6 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-4">
       <div className="bg-slate-800 bg-opacity-90 backdrop-blur-sm rounded-xl shadow-2xl p-8 w-full max-w-sm relative border border-slate-700">
-
         {/* Logo */}
         <div className="flex justify-center mb-8">
           {/* !!! IMPORTANT !!!
@@ -454,10 +465,12 @@ export default function Login() {
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-
           {/* Username Input */}
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <User
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <input
               className="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 pl-10 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full transition-all"
               placeholder="Username"
@@ -471,34 +484,41 @@ export default function Login() {
               disabled={isLoading}
             />
             {/* Suggestions dropdown styled for dark mode */}
-            {showSuggestions && filteredSuggestions.length > 0 && !isLoading && (
-              <div className="absolute top-full left-0 right-0 bg-slate-700 border border-slate-600 rounded-b-md shadow-lg z-20 max-h-32 overflow-auto mt-1">
-                <div className="p-2 text-xs text-gray-400 font-medium border-b border-slate-600">Suggestions:</div>
-                {filteredSuggestions.map((suggestion) => (
-                  <div
-                    key={suggestion}
-                    className="px-3 py-2 text-sm text-gray-200 hover:bg-slate-600 cursor-pointer transition-colors duration-150"
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      selectSuggestion(suggestion);
-                    }}
-                  >
-                    {suggestion}
+            {showSuggestions &&
+              filteredSuggestions.length > 0 &&
+              !isLoading && (
+                <div className="absolute top-full left-0 right-0 bg-slate-700 border border-slate-600 rounded-b-md shadow-lg z-20 max-h-32 overflow-auto mt-1">
+                  <div className="p-2 text-xs text-gray-400 font-medium border-b border-slate-600">
+                    Suggestions:
                   </div>
-                ))}
-              </div>
-            )}
+                  {filteredSuggestions.map((suggestion) => (
+                    <div
+                      key={suggestion}
+                      className="px-3 py-2 text-sm text-gray-200 hover:bg-slate-600 cursor-pointer transition-colors duration-150"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        selectSuggestion(suggestion);
+                      }}
+                    >
+                      {suggestion}
+                    </div>
+                  ))}
+                </div>
+              )}
           </div>
 
           {/* Password Input */}
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <input
               className="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 pl-10 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full transition-all"
               type="password"
               placeholder="Password"
               value={pass}
-              onChange={e => setPass(e.target.value)}
+              onChange={(e) => setPass(e.target.value)}
               required
               disabled={isLoading}
             />
