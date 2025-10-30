@@ -107,7 +107,7 @@
 // // // //     if (!userLoaded || !currentUser || !currentUser.username) return;
 // // // //     try {
 // // // //       setLoading(true);
-// // // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=Approved`;
+// // // //       const apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=Approved`;
 // // // //       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
 // // // //       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 // // // //       const apiData = await response.json();
@@ -178,7 +178,7 @@
 
 // // // //     try {
 // // // //       setActionLoading(true);
-// // // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+// // // //       const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
 // // // //         method: 'GET',
 // // // //       });
 // // // //       if (response.ok) {
@@ -522,7 +522,7 @@
 // // // //     if (!userLoaded || !currentUser) return;
 // // // //     try {
 // // // //       setLoading(true);
-// // // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved`;
+// // // //       const apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved`;
 // // // //       const response = await fetch(apiUrl, {
 // // // //         method: 'GET',
 // // // //         headers: { 'Content-Type': 'application/json' }
@@ -1004,7 +1004,7 @@
 // // // //     if (!userLoaded || !currentUser) return;
 // // // //     try {
 // // // //       setLoading(true);
-// // // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved`;
+// // // //       const apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved`;
 // // // //       const response = await fetch(apiUrl, {
 // // // //         method: 'GET',
 // // // //         headers: { 'Content-Type': 'application/json' }
@@ -1121,7 +1121,7 @@
 // // // //       setActionLoading(true);
 
 // // // //       // Get the full CSV from the export API
-// // // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+// // // //       const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
 // // // //         method: 'GET',
 // // // //         headers: {
 // // // //           'Content-Type': 'application/json',
@@ -1515,7 +1515,7 @@
 // // // //     try {
 // // // //       setLoading(true);
 // // // //       // fetch all approved timesheets
-// // // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved`;
+// // // //       const apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved`;
 // // // //       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
 // // // //       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 // // // //       const apiData = await response.json();
@@ -1653,7 +1653,7 @@
 // // // //       console.log(JSON.stringify(payload));
 
 // // // //       // Send POST request with selected data
-// // // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+// // // //       const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
 // // // //         method: 'POST',
 // // // //         headers: {
 // // // //           'Content-Type': 'application/json',
@@ -2106,7 +2106,7 @@
 // // //     try {
 // // //       setLoading(true);
 // // //       // fetch all approved timesheets
-// // //       const apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved`;
+// // //       const apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved`;
 // // //       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
 // // //       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 // // //       const apiData = await response.json();
@@ -2251,7 +2251,7 @@
 // // //       };
 
 // // //       // Send POST request with selected data
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+// // //       const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
 // // //         method: 'POST',
 // // //         headers: {
 // // //           'Content-Type': 'application/json',
@@ -2772,7 +2772,7 @@
 // //     if (!userLoaded || !currentUser) return;
 // //     try {
 // //       setLoading(true);
-// //       const apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved";
+// //       const apiUrl = "${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved";
 // //       const response = await fetch(apiUrl, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
 // //       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 // //       const apiData = await response.json();
@@ -2920,7 +2920,7 @@
 // //   //   setActionLoading(true);
 // //   //   try {
 // //   //     const timesheetIds = selectedRows.map(row => row.id);
-// //   //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-to-csv', {
+// //   //     const response = await fetch('${backendUrl}/api/Timesheet/export-to-csv', {
 // //   //       method: 'POST',
 // //   //       headers: { 'Content-Type': 'application/json' },
 // //   //       body: JSON.stringify(timesheetIds)
@@ -2985,7 +2985,7 @@
 // //   //     };
 
 // //   //     // Send POST request with selected data
-// //   //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+// //   //     const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
 // //   //       method: 'POST',
 // //   //       headers: {
 // //   //         'Content-Type': 'application/json',
@@ -3078,7 +3078,7 @@
 // //       // };
 
 // //       // Send POST request with selected original data items
-// //       const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', { // Note: Endpoint changed slightly in your example
+// //       const response = await fetch('${backendUrl}/api/Timesheet/export-csv', { // Note: Endpoint changed slightly in your example
 // //         method: 'POST',
 // //         headers: {
 // //           'Content-Type': 'application/json',
@@ -3632,7 +3632,7 @@
 //     try {
 //       setLoading(true);
 //       const apiUrl =
-//         "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved";
+//         "${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved";
 //       const response = await fetch(apiUrl, {
 //         method: "GET",
 //         headers: { "Content-Type": "application/json" },
@@ -3795,7 +3795,7 @@
 //   //   setActionLoading(true);
 //   //   try {
 //   //     const timesheetIds = selectedRows.map(row => row.id);
-//   //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-to-csv', {
+//   //     const response = await fetch('${backendUrl}/api/Timesheet/export-to-csv', {
 //   //       method: 'POST',
 //   //       headers: { 'Content-Type': 'application/json' },
 //   //       body: JSON.stringify(timesheetIds)
@@ -3860,7 +3860,7 @@
 //   //     };
 
 //   //     // Send POST request with selected data
-//   //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+//   //     const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
 //   //       method: 'POST',
 //   //       headers: {
 //   //         'Content-Type': 'application/json',
@@ -3955,7 +3955,7 @@
 
 //       // Send POST request with selected original data items
 //       const response = await fetch(
-//         "https://timesheet-latest.onrender.com/api/Timesheet/export-csv",
+//         "${backendUrl}/api/Timesheet/export-csv",
 //         {
 //           // Note: Endpoint changed slightly in your example
 //           method: "POST",
@@ -4372,6 +4372,7 @@ import { LogOut, X } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
+import { backendUrl } from "./config";
 
 const showToast = (message, type = "info") => {
   const bgColor =
@@ -4581,8 +4582,7 @@ export default function ExportTable() {
     if (!userLoaded || !currentUser) return;
     try {
       setLoading(true);
-      const apiUrl =
-        "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByStatus?status=Approved";
+      const apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByStatus?status=Approved`;
       const response = await fetch(apiUrl, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -4746,7 +4746,7 @@ export default function ExportTable() {
   //   setActionLoading(true);
   //   try {
   //     const timesheetIds = selectedRows.map(row => row.id);
-  //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-to-csv', {
+  //     const response = await fetch('${backendUrl}/api/Timesheet/export-to-csv', {
   //       method: 'POST',
   //       headers: { 'Content-Type': 'application/json' },
   //       body: JSON.stringify(timesheetIds)
@@ -4811,7 +4811,7 @@ export default function ExportTable() {
   //     };
 
   //     // Send POST request with selected data
-  //     const response = await fetch('https://timesheet-latest.onrender.com/api/Timesheet/export-csv', {
+  //     const response = await fetch('${backendUrl}/api/Timesheet/export-csv', {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',
@@ -4905,17 +4905,14 @@ export default function ExportTable() {
       // };
 
       // Send POST request with selected original data items
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Timesheet/export-csv",
-        {
-          // Note: Endpoint changed slightly in your example
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payloadToSend), // Sending the array of original items
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Timesheet/export-csv`, {
+        // Note: Endpoint changed slightly in your example
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payloadToSend), // Sending the array of original items
+      });
 
       if (response.ok) {
         const contentType = response.headers.get("content-type");

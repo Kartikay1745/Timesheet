@@ -465,9 +465,9 @@
 // // //       setLoading(true);
 // // //       let apiUrl = "";
 // // //       if (isAdmin) {
-// // //         apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+// // //         apiUrl = "${backendUrl}/api/Timesheet/pending-approvals";
 // // //       } else if (isUser) {
-// // //         apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
+// // //         apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
 // // //       } else {
 // // //         setRows([]);
 // // //         setLoading(false);
@@ -593,7 +593,7 @@
 // // //       let projectId = null;
 // // //       try {
 // // //         const pendingResponse = await fetch(
-// // //           "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals"
+// // //           "${backendUrl}/api/Timesheet/pending-approvals"
 // // //         );
 // // //         if (pendingResponse.ok) {
 // // //           const pendingData = await pendingResponse.json();
@@ -606,7 +606,7 @@
 // // //       }
 
 // // //       const importResponse = await fetch(
-// // //         "https://timesheet-latest.onrender.com/api/Timesheet/import-csv-V1",
+// // //         "${backendUrl}/api/Timesheet/import-csv-V1",
 // // //         {
 // // //           method: "POST",
 // // //           body: formData,
@@ -638,7 +638,7 @@
 // // //               jsonError.message
 // // //             );
 // // //             const retryResponse = await fetch(
-// // //               "https://timesheet-latest.onrender.com/api/Timesheet/import-csv-V1",
+// // //               "${backendUrl}/api/Timesheet/import-csv-V1",
 // // //               {
 // // //                 method: "POST",
 // // //                 body: formData,
@@ -717,7 +717,7 @@
 // // //             }));
 
 // // //             const notifyResponse = await fetch(
-// // //               "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+// // //               "${backendUrl}/api/Approval/BulkNotify",
 // // //               {
 // // //                 method: "POST",
 // // //                 headers: { "Content-Type": "application/json" },
@@ -795,7 +795,7 @@
 // // //         requestData: `Notification for timesheet ${row.id}`
 // // //       }));
 
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+// // //       const response = await fetch('${backendUrl}/api/Approval/BulkNotify', {
 // // //         method: 'POST',
 // // //         headers: { 'Content-Type': 'application/json' },
 // // //         body: JSON.stringify(requestBody)
@@ -938,7 +938,7 @@
 // // //     setApproveLoading(true); // Start approve loading
 // // //     try {
 // // //       const requestBody = buildBulkRequestBody(selectedRows, 'approve', reason, userIpAddress);
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkApprove', {
+// // //       const response = await fetch('${backendUrl}/api/Approval/BulkApprove', {
 // // //         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
 // // //       });
 // // //       if (response.ok) {
@@ -962,7 +962,7 @@
 // // //     setRejectLoading(true); // Start reject loading
 // // //     try {
 // // //       const requestBody = buildBulkRequestBody(selectedRows, 'reject', reason, userIpAddress);
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkReject', {
+// // //       const response = await fetch('${backendUrl}/api/Approval/BulkReject', {
 // // //         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
 // // //       });
 // // //       if (response.ok) {
@@ -1896,9 +1896,9 @@
 // // //       setLoading(true);
 // // //       let apiUrl = "";
 // // //       if (isAdmin) {
-// // //         apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+// // //         apiUrl = "${backendUrl}/api/Timesheet/pending-approvals";
 // // //       } else if (isUser) {
-// // //         apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
+// // //         apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
 // // //       } else {
 // // //         setRows([]);
 // // //         setLoading(false);
@@ -2042,7 +2042,7 @@
 // // //       let projectId = null;
 // // //       try {
 // // //         const pendingResponse = await fetch(
-// // //           "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals"
+// // //           "${backendUrl}/api/Timesheet/pending-approvals"
 // // //         );
 // // //         if (pendingResponse.ok) {
 // // //           const pendingData = await pendingResponse.json();
@@ -2055,7 +2055,7 @@
 // // //       }
 
 // // //       const importResponse = await fetch(
-// // //         "https://timesheet-latest.onrender.com/api/Timesheet/import-csv",
+// // //         "${backendUrl}/api/Timesheet/import-csv",
 // // //         {
 // // //           method: "POST",
 // // //           body: formData,
@@ -2087,7 +2087,7 @@
 // // //               jsonError.message
 // // //             );
 // // //             const retryResponse = await fetch(
-// // //               "https://timesheet-latest.onrender.com/api/Timesheet/import-csv",
+// // //               "${backendUrl}/api/Timesheet/import-csv",
 // // //               {
 // // //                 method: "POST",
 // // //                 body: formData,
@@ -2166,7 +2166,7 @@
 // // //             }));
 
 // // //             const notifyResponse = await fetch(
-// // //               "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+// // //               "${backendUrl}/api/Approval/BulkNotify",
 // // //               {
 // // //                 method: "POST",
 // // //                 headers: { "Content-Type": "application/json" },
@@ -2244,7 +2244,7 @@
 // // //         requestData: `Notification for timesheet ${row.id}`
 // // //       }));
 
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+// // //       const response = await fetch('${backendUrl}/api/Approval/BulkNotify', {
 // // //         method: 'POST',
 // // //         headers: { 'Content-Type': 'application/json' },
 // // //         body: JSON.stringify(requestBody)
@@ -2387,7 +2387,7 @@
 // // //     setApproveLoading(true); // Start approve loading
 // // //     try {
 // // //       const requestBody = buildBulkRequestBody(selectedRows, 'approve', reason, userIpAddress);
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkApprove', {
+// // //       const response = await fetch('${backendUrl}/api/Approval/BulkApprove', {
 // // //         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
 // // //       });
 // // //       if (response.ok) {
@@ -2411,7 +2411,7 @@
 // // //     setRejectLoading(true); // Start reject loading
 // // //     try {
 // // //       const requestBody = buildBulkRequestBody(selectedRows, 'reject', reason, userIpAddress);
-// // //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkReject', {
+// // //       const response = await fetch('${backendUrl}/api/Approval/BulkReject', {
 // // //         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
 // // //       });
 // // //       if (response.ok) {
@@ -3476,9 +3476,9 @@
 // //       setLoading(true);
 // //       let apiUrl = "";
 // //       if (isAdmin) {
-// //         apiUrl = "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+// //         apiUrl = "${backendUrl}/api/Timesheet/pending-approvals";
 // //       } else if (isUser) {
-// //         apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
+// //         apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(currentUser.username)}&status=ALL`;
 // //       } else {
 // //         setRows([]);
 // //         setLoading(false);
@@ -3622,7 +3622,7 @@
 // //       let projectId = null;
 // //       try {
 // //         const pendingResponse = await fetch(
-// //           "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals"
+// //           "${backendUrl}/api/Timesheet/pending-approvals"
 // //         );
 // //         if (pendingResponse.ok) {
 // //           const pendingData = await pendingResponse.json();
@@ -3635,7 +3635,7 @@
 // //       }
 
 // //       const importResponse = await fetch(
-// //         "https://timesheet-latest.onrender.com/api/Timesheet/import-csv",
+// //         "${backendUrl}/api/Timesheet/import-csv",
 // //         {
 // //           method: "POST",
 // //           body: formData,
@@ -3667,7 +3667,7 @@
 // //               jsonError.message
 // //             );
 // //             const retryResponse = await fetch(
-// //               "https://timesheet-latest.onrender.com/api/Timesheet/import-csv",
+// //               "${backendUrl}/api/Timesheet/import-csv",
 // //               {
 // //                 method: "POST",
 // //                 body: formData,
@@ -3746,7 +3746,7 @@
 // //             }));
 
 // //             const notifyResponse = await fetch(
-// //               "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+// //               "${backendUrl}/api/Approval/BulkNotify",
 // //               {
 // //                 method: "POST",
 // //                 headers: { "Content-Type": "application/json" },
@@ -3824,7 +3824,7 @@
 // //         requestData: `Notification for timesheet ${row.id}`
 // //       }));
 
-// //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkNotify', {
+// //       const response = await fetch('${backendUrl}/api/Approval/BulkNotify', {
 // //         method: 'POST',
 // //         headers: { 'Content-Type': 'application/json' },
 // //         body: JSON.stringify(requestBody)
@@ -3998,7 +3998,7 @@
 // //     setApproveLoading(true); // Start approve loading
 // //     try {
 // //       const requestBody = buildBulkRequestBody(selectedRows, 'approve', reason, userIpAddress);
-// //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkApprove', {
+// //       const response = await fetch('${backendUrl}/api/Approval/BulkApprove', {
 // //         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
 // //       });
 // //       if (response.ok) {
@@ -4022,7 +4022,7 @@
 // //     setRejectLoading(true); // Start reject loading
 // //     try {
 // //       const requestBody = buildBulkRequestBody(selectedRows, 'reject', reason, userIpAddress);
-// //       const response = await fetch('https://timesheet-latest.onrender.com/api/Approval/BulkReject', {
+// //       const response = await fetch('${backendUrl}/api/Approval/BulkReject', {
 // //         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
 // //       });
 // //       if (response.ok) {
@@ -5051,9 +5051,9 @@
 //       let apiUrl = "";
 //       if (isAdmin) {
 //         apiUrl =
-//           "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+//           "${backendUrl}/api/Timesheet/pending-approvals";
 //       } else if (isUser) {
-//         apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(
+//         apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(
 //           currentUser.username
 //         )}&status=ALL`;
 //       } else {
@@ -5217,7 +5217,7 @@
 //       let projectId = null;
 //       try {
 //         const pendingResponse = await fetch(
-//           "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals"
+//           "${backendUrl}/api/Timesheet/pending-approvals"
 //         );
 //         if (pendingResponse.ok) {
 //           const pendingData = await pendingResponse.json();
@@ -5230,7 +5230,7 @@
 //       }
 
 //       const importResponse = await fetch(
-//         `https://timesheet-latest.onrender.com/api/Timesheet/import-csv?Username=${encodeURIComponent(
+//         `${backendUrl}/api/Timesheet/import-csv?Username=${encodeURIComponent(
 //           currentUser?.name
 //         )}`,
 //         {
@@ -5264,7 +5264,7 @@
 //               jsonError.message
 //             );
 //             const retryResponse = await fetch(
-//               `https://timesheet-latest.onrender.com/api/Timesheet/import-csv?Username=${encodeURIComponent(
+//               `${backendUrl}/api/Timesheet/import-csv?Username=${encodeURIComponent(
 //                 currentUser?.name
 //               )}`,
 //               {
@@ -5345,7 +5345,7 @@
 //             }));
 
 //             const notifyResponse = await fetch(
-//               "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+//               "${backendUrl}/api/Approval/BulkNotify",
 //               {
 //                 method: "POST",
 //                 headers: { "Content-Type": "application/json" },
@@ -5428,7 +5428,7 @@
 //       }));
 
 //       const response = await fetch(
-//         "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+//         "${backendUrl}/api/Approval/BulkNotify",
 //         {
 //           method: "POST",
 //           headers: { "Content-Type": "application/json" },
@@ -5643,7 +5643,7 @@
 //         userIpAddress
 //       );
 //       const response = await fetch(
-//         "https://timesheet-latest.onrender.com/api/Approval/BulkApprove",
+//         "${backendUrl}/api/Approval/BulkApprove",
 //         {
 //           method: "POST",
 //           headers: { "Content-Type": "application/json" },
@@ -5697,7 +5697,7 @@
 //         userIpAddress
 //       );
 //       const response = await fetch(
-//         "https://timesheet-latest.onrender.com/api/Approval/BulkReject",
+//         "${backendUrl}/api/Approval/BulkReject",
 //         {
 //           method: "POST",
 //           headers: { "Content-Type": "application/json" },
@@ -6296,6 +6296,7 @@ import { LogOut, Filter, X, Search, ChevronDown } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
+import { backendUrl } from "./config";
 
 const showToast = (message, type = "info") => {
   const bgColor =
@@ -6873,10 +6874,9 @@ export default function MainTable() {
       setLoading(true);
       let apiUrl = "";
       if (isAdmin) {
-        apiUrl =
-          "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals";
+        apiUrl = `${backendUrl}/api/Timesheet/pending-approvals`;
       } else if (isUser) {
-        apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(
+        apiUrl = `${backendUrl}/api/Timesheet/pending-approvalsByUser?userName=${encodeURIComponent(
           currentUser.username
         )}&status=ALL`;
       } else {
@@ -7041,7 +7041,7 @@ export default function MainTable() {
       let projectId = null;
       try {
         const pendingResponse = await fetch(
-          "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals"
+          `${backendUrl}/api/Timesheet/pending-approvals`
         );
         if (pendingResponse.ok) {
           const pendingData = await pendingResponse.json();
@@ -7054,7 +7054,7 @@ export default function MainTable() {
       }
 
       const importResponse = await fetch(
-        `https://timesheet-latest.onrender.com/api/Timesheet/import-csv?Username=${encodeURIComponent(
+        `${backendUrl}/api/Timesheet/import-csv?Username=${encodeURIComponent(
           currentUser?.name
         )}`,
         {
@@ -7088,7 +7088,7 @@ export default function MainTable() {
               jsonError.message
             );
             const retryResponse = await fetch(
-              `https://timesheet-latest.onrender.com/api/Timesheet/import-csv?Username=${encodeURIComponent(
+              `${backendUrl}/api/Timesheet/import-csv?Username=${encodeURIComponent(
                 currentUser?.name
               )}`,
               {
@@ -7169,7 +7169,7 @@ export default function MainTable() {
             }));
 
             const notifyResponse = await fetch(
-              "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+              `${backendUrl}/api/Approval/BulkNotify`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -7251,14 +7251,11 @@ export default function MainTable() {
         requestData: `Notification for timesheet ${row.id}`,
       }));
 
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Approval/BulkNotify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
 
       if (response.ok) {
         showToast(
@@ -7467,14 +7464,11 @@ export default function MainTable() {
         reason,
         userIpAddress
       );
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Approval/BulkApprove",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Approval/BulkApprove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
       if (response.ok) {
         showToast(
           `Successfully approved ${selectedRows.length} timesheets with reason: "${reason}"`,
@@ -7521,14 +7515,11 @@ export default function MainTable() {
         reason,
         userIpAddress
       );
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Approval/BulkReject",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Approval/BulkReject`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
       if (response.ok) {
         showToast(
           `Successfully rejected ${selectedRows.length} timesheets with reason: "${reason}"`,

@@ -4,6 +4,7 @@ import { LogOut, Filter, X, Search, ChevronDown } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
+import { backendUrl } from "./config";
 
 const showToast = (message, type = "info") => {
   const bgColor =
@@ -582,10 +583,9 @@ export default function TimesheetHistory() {
       setLoading(true);
       let apiUrl = "";
       if (isAdmin) {
-        apiUrl =
-          "https://timesheet-latest.onrender.com/api/Timesheet/GetExportedTimesheets";
+        apiUrl = `${backendUrl}/api/Timesheet/GetExportedTimesheets`;
       } else if (isUser) {
-        apiUrl = `https://timesheet-latest.onrender.com/api/Timesheet/GetExportedTimesheets`;
+        apiUrl = `${backendUrl}/api/Timesheet/GetExportedTimesheets`;
       } else {
         setRows([]);
         setLoading(false);
@@ -748,7 +748,7 @@ export default function TimesheetHistory() {
       let projectId = null;
       try {
         const pendingResponse = await fetch(
-          "https://timesheet-latest.onrender.com/api/Timesheet/pending-approvals"
+          `${backendUrl}/api/Timesheet/pending-approvals`
         );
         if (pendingResponse.ok) {
           const pendingData = await pendingResponse.json();
@@ -761,7 +761,7 @@ export default function TimesheetHistory() {
       }
 
       const importResponse = await fetch(
-        `https://timesheet-latest.onrender.com/api/Timesheet/import-csv?Username=${encodeURIComponent(
+        `${backendUrl}/api/Timesheet/import-csv?Username=${encodeURIComponent(
           currentUser?.name
         )}`,
         {
@@ -795,7 +795,7 @@ export default function TimesheetHistory() {
               jsonError.message
             );
             const retryResponse = await fetch(
-              `https://timesheet-latest.onrender.com/api/Timesheet/import-csv?Username=${encodeURIComponent(
+              `${backendUrl}/api/Timesheet/import-csv?Username=${encodeURIComponent(
                 currentUser?.name
               )}`,
               {
@@ -876,7 +876,7 @@ export default function TimesheetHistory() {
             }));
 
             const notifyResponse = await fetch(
-              "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
+              "${backendUrl}/api/Approval/BulkNotify",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -958,14 +958,11 @@ export default function TimesheetHistory() {
         requestData: `Notification for timesheet ${row.id}`,
       }));
 
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Approval/BulkNotify",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Approval/BulkNotify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
 
       if (response.ok) {
         showToast(
@@ -1173,14 +1170,11 @@ export default function TimesheetHistory() {
         reason,
         userIpAddress
       );
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Approval/BulkApprove",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Approval/BulkApprove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
       if (response.ok) {
         showToast(
           `Successfully approved ${selectedRows.length} timesheets with reason: "${reason}"`,
@@ -1227,14 +1221,11 @@ export default function TimesheetHistory() {
         reason,
         userIpAddress
       );
-      const response = await fetch(
-        "https://timesheet-latest.onrender.com/api/Approval/BulkReject",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${backendUrl}/api/Approval/BulkReject`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
       if (response.ok) {
         showToast(
           `Successfully rejected ${selectedRows.length} timesheets with reason: "${reason}"`,

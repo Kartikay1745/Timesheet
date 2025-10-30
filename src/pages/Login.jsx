@@ -62,7 +62,7 @@
 
 //     try {
 //       // Call the login API
-//       const loginResponse = await fetch('https://timesheet-latest.onrender.com/api/User/login', {
+//       const loginResponse = await fetch('${backendUrl}/api/User/login', {
 //         method: 'POST',
 //         headers: {
 //           'Content-Type': 'application/json'
@@ -250,6 +250,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User, Lock } from "lucide-react"; // Added icons
+import { backendUrl } from "../components/config";
 
 // Simple toast function without container
 const showToast = (message, type = "info") => {
@@ -319,19 +320,16 @@ export default function Login() {
 
     try {
       // Call the login API
-      const loginResponse = await fetch(
-        "https://timesheet-latest.onrender.com/api/User/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: user,
-            password: pass,
-          }),
-        }
-      );
+      const loginResponse = await fetch(`${backendUrl}/api/User/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user,
+          password: pass,
+        }),
+      });
 
       if (loginResponse.ok) {
         const loginData = await loginResponse.json();
