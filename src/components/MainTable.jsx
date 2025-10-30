@@ -8067,7 +8067,7 @@ export default function MainTable() {
                                 className="cursor-pointer"
                                 // disabled={row.isNotified || (row["Status"] || "").toLowerCase() === "notified" || (row["Status"] || "").toLowerCase() === "pending"}
                                 disabled={
-                                  row.isNotified ||
+                                  // row.isNotified ||
                                   (row["Status"] || "").toUpperCase() ===
                                     "NOTIFIED" ||
                                   // (row["Status"] || "").toUpperCase() ===
