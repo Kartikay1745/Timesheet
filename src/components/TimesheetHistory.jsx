@@ -876,7 +876,7 @@ export default function TimesheetHistory() {
             }));
 
             const notifyResponse = await fetch(
-              "${backendUrl}/api/Approval/BulkNotify",
+              `${backendUrl}/api/Approval/BulkNotify`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

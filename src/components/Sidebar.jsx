@@ -2349,7 +2349,18 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // 1. Import the 'Info' icon
-import { Menu, Clock, Users, Layers, Download, Info } from "lucide-react";
+import {
+  Menu,
+  Clock,
+  Users,
+  Layers,
+  Download,
+  Info,
+  Settings,
+  User,
+  Settings2,
+  User2,
+} from "lucide-react";
 
 /**
  * A reusable sidebar item component.
@@ -2499,12 +2510,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
         {isAdmin && (
           <SidebarItem
-            icon={<Info className="w-4 h-4" />}
+            icon={<Settings2 className="w-4 h-4" />}
             text="Settings"
-            to="/dashboard/settingst"
+            to="/dashboard/settings"
             isSelected={selectedPage === "/dashboard/settings"}
             isCollapsed={!sidebarOpen}
             onClick={createLinkHandler("/dashboard/settings")}
+          />
+        )}
+
+        {isAdmin && (
+          <SidebarItem
+            icon={<User2 className="w-4 h-4" />}
+            text="Users"
+            to="/dashboard/usertable"
+            isSelected={selectedPage === "/dashboard/usertable"}
+            isCollapsed={!sidebarOpen}
+            onClick={createLinkHandler("/dashboard/usertable")}
           />
         )}
         {/* <SidebarItem

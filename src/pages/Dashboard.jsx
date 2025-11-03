@@ -609,6 +609,8 @@ export default function Dashboard() {
           <TimesheetHistory />
         ) : pathname === "/dashboard/settings" ? (
           <Settings />
+        ) : pathname === "/dashboard/usertable" ? (
+          <UserTable />
         ) : (
           // Default fallback page - Ensure it doesn't overflow
           //   <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">

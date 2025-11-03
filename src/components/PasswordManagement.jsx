@@ -246,7 +246,7 @@ export default function PasswordManagement() {
       if (!currentUser?.username) return;
 
       try {
-        const response = await fetch("${backendUrl}/api/User");
+        const response = await fetch(`${backendUrl}/api/User`);
         if (response.ok) {
           const users = await response.json();
           if (Array.isArray(users)) {

@@ -191,6 +191,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Save, LogOut } from "lucide-react";
+import { backendUrl } from "./config";
 
 const showToast = (message, type = "info") => {
   const bgColor =
@@ -261,7 +262,7 @@ const Settings = () => {
     }
 
     // Fetch config values from API on mount
-    fetch("https://timesheet-latest.onrender.com/api/ConfigValues")
+    fetch(`${backendUrl}/api/ConfigValues`)
       .then((res) => res.json())
       .then((data) => {
         // Map the response data to the local states
@@ -315,7 +316,7 @@ const Settings = () => {
       },
     ];
 
-    fetch("https://timesheet-latest.onrender.com/api/ConfigValues", {
+    fetch(`${backendUrl}/api/ConfigValues`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
