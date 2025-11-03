@@ -192,6 +192,32 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Save, LogOut } from "lucide-react";
 
+const showToast = (message, type = "info") => {
+  const bgColor =
+    type === "success"
+      ? "#4ade80"
+      : type === "error"
+      ? "#ef4444"
+      : type === "warning"
+      ? "#f59e0b"
+      : "#3b82f6";
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed; top: 20px; right: 20px; z-index: 9999;
+    background: ${bgColor}; color: white; padding: 12px 16px;
+    border-radius: 6px; font-size: 14px; max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
+  `;
+  document.body.appendChild(toast);
+  const displayTime =
+    message.includes("import") || message.includes("Import") ? 4000 : 1000;
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => document.body.removeChild(toast), 300);
+  }, displayTime);
+};
+
 const Settings = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
@@ -297,12 +323,12 @@ const Settings = () => {
       body: JSON.stringify(payload),
     })
       .then(() => {
-        alert("Settings saved successfully");
+        showToast("Settings saved successfully");
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Save error:", err);
-        alert("Failed to save settings");
+        // console.error("Save error:", err);
+        showToast("Failed to save settings");
         setLoading(false);
       });
   };
