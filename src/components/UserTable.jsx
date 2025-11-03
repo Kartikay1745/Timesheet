@@ -317,7 +317,7 @@ const CreateUserModal = ({ onClose, onUserCreated }) => {
               onChange={handleChange}
               className="w-full mt-1 px-3 py-2 border rounded-lg bg-white border-gray-300"
             >
-              <option value="user">User</option>
+              <option value="User">User</option>
               {/* <option value="pm">PM</option> */}
               <option value="Admin">Admin</option>
             </select>
