@@ -264,7 +264,7 @@ const Settings = () => {
     localStorage.removeItem("currentUser");
     setCurrentUser(null);
     setUserLoaded(false);
-    alert("Logged out successfully");
+    // alert("Logged out successfully");
     navigate("/");
   };
 
