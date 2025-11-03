@@ -5030,8 +5030,11 @@ export default function ExportTable() {
           <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-gray-800 border-b border-gray-200 shadow-sm rounded-t-lg">
             {/* Left: Page Title (1/3 width) */}
             <div className="w-1/3">
-              <h1 className="text-xl font-semibold text-gray-800">
-                Export Approved Timesheets
+              <h1 className="text-xl font-semibold text-white">
+                Welcome,{" "}
+                <span className="font-bold text-blue-600">
+                  {currentUser?.name}
+                </span>
               </h1>
             </div>
 

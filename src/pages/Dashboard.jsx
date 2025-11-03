@@ -110,7 +110,6 @@
 
 // // Stable version //
 
-
 // // import { useLocation } from "react-router-dom";
 // // import { useState, useEffect } from "react";
 // // import Sidebar from "../components/Sidebar";
@@ -177,7 +176,6 @@
 // //     </div>
 // //   );
 // // }
-
 
 // // Stable version ends //
 
@@ -320,9 +318,7 @@
 //   );
 // }
 
-
-
-// STABLE version ends 
+// STABLE version ends
 // import { useLocation } from "react-router-dom";
 // import Sidebar from "../components/Sidebar";
 // import MainTable from "../components/MainTable";
@@ -517,6 +513,7 @@ import PasswordManagement from "../components/PasswordManagement";
 import ExportTable from "../components/ExportTable";
 import AboutPage from "../components/AboutPage";
 import TimesheetHistory from "../components/TimesheetHistory";
+import Settings from "../components/Settings";
 
 // Copied showToast from AboutPage for consistency
 const showToast = (message, type = "info") => {
@@ -610,6 +607,8 @@ export default function Dashboard() {
         ) : // 2. Pass handleLogout to AboutPage
         pathname === "/dashboard/timesheethistory" ? (
           <TimesheetHistory />
+        ) : pathname === "/dashboard/settings" ? (
+          <Settings />
         ) : (
           // Default fallback page - Ensure it doesn't overflow
           //   <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">

@@ -268,8 +268,8 @@
 // //             <Link
 // //               to="/dashboard/timesheet"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-200 group ${
-// //                 selectedPage === "/dashboard/timesheet" 
-// //                   ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium" 
+// //                 selectedPage === "/dashboard/timesheet"
+// //                   ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium"
 // //                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/timesheet"); }}
@@ -282,8 +282,8 @@
 // //             <Link
 // //               to="/dashboard/users"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-200 group ${
-// //                 selectedPage === "/dashboard/users" 
-// //                   ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium" 
+// //                 selectedPage === "/dashboard/users"
+// //                   ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium"
 // //                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/users"); }}
@@ -313,8 +313,8 @@
 // //                   <Link
 // //                     to="/dashboard/groups/manage-groups"
 // //                     className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-200 ${
-// //                       selectedPage === "/dashboard/groups/manage-groups" 
-// //                         ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium" 
+// //                       selectedPage === "/dashboard/groups/manage-groups"
+// //                         ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium"
 // //                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
 // //                     }`}
 // //                     onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-groups"); }}
@@ -324,8 +324,8 @@
 // //                   <Link
 // //                     to="/dashboard/groups/manage-workflow"
 // //                     className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-200 ${
-// //                       selectedPage === "/dashboard/groups/manage-workflow" 
-// //                         ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium" 
+// //                       selectedPage === "/dashboard/groups/manage-workflow"
+// //                         ? "bg-blue-50 text-blue-700 border-l-3 border-blue-600 font-medium"
 // //                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
 // //                     }`}
 // //                     onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-workflow"); }}
@@ -514,8 +514,8 @@
 // //             <Link
 // //               to="/dashboard/timesheet"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/timesheet" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/timesheet"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/timesheet"); }}
@@ -528,8 +528,8 @@
 // //             <Link
 // //               to="/dashboard/users"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/users" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/users"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/users"); }}
@@ -559,8 +559,8 @@
 // //                   <Link
 // //                     to="/dashboard/groups/manage-groups"
 // //                     className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                       selectedPage === "/dashboard/groups/manage-groups" 
-// //                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                       selectedPage === "/dashboard/groups/manage-groups"
+// //                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                         : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                     }`}
 // //                     onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-groups"); }}
@@ -570,8 +570,8 @@
 // //                   <Link
 // //                     to="/dashboard/groups/manage-workflow"
 // //                     className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                       selectedPage === "/dashboard/groups/manage-workflow" 
-// //                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                       selectedPage === "/dashboard/groups/manage-workflow"
+// //                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                         : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                     }`}
 // //                     onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-workflow"); }}
@@ -667,8 +667,8 @@
 // //             <Link
 // //               to="/dashboard/timesheet"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/timesheet" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/timesheet"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/timesheet"); }}
@@ -681,8 +681,8 @@
 // //             <Link
 // //               to="/dashboard/users"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/users" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/users"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/users"); }}
@@ -713,8 +713,8 @@
 // //                     <Link
 // //                       to="/dashboard/groups/manage-groups"
 // //                       className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                         selectedPage === "/dashboard/groups/manage-groups" 
-// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                         selectedPage === "/dashboard/groups/manage-groups"
+// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                           : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                       }`}
 // //                       onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-groups"); }}
@@ -724,8 +724,8 @@
 // //                     <Link
 // //                       to="/dashboard/groups/manage-workflow"
 // //                       className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                         selectedPage === "/dashboard/groups/manage-workflow" 
-// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                         selectedPage === "/dashboard/groups/manage-workflow"
+// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                           : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                       }`}
 // //                       onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-workflow"); }}
@@ -822,8 +822,8 @@
 // //             <Link
 // //               to="/dashboard/timesheet"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/timesheet" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/timesheet"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/timesheet"); }}
@@ -836,8 +836,8 @@
 // //             <Link
 // //               to="/dashboard/users"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/users" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/users"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/users"); }}
@@ -868,8 +868,8 @@
 // //                     <Link
 // //                       to="/dashboard/groups/manage-groups"
 // //                       className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                         selectedPage === "/dashboard/groups/manage-groups" 
-// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                         selectedPage === "/dashboard/groups/manage-groups"
+// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                           : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                       }`}
 // //                       onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-groups"); }}
@@ -879,8 +879,8 @@
 // //                     <Link
 // //                       to="/dashboard/groups/manage-workflow"
 // //                       className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                         selectedPage === "/dashboard/groups/manage-workflow" 
-// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                         selectedPage === "/dashboard/groups/manage-workflow"
+// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                           : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                       }`}
 // //                       onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-workflow"); }}
@@ -979,8 +979,8 @@
 // //             <Link
 // //               to="/dashboard/timesheet"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/timesheet" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/timesheet"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/timesheet"); }}
@@ -993,8 +993,8 @@
 // //             <Link
 // //               to="/dashboard/users"
 // //               className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                 selectedPage === "/dashboard/users" 
-// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                 selectedPage === "/dashboard/users"
+// //                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                   : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //               }`}
 // //               onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/users"); }}
@@ -1008,8 +1008,8 @@
 // //               <Link
 // //                 to="/dashboard/export"
 // //                 className={`flex items-center space-x-2 text-xs px-2 py-2 rounded-lg transition-all duration-300 group ${
-// //                   selectedPage === "/dashboard/export" 
-// //                     ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                   selectedPage === "/dashboard/export"
+// //                     ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                     : "text-gray-300 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                 }`}
 // //                 onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/export"); }}
@@ -1041,8 +1041,8 @@
 // //                     <Link
 // //                       to="/dashboard/groups/manage-groups"
 // //                       className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                         selectedPage === "/dashboard/groups/manage-groups" 
-// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                         selectedPage === "/dashboard/groups/manage-groups"
+// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                           : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                       }`}
 // //                       onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-groups"); }}
@@ -1052,8 +1052,8 @@
 // //                     <Link
 // //                       to="/dashboard/groups/manage-workflow"
 // //                       className={`block text-xs px-2 py-1.5 rounded-lg transition-all duration-300 ${
-// //                         selectedPage === "/dashboard/groups/manage-workflow" 
-// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold" 
+// //                         selectedPage === "/dashboard/groups/manage-workflow"
+// //                           ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-500 font-semibold"
 // //                           : "text-gray-400 hover:bg-slate-700 hover:text-white border border-transparent hover:border-slate-600"
 // //                       }`}
 // //                       onClick={e => { e.preventDefault(); handleLinkClick("/dashboard/groups/manage-workflow"); }}
@@ -1072,7 +1072,6 @@
 // // };
 
 // // export default Sidebar;
-
 
 // // Stable version //
 // import React, { useState, useEffect } from "react";
@@ -1245,7 +1244,7 @@
 //             />
 //           </>
 //         )} */}
-        
+
 //         {/* "About" item moved here, no line above it */}
 //         <SidebarItem
 //           icon={<Info className="w-4 h-4" />}
@@ -1256,7 +1255,7 @@
 //           onClick={createLinkHandler("/dashboard/about")}
 //         />
 //       </nav>
-      
+
 //       {/* Footer section with line and "Powered by" text (won't scroll) */}
 //       <div className="pt-3 pb-3 px-3 mt-auto border-t border-slate-700 flex-shrink-0">
 //         <span className={`text-xs text-white transition-opacity duration-200 text-center block ${!sidebarOpen ? 'hidden' : 'opacity-100'}`}>
@@ -1269,7 +1268,6 @@
 // };
 
 // export default Sidebar;
-
 
 /// stable version //
 // import React, { useState, useEffect } from "react";
@@ -2499,6 +2497,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           />
         )}
 
+        {isAdmin && (
+          <SidebarItem
+            icon={<Info className="w-4 h-4" />}
+            text="Settings"
+            to="/dashboard/settingst"
+            isSelected={selectedPage === "/dashboard/settings"}
+            isCollapsed={!sidebarOpen}
+            onClick={createLinkHandler("/dashboard/settings")}
+          />
+        )}
         {/* <SidebarItem
           icon={<Users className="w-4 h-4" />}
           text={isUser ? "Password" : "Users"}
