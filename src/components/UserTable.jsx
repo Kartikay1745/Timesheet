@@ -439,9 +439,9 @@ const EditUserModal = ({ user, onClose, onUserUpdated }) => {
                 onChange={handleChange}
                 className="w-full mt-1 px-3 py-2 border rounded-lg bg-white"
               >
-                <option value="user">User</option>
+                <option value="User">User</option>
                 {/* <option value="pm">PM</option> */}
-                <option value="admin">Admin</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
             <div>
