@@ -905,8 +905,8 @@ export default function UserTable() {
               </div>
             </div>
 
-            <div className="w-full bg-gray-800 p-2 rounded-lg shadow border border-gray-200 mb-1 flex flex-wrap items-center gap-3">
-              <div className="flex justify-between items-center   gap-4">
+            <div className="w-full bg-gray-800 p-2 rounded-lg shadow border border-gray-200 mb-1 flex items-center justify-end gap-3">
+              <div className="flex items-center gap-4">
                 {/* <h1 className="text-4xl font-bold text-gray-800">
               User Management
             </h1> */}
@@ -996,10 +996,10 @@ export default function UserTable() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-700">
+                          <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-700 text-center">
                             {user.username}
                           </td>
-                          <td className="px-2 py-2 whitespace-nowrap">
+                          <td className="px-2 py-2 whitespace-nowrap text-center">
                             <span
                               className={`px-3 py-1 text-xs font-bold rounded-full capitalize ${
                                 user.role?.toLowerCase() === "admin"
@@ -1012,7 +1012,7 @@ export default function UserTable() {
                               {user.role}
                             </span>
                           </td>
-                          <td className="px-2 py-2 whitespace-nowrap">
+                          <td className="px-2 py-2 whitespace-nowrap text-center">
                             <span
                               className={`px-3 py-1 text-xs leading-5 font-bold rounded-full ${
                                 user.isActive
@@ -1023,8 +1023,8 @@ export default function UserTable() {
                               {user.isActive ? "Active" : "Inactive"}
                             </span>
                           </td>
-                          <td className="px-2 py-2 whitespace-nowrap text-sm font-semibold">
-                            <div className="flex items-center gap-4">
+                          <td className="px-2 py-2 whitespace-nowrap text-sm font-semibold align-middle">
+                            <div className="flex justify-center items-center gap-4 h-full">
                               {currentUser?.role?.toLowerCase() === "admin" && (
                                 <>
                                   {!user.isActive ? (

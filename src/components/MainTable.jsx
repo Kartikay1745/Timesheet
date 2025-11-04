@@ -7414,7 +7414,7 @@ export default function MainTable() {
     return selectedRows.map((row) => ({
       requestId: row.requestId || row.id,
       levelNo: row.levelNo || 1,
-      approverUserId: 1,
+      approverUserId: currentUser.userId || 0,
       comment: `${action === "approve" ? "Approved" : "Rejected"} by ${
         currentUser.name
       }: ${reason}`,

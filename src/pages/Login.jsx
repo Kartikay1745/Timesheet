@@ -340,6 +340,7 @@ export default function Login() {
           name: loginData.fullName || user,
           role: loginData.Role, // Use Role from API response (User/Admin)
           username: loginData.username || user.toLowerCase(),
+          userId: loginData.userId,
           ...loginData, // Include any additional data from API
         };
 
