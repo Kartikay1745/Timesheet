@@ -4437,6 +4437,7 @@ export default function ExportTable() {
   const [searchEmployeeId, setSearchEmployeeId] = useState("");
   const [searchEmployeeName, setSearchEmployeeName] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const colWidth = 120;
   const minTableWidth = columnsExport.length * colWidth;
@@ -4528,6 +4529,12 @@ export default function ExportTable() {
     }
     return "⇅";
   };
+
+  useEffect(() => {
+    if (userLoaded && currentUser && currentUser.role === "Admin") {
+      fetchData();
+    }
+  }, [userLoaded, currentUser, navigate, refreshTrigger]);
 
   const getStatusStyle = (status) => {
     const statusUpper = status?.toUpperCase() || "PENDING";
@@ -4863,6 +4870,7 @@ export default function ExportTable() {
   //     setActionLoading(false);
   //   }
   // };
+
   const handleExportClick = async (e) => {
     // e.preventDefault(); // Not needed if button type="button"
     // e.stopPropagation(); // Not usually needed here
@@ -4930,6 +4938,7 @@ export default function ExportTable() {
           a.click();
           a.remove();
           window.URL.revokeObjectURL(url);
+          setRefreshTrigger((t) => t + 1);
           showToast(
             `Exported ${selectedData.length} selected timesheets successfully`,
             "success"
