@@ -72,8 +72,9 @@ import {
   FaPlay, // ← ADD THIS
   FaPause, // ← ADD THIS
   FaSpinner,
+  FaTrash,
 } from "react-icons/fa";
-import { Save, LogOut } from "lucide-react";
+import { Save, LogOut, Delete } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { backendUrl } from "./config";
@@ -813,6 +814,20 @@ export default function UserTable() {
     navigate("/");
   };
 
+  async function deleteUser(userId) {
+    try {
+      const response = await fetch(`${backendUrl}/api/User/${userId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete user");
+      showToast("User deleted successfully");
+      setRefreshTrigger((t) => t + 1);
+    } catch (error) {
+      alert("Failed to delete user");
+      console.error(error);
+    }
+  }
+
   // --- Admin View ---
   if (isAdmin) {
     // More robust filtering logic
@@ -1010,18 +1025,6 @@ export default function UserTable() {
                           </td>
                           <td className="px-2 py-2 whitespace-nowrap text-sm font-semibold">
                             <div className="flex items-center gap-4">
-                              <button
-                                onClick={() => openEditModal(user)}
-                                className="text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors"
-                              >
-                                <FaEdit size={12} /> Edit
-                              </button>
-                              <button
-                                onClick={() => openPasswordModal(user, "reset")}
-                                className="text-yellow-500 hover:text-yellow-700 flex items-center gap-1.5 transition-colors"
-                              >
-                                <FaKey size={12} /> Reset Password
-                              </button>
                               {currentUser?.role?.toLowerCase() === "admin" && (
                                 <>
                                   {!user.isActive ? (
@@ -1036,13 +1039,14 @@ export default function UserTable() {
                                           <FaSpinner
                                             className="animate-spin mr-1"
                                             size={10}
+                                            title="Activate"
                                           />
-                                          <span>Activating...</span>
+                                          {/* <span>Activating...</span> */}
                                         </>
                                       ) : (
                                         <>
-                                          <FaPlay className="mr-1 " size={10} />
-                                          <span>Activate</span>
+                                          <FaPlay size={10} />
+                                          {/* <span>Activate</span> */}
                                         </>
                                       )}
                                     </button>
@@ -1058,18 +1062,42 @@ export default function UserTable() {
                                           <FaSpinner
                                             className="animate-spin mr-1"
                                             size={10}
+                                            title="Deactivate"
                                           />
-                                          <span>Deactivating...</span>
+                                          {/* <span>Deactivating...</span> */}
                                         </>
                                       ) : (
                                         <>
-                                          <FaPause className="mr-1" size={10} />
-                                          <span>Deactivate</span>
+                                          <FaPause size={10} />
+                                          {/* <span>Deactivate</span> */}
                                         </>
                                       )}
                                     </button>
                                   )}
                                 </>
+                              )}
+                              <button
+                                onClick={() => openEditModal(user)}
+                                className="text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors"
+                                title="Edit"
+                              >
+                                <FaEdit size={15} />
+                              </button>
+                              <button
+                                onClick={() => openPasswordModal(user, "reset")}
+                                className="text-yellow-500 hover:text-yellow-700 flex items-center gap-1.5 transition-colors"
+                                title="Reset Password"
+                              >
+                                <FaKey size={12} />
+                              </button>
+                              {currentUser?.role?.toLowerCase() === "admin" && (
+                                <button
+                                  onClick={() => deleteUser(user.userId)}
+                                  className="text-red-500 hover:text-red-700 flex items-center gap-1.5 transition-colors"
+                                  title="Delete"
+                                >
+                                  <FaTrash size={15} />
+                                </button>
                               )}
                             </div>
                           </td>
