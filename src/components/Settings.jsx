@@ -188,7 +188,7 @@
 
 // export default Settings;
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Save, LogOut } from "lucide-react";
 import { backendUrl } from "./config";
@@ -223,18 +223,15 @@ const Settings = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoaded, setUserLoaded] = useState(false);
-
+  const fileInputRef = useRef(null);
   // Existing states and logic (not changed)...
-
   const [loading, setLoading] = useState(false);
-
   // New states for email redirect config
   const [allowEmailRedirect, setAllowEmailRedirect] = useState(false);
   const [redirectEmailTo, setRedirectEmailTo] = useState("");
   // Store both value and id for each config to pass id on save
-
   const [allowEmailRedirectId, setAllowEmailRedirectId] = useState(0);
-
+  const [importLoading, setImportLoading] = useState(false);
   const [redirectEmailToId, setRedirectEmailToId] = useState(0);
 
   useEffect(() => {
@@ -334,6 +331,67 @@ const Settings = () => {
       });
   };
 
+  const handleImportClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleImportFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".csv")) {
+      showToast("Please select a CSV file", "error");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file); // Attach file (binary)
+    try {
+      setImportLoading(true);
+      // Replace with the import endpoint from your image
+      const importResponse = await fetch(
+        `${backendUrl}/api/Timesheet/import-projects-csv?Username=${encodeURIComponent(
+          currentUser?.name
+        )}`,
+        {
+          method: "POST",
+          body: formData, // FormData for multipart/form-data
+        }
+      );
+      if (importResponse.ok) {
+        showToast("Import completed successfully", "success");
+        // Optionally: Refresh table here (see previous answers for refresh logic)
+        // Example:
+        setLoading(true);
+        try {
+          const refreshedResp = await fetch(
+            `${backendUrl}/api/Timesheet/list`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+          if (refreshedResp.ok) {
+            const refreshedData = await refreshedResp.json();
+            setRows(refreshedData);
+          }
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        showToast("Import failed", "error");
+      }
+    } catch (error) {
+      showToast("Import error", "error");
+      console.error(error);
+    } finally {
+      setImportLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
   if (!userLoaded || !currentUser) {
     return <div>Loading...</div>;
   }
@@ -342,9 +400,8 @@ const Settings = () => {
     <div className="min-h-screen bg-[#f9fafd] flex flex-col overflow-auto">
       <div className="flex-1 flex flex-col items-center justify-start p-6">
         <div className="w-full flex flex-col items-center">
-          {/* Header (keep this as-is, replace text/color if needed) */}
+          {/* Header (existing, unchanged) */}
           <div className="w-full flex justify-between items-center mb-4 px-4 py-3 bg-gray-800 border-b border-gray-200 shadow-sm rounded-t-lg">
-            {/* Left: Welcome Message (1/3 width) */}
             <div className="w-1/3">
               <h1 className="text-xl font-semibold text-white">
                 Welcome,{" "}
@@ -353,35 +410,60 @@ const Settings = () => {
                 </span>
               </h1>
             </div>
-            {/* Center: Logo (1/3 width) */}
             <div className="w-1/3 flex justify-center">
               <div className="bg-slate-800 rounded-md p-2 shadow-inner">
-                <img
-                  src="/Columbus_Logo.png"
-                  alt="Logo"
-                  className="h-10" /* Adjust height as needed */
-                />
+                <img src="/Columbus_Logo.png" alt="Logo" className="h-10" />
               </div>
             </div>
-
-            {/* Right: Logout Button (1/3 width) */}
             <div className="w-1/3 flex justify-end">
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1.5 bg-red-100 text-red-700 px-4 py-2 rounded-md text-xs font-medium hover:bg-red-200 transition-colors shadow-sm"
               >
-                <LogOut size={14} />
-                Logout
+                <LogOut size={14} /> Logout
               </button>
             </div>
           </div>
 
-          <div className="w-full  flex flex-col gap-4 bg-white border rounded shadow-sm py-6 px-6 mt-8 ">
-            {/* Allow Email Redirect Checkbox - inline with label */}
+          {/* Import Button: Now floated top-right in its own row */}
+          <div className="w-full flex justify-end items-center mt-4 px-2">
+            <button
+              onClick={handleImportClick}
+              type="button"
+              disabled={importLoading}
+              className="bg-blue-600 text-white px-2 py-2 rounded shadow hover:bg-blue-700 transition-colors text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-0.5"
+            >
+              <svg
+                viewBox="0 0 18 18"
+                fill="none"
+                className="w-4 h-4"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9 14V4m0 0l4 4M9 4L5 8"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {importLoading ? "Processing..." : "Import Project Master"}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              onChange={handleImportFile}
+              accept=".csv"
+            />
+          </div>
+
+          {/* Card with Settings */}
+          <div className="w-full flex flex-col gap-4 bg-white border rounded shadow-sm py-6 px-6 mt-2">
             <div className="flex items-center">
               <label
                 htmlFor="allowEmailRedirect"
-                className="text-gray-700 text-md     mr-2"
+                className="text-gray-700 text-md mr-2"
               >
                 Allow Email Redirect :
               </label>
@@ -393,8 +475,6 @@ const Settings = () => {
                 className="w-4 h-5 text-blue-600 rounded focus:ring-blue-500"
               />
             </div>
-
-            {/* Redirect Email To Input */}
             <div className="flex items-center">
               <label
                 htmlFor="redirectEmailTo"
@@ -410,8 +490,6 @@ const Settings = () => {
                 className="flex-1 px-1 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
-
-            {/* Small Save Button aligned left */}
             <div className="flex justify-end">
               <button
                 onClick={handleSave}
