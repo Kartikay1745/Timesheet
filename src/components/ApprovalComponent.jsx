@@ -47,6 +47,7 @@ const columnsAdmin = [
   "Pay Type",
   "Hours",
   "Seq No",
+  "Comment",
   "Approver Name",
   "Approved Timestamp",
   "Imported By",
