@@ -6347,7 +6347,8 @@ const getUserIPAddress = async () => {
 };
 
 const columnsAdmin = [
-  "Notify",
+  "Select",
+  // "Notify",
   "Status",
   "Exported",
   "Date",
@@ -6479,9 +6480,9 @@ export default function MainTable() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedNotifyRows, setSelectedNotifyRows] = useState([]);
+  // const [selectedNotifyRows, setSelectedNotifyRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [notifySelectAll, setNotifySelectAll] = useState(false);
+  // const [notifySelectAll, setNotifySelectAll] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoaded, setUserLoaded] = useState(false);
 
@@ -6859,9 +6860,9 @@ export default function MainTable() {
 
   useEffect(() => {
     setSelectedRows([]);
-    setSelectedNotifyRows([]);
+    // setSelectedNotifyRows([]);
     setSelectAll(false);
-    setNotifySelectAll(false);
+    // setNotifySelectAll(false);
   }, []);
 
   useEffect(() => {
@@ -6903,9 +6904,12 @@ export default function MainTable() {
             isApproved: item.approvalStatus === "APPROVED" || false,
             isRejected: item.approvalStatus === "REJECTED" || false,
             isNotified: item.approvalStatus === "NOTIFIED" || false,
-            status: isAdmin
-              ? item.status?.toLowerCase() || "open" // Default to 'open' for admin if null/undefined
-              : item.approvalStatus?.toLowerCase() || "pending", // Default to 'pending' for user if null/undefined
+            // status: isAdmin
+            //   ? item.status?.toLowerCase() || "open" // Default to 'open' for admin if null/undefined
+            //   : item.approvalStatus?.toLowerCase() || "pending", // Default to 'pending' for user if null/undefined
+            Status: isAdmin
+              ? (item.status || "OPEN").toUpperCase() // Ensure uppercase for consistency
+              : (item.approvalStatus || "PENDING").toUpperCase(), // Ensure uppercase
             originalDate: item.timesheetDate,
             Date: formatDate(item.timesheetDate),
             "Employee ID": item.employee?.employeeId || item.employeeId || "",
@@ -6931,9 +6935,9 @@ export default function MainTable() {
             "PO Line Number": item.poLineNumber || "",
             Hours: formatHours(item.hours),
             "Seq No": item.sequenceNumber || "",
-            Status: isAdmin
-              ? item.status || "OPEN" // Default to 'OPEN' for admin
-              : item.approvalStatus || "PENDING", // Default to 'PENDING' for user
+            // Status: isAdmin
+            //   ? item.status || "OPEN" // Default to 'OPEN' for admin
+            //   : item.approvalStatus || "PENDING", // Default to 'PENDING' for user
             Comment: item.comment || "",
             isNotified: isAdmin
               ? (item.status || "").toLowerCase() === "notified"
@@ -7236,14 +7240,14 @@ export default function MainTable() {
     if (notifyLoading || importLoading || approveLoading || rejectLoading)
       return; // Check all loading states
 
-    if (selectedNotifyRows.length === 0) {
+    if (selectedRows.length === 0) {
       showToast("Please select at least one timesheet to notify.", "warning");
       return;
     }
 
     try {
       setNotifyLoading(true); // Start notify loading
-      const requestBody = selectedNotifyRows.map((row) => ({
+      const requestBody = selectedRows.map((row) => ({
         requestType: "TIMESHEET",
         requesterId: 1,
         timesheetId: row.id,
@@ -7259,10 +7263,10 @@ export default function MainTable() {
 
       if (response.ok) {
         showToast(
-          `Notifications sent for ${selectedNotifyRows.length} timesheets successfully!`,
+          `Notifications sent for ${selectedRows.length} timesheets successfully!`,
           "success"
         );
-        const notifiedIds = selectedNotifyRows.map((row) => row.id);
+        const notifiedIds = selectedRows.map((row) => row.id);
         setRows((prevRows) =>
           prevRows.map((row) =>
             notifiedIds.includes(row.id)
@@ -7272,12 +7276,15 @@ export default function MainTable() {
                   Status: "PENDING", // Status becomes PENDING after notify
                   isNotified: true, // Mark as notified visually? Depends on requirement.
                   notifySelected: false,
+                  selected: false,
                 }
               : row
           )
         );
-        setSelectedNotifyRows([]);
-        setNotifySelectAll(false);
+        // setSelectedNotifyRows([]);
+        // setNotifySelectAll(false);
+        setSelectedRows([]); // ← Changed
+        setSelectAll(false);
       } else {
         showToast("Failed to send notifications. Please try again.", "error");
       }
@@ -7350,8 +7357,39 @@ export default function MainTable() {
     setSelectedNotifyRows(isSelected ? [...selectableRows] : []);
   };
 
+  // const handleRowSelect = (rowIndex, isSelected) => {
+  //   if (!(isUser || isAdmin)) return;
+  //   const updatedRows = [...rows];
+  //   const actualRowIndex = rows.findIndex(
+  //     (row) => row.id === filteredRows[rowIndex].id
+  //   );
+  //   updatedRows[actualRowIndex].selected = isSelected;
+  //   setRows(updatedRows);
+  //   const rowData = filteredRows[rowIndex];
+  //   if (isSelected) {
+  //     setSelectedRows((prev) => [...prev, rowData]);
+  //   } else {
+  //     setSelectedRows((prev) => prev.filter((item) => item.id !== rowData.id));
+  //     setSelectAll(false);
+  //   }
+  // };
+
+  //   const handleSelectAll = (isSelected) => {
+  //     if (!isUser) return;
+  //     setSelectAll(isSelected);
+  //     const updatedRows = [...rows];
+  //     // const actionableRows = filteredRows.filter(row => isRowActionable(row));
+  //     const actionableRows = filteredRows.filter(row => (row["Status"] || "").toUpperCase() === "PENDING");
+  //     actionableRows.forEach(filteredRow => {
+  //       const actualRowIndex = rows.findIndex(row => row.id === filteredRow.id);
+  //       if (actualRowIndex !== -1) updatedRows[actualRowIndex].selected = isSelected;
+  //     });
+  //     setRows(updatedRows);
+  //     setSelectedRows(isSelected ? [...actionableRows] : []);
+  //   };
+  // This already handles both User and Admin - KEEP AS IS
   const handleRowSelect = (rowIndex, isSelected) => {
-    if (!isUser) return;
+    if (!(isUser || isAdmin)) return;
     const updatedRows = [...rows];
     const actualRowIndex = rows.findIndex(
       (row) => row.id === filteredRows[rowIndex].id
@@ -7367,46 +7405,65 @@ export default function MainTable() {
     }
   };
 
-  //   const handleSelectAll = (isSelected) => {
-  //     if (!isUser) return;
-  //     setSelectAll(isSelected);
-  //     const updatedRows = [...rows];
-  //     // const actionableRows = filteredRows.filter(row => isRowActionable(row));
-  //     const actionableRows = filteredRows.filter(row => (row["Status"] || "").toUpperCase() === "PENDING");
-  //     actionableRows.forEach(filteredRow => {
-  //       const actualRowIndex = rows.findIndex(row => row.id === filteredRow.id);
-  //       if (actualRowIndex !== -1) updatedRows[actualRowIndex].selected = isSelected;
-  //     });
-  //     setRows(updatedRows);
-  //     setSelectedRows(isSelected ? [...actionableRows] : []);
-  //   };
+  // const handleSelectAll = (isSelected) => {
+  //   if (!(isUser || isAdmin)) return;
+  //   setSelectAll(isSelected);
+
+  //   // Create a Set of IDs for the currently filtered rows for quick lookup
+  //   const filteredRowIds = new Set(filteredRows.map((row) => row.id));
+
+  //   // Iterate through *all* rows in the main state
+  //   // const updatedRows = rows.map((row) => {
+  //   //   // Only consider changing selection if the row is currently visible in the filtered list
+  //   //   if (filteredRowIds.has(row.id)) {
+  //   //     // Check if the row's status is PENDING (this is the only actionable status for select all)
+  //   //     const isPending = (row["Status"] || "").toUpperCase() === "PENDING";
+  //   //     return {
+  //   //       ...row,
+  //   //       // Set selected to true ONLY if isSelected is true AND the status is PENDING
+  //   //       // Otherwise, set it to false (this handles unchecking too)
+  //   //       selected: isSelected && isPending,
+  //   //     };
+  //   //   }
+  //   //   // If the row isn't in the current filter, keep its selected state unchanged
+  //   //   return row;
+  //   // });
+  //   const updatedRows = rows.map((row) => {
+  //   if (filteredRowIds.has(row.id)) {
+  //     // ✅ FIXED: Check using isRowActionable() instead
+  //     const isActionable = isRowActionable(row);
+  //     return {
+  //       ...row,
+  //       selected: isSelected && isActionable,
+  //     };
+  //   }
+  //   return row;
+  // });
+
+  //   setRows(updatedRows);
+
+  //   // Update the selectedRows state based on the rows that ended up being selected
+  //   setSelectedRows(updatedRows.filter((row) => row.selected));
+  // };
+
   const handleSelectAll = (isSelected) => {
-    if (!isUser) return;
+    if (!(isUser || isAdmin)) return;
     setSelectAll(isSelected);
 
-    // Create a Set of IDs for the currently filtered rows for quick lookup
     const filteredRowIds = new Set(filteredRows.map((row) => row.id));
 
-    // Iterate through *all* rows in the main state
     const updatedRows = rows.map((row) => {
-      // Only consider changing selection if the row is currently visible in the filtered list
       if (filteredRowIds.has(row.id)) {
-        // Check if the row's status is PENDING (this is the only actionable status for select all)
-        const isPending = (row["Status"] || "").toUpperCase() === "PENDING";
+        const isActionable = isRowActionable(row);
         return {
           ...row,
-          // Set selected to true ONLY if isSelected is true AND the status is PENDING
-          // Otherwise, set it to false (this handles unchecking too)
-          selected: isSelected && isPending,
+          selected: isSelected && isActionable,
         };
       }
-      // If the row isn't in the current filter, keep its selected state unchanged
       return row;
     });
 
     setRows(updatedRows);
-
-    // Update the selectedRows state based on the rows that ended up being selected
     setSelectedRows(updatedRows.filter((row) => row.selected));
   };
 
@@ -7423,7 +7480,7 @@ export default function MainTable() {
   };
 
   const handleBulkApproveClick = () => {
-    if (!isUser || selectedRows.length === 0) {
+    if (!(isUser || isAdmin) || selectedRows.length === 0) {
       showToast("Please select at least one timesheet to approve.", "warning");
       return;
     }
@@ -7431,8 +7488,57 @@ export default function MainTable() {
     setShowReasonModal(true);
   };
 
+  //   const canPerformAction = () => {
+  //   if (selectedRows.length === 0) return false;
+
+  //   if (isAdmin) {
+  //     // For Admin: can only approve/reject PENDING rows, NOT OPEN rows
+  //     return selectedRows.some(row => row.Status === "PENDING");
+  //   }
+
+  //   // For User: can approve/reject PENDING rows
+  //   return selectedRows.some(row => row.Status === "PENDING");
+  // };
+
+  const canPerformAction = () => {
+    if (selectedRows.length === 0) return false;
+
+    if (isAdmin) {
+      // For Admin ONLY: can only approve/reject PENDING rows, NOT OPEN rows
+      return selectedRows.some((row) => row.Status === "PENDING");
+    }
+
+    // For User: keep original behavior (no restriction)
+    return selectedRows.length > 0;
+  };
+
+  // const getApproveRejectCount = () => {
+  //   if (isAdmin) {
+  //     // For Admin: only count PENDING rows
+  //     return selectedRows.filter(row => row.Status === "PENDING").length;
+  //   }
+  //   // For User: count all selected rows
+  //   return selectedRows.length;
+  // };
+
+  // const getApproveRejectCount = () => {
+  //   if (isAdmin) {
+  //     // For Admin: only count PENDING rows (exclude OPEN rows)
+  //     return selectedRows.filter(row => row.Status === 'PENDING').length;
+  //   }
+  //   // For User: count all selected rows
+  //   return selectedRows.length;
+  // };
+
+  const getApproveRejectCount = () => {
+    if (isAdmin) {
+      return selectedRows.filter((row) => row.Status === "PENDING").length;
+    }
+    return selectedRows.length;
+  };
+
   const handleBulkRejectClick = () => {
-    if (!isUser || selectedRows.length === 0) {
+    if (!(isUser || isAdmin) || selectedRows.length === 0) {
       showToast("Please select at least one timesheet to reject.", "warning");
       return;
     }
@@ -7455,26 +7561,83 @@ export default function MainTable() {
     setPendingAction(null);
   };
 
+  // const performBulkApprove = async (reason) => {
+  //   setApproveLoading(true); // Start approve loading
+  //   try {
+  //     const requestBody = buildBulkRequestBody(
+  //       selectedRows,
+  //       "approve",
+  //       reason,
+  //       userIpAddress
+  //     );
+  //     const response = await fetch(`${backendUrl}/api/Approval/BulkApprove`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(requestBody),
+  //     });
+  //     if (response.ok) {
+  //       showToast(
+  //         `Successfully approved ${selectedRows.length} timesheets with reason: "${reason}"`,
+  //         "success"
+  //       );
+  //       const approvedIds = selectedRows.map((row) => row.id);
+  //       setRows((prevRows) =>
+  //         prevRows.map((row) =>
+  //           approvedIds.includes(row.id)
+  //             ? {
+  //                 ...row,
+  //                 isApproved: true,
+  //                 status: "approved",
+  //                 selected: false,
+  //                 Status: "APPROVED",
+  //               }
+  //             : row
+  //         )
+  //       );
+  //       setSelectedRows([]);
+  //       setSelectAll(false);
+  //     } else {
+  //       showToast(
+  //         "Failed to approve some timesheets. Please try again.",
+  //         "error"
+  //       );
+  //     }
+  //   } catch (error) {
+  //     showToast(
+  //       "Failed to approve timesheets. Please check your connection.",
+  //       "error"
+  //     );
+  //   } finally {
+  //     setApproveLoading(false); // End approve loading
+  //   }
+  // };
   const performBulkApprove = async (reason) => {
-    setApproveLoading(true); // Start approve loading
+    setApproveLoading(true);
     try {
+      //  FIX: Filter to only PENDING rows for Admin
+      const rowsToApprove = isAdmin
+        ? selectedRows.filter((row) => row.Status === "PENDING")
+        : selectedRows;
+
       const requestBody = buildBulkRequestBody(
-        selectedRows,
+        rowsToApprove,
         "approve",
         reason,
         userIpAddress
       );
+
       const response = await fetch(`${backendUrl}/api/Approval/BulkApprove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
+
       if (response.ok) {
         showToast(
-          `Successfully approved ${selectedRows.length} timesheets with reason: "${reason}"`,
+          `Successfully approved ${rowsToApprove.length} timesheets with reason: "${reason}"`,
           "success"
         );
-        const approvedIds = selectedRows.map((row) => row.id);
+        const approvedIds = rowsToApprove.map((row) => row.id);
         setRows((prevRows) =>
           prevRows.map((row) =>
             approvedIds.includes(row.id)
@@ -7502,30 +7665,92 @@ export default function MainTable() {
         "error"
       );
     } finally {
-      setApproveLoading(false); // End approve loading
+      setApproveLoading(false);
     }
   };
 
+  // const performBulkReject = async (reason) => {
+  //   setRejectLoading(true); // Start reject loading
+  //   try {
+  //     const requestBody = buildBulkRequestBody(
+  //       selectedRows,
+  //       "reject",
+  //       reason,
+  //       userIpAddress
+  //     );
+  //     const response = await fetch(`${backendUrl}/api/Approval/BulkReject`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(requestBody),
+  //     });
+  //     if (response.ok) {
+  //       showToast(
+  //         `Successfully rejected ${selectedRows.length} timesheets with reason: "${reason}"`,
+  //         "success"
+  //       );
+  //       const rejectedIds = selectedRows.map((row) => row.id);
+  //       setRows((prevRows) =>
+  //         prevRows.map((row) =>
+  //           rejectedIds.includes(row.id)
+  //             ? {
+  //                 ...row,
+  //                 isRejected: true,
+  //                 status: "rejected",
+  //                 selected: false,
+  //                 Status: "REJECTED",
+  //               }
+  //             : row
+  //         )
+  //       );
+  //       setSelectedRows([]);
+  //       setSelectAll(false);
+  //     } else {
+  //       showToast(
+  //         "Failed to reject some timesheets. Please try again.",
+  //         "error"
+  //       );
+  //     }
+  //   } catch (error) {
+  //     showToast(
+  //       "Failed to reject timesheets. Please check your connection.",
+  //       "error"
+  //     );
+  //   } finally {
+  //     setRejectLoading(false); // End reject loading
+  //   }
+  // };
+
+  // const isRowActionable = (row) =>
+
+  //   row.Status === "PENDING" && !row.isApproved && !row.isRejected;
+
   const performBulkReject = async (reason) => {
-    setRejectLoading(true); // Start reject loading
+    setRejectLoading(true);
     try {
+      //  FIX: Filter to only PENDING rows for Admin
+      const rowsToReject = isAdmin
+        ? selectedRows.filter((row) => row.Status === "PENDING")
+        : selectedRows;
+
       const requestBody = buildBulkRequestBody(
-        selectedRows,
+        rowsToReject,
         "reject",
         reason,
         userIpAddress
       );
+
       const response = await fetch(`${backendUrl}/api/Approval/BulkReject`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
+
       if (response.ok) {
         showToast(
-          `Successfully rejected ${selectedRows.length} timesheets with reason: "${reason}"`,
+          `Successfully rejected ${rowsToReject.length} timesheets with reason: "${reason}"`,
           "success"
         );
-        const rejectedIds = selectedRows.map((row) => row.id);
+        const rejectedIds = rowsToReject.map((row) => row.id);
         setRows((prevRows) =>
           prevRows.map((row) =>
             rejectedIds.includes(row.id)
@@ -7553,12 +7778,23 @@ export default function MainTable() {
         "error"
       );
     } finally {
-      setRejectLoading(false); // End reject loading
+      setRejectLoading(false);
     }
   };
 
-  const isRowActionable = (row) =>
-    row.Status === "PENDING" && !row.isApproved && !row.isRejected;
+  const isRowActionable = (row) => {
+    if (isAdmin) {
+      // For Admin: OPEN and PENDING are actionable
+      return (
+        (row.Status === "OPEN" || row.Status === "PENDING") &&
+        !row.isApproved &&
+        !row.isRejected
+      );
+    }
+    // For User: only PENDING is actionable
+    return row.Status === "PENDING" && !row.isApproved && !row.isRejected;
+  };
+
   const hasPendingRows = Array.isArray(filteredRows)
     ? filteredRows.some((row) => isRowActionable(row))
     : false;
@@ -7802,43 +8038,53 @@ export default function MainTable() {
               className="flex justify-between items-center mb-2 w-full px-2"
               style={{ flexShrink: 0 }}
             >
-              <div className="flex gap-2">
-                {isUser && hasPendingRows && (
+              {/* <div className="flex gap-2">
+                {(isUser || isAdmin) && hasPendingRows && (
                   <>
+                
                     <button
-                      onClick={handleBulkApproveClick}
-                      disabled={approveLoading || selectedRows.length === 0}
-                      className="bg-green-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-green-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {approveLoading
-                        ? "Processing..."
-                        : `Approve (${selectedRows.length})`}
-                    </button>
+  onClick={handleBulkApproveClick}
+  disabled={
+    approveLoading || 
+    selectedRows.length === 0 || 
+    (isAdmin && !selectedRows.some(row => row.Status === 'PENDING')) ||
+    (isAdmin && selectedRows.some(row => row.Status === 'OPEN')) 
+  }
+  className="bg-green-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-green-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {approveLoading
+    ? "Processing..."
+    : `Approve (${getApproveRejectCount()})`}  
+</button>
+                  
                     <button
-                      onClick={handleBulkRejectClick}
-                      disabled={rejectLoading || selectedRows.length === 0}
-                      className="bg-red-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-red-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {rejectLoading
-                        ? "Processing..."
-                        : `Reject (${selectedRows.length})`}
-                    </button>
+  onClick={handleBulkRejectClick}
+   disabled={
+    rejectLoading || 
+    selectedRows.length === 0 || 
+    (isAdmin && !selectedRows.some(row => row.Status === 'PENDING')) ||
+    (isAdmin && selectedRows.some(row => row.Status === 'OPEN')) 
+  }
+  className="bg-red-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-red-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {rejectLoading
+    ? "Processing..."
+    : `Reject (${getApproveRejectCount()})`}  
+</button>
                   </>
                 )}
-              </div>
+              </div> */}
               <div className="flex gap-2">
                 {isAdmin && (
                   <>
                     <button
                       onClick={handleNotifyClick}
-                      disabled={
-                        notifyLoading || selectedNotifyRows.length === 0
-                      }
+                      disabled={notifyLoading || selectedRows.length === 0}
                       className="bg-orange-600 text-white px-4 py-1.5 rounded shadow-sm hover:bg-orange-700 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {notifyLoading
                         ? "Sending..."
-                        : `Notify (${selectedNotifyRows.length})`}
+                        : `Notify (${selectedRows.length})`}
                     </button>
                     <button
                       onClick={handleImportClick}
@@ -7923,7 +8169,7 @@ export default function MainTable() {
                           !["Select", "Notify"].includes(col) && handleSort(col)
                         }
                       >
-                        {col === "Select" && isUser ? (
+                        {col === "Select" && (isUser || isAdmin) ? (
                           <div
                             style={{
                               display: "flex",
@@ -8033,7 +8279,7 @@ export default function MainTable() {
                               >
                                 {row[col] || "PENDING"}
                               </span>
-                            ) : col === "Select" && isUser ? (
+                            ) : col === "Select" && (isUser || isAdmin) ? (
                               <input
                                 type="checkbox"
                                 checked={row.selected || false}

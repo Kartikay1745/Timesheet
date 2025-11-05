@@ -2360,6 +2360,7 @@ import {
   User,
   Settings2,
   User2,
+  CheckCircle,
 } from "lucide-react";
 
 /**
@@ -2477,14 +2478,37 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* Navigation Links (will scroll if content overflows) */}
       <nav className="flex-1 p-3 space-y-2 overflow-y-auto">
-        <SidebarItem
+        {/* <SidebarItem
           icon={<Clock className="w-4 h-4" />}
           text="Timesheet"
           to="/dashboard/timesheet"
           isSelected={selectedPage === "/dashboard/timesheet"}
           isCollapsed={!sidebarOpen}
           onClick={createLinkHandler("/dashboard/timesheet")}
-        />
+        /> */}
+
+        {!isUser && (
+  <SidebarItem
+    icon={<Clock className="w-4 h-4" />}
+    text="Timesheet"
+    to="/dashboard/timesheet"
+    isSelected={selectedPage === "/dashboard/timesheet"}
+    isCollapsed={!sidebarOpen}
+    onClick={createLinkHandler("/dashboard/timesheet")}
+  />
+)}
+
+
+         {(isAdmin || isUser) && (
+          <SidebarItem
+            icon={<CheckCircle className="w-4 h-4" />}
+            text="Approvals"
+            to="/dashboard/approvals"
+            isSelected={selectedPage === "/dashboard/approvals"}
+            isCollapsed={!sidebarOpen}
+            onClick={createLinkHandler("/dashboard/approvals")}
+          />
+        )}
 
         {isAdmin && (
           <SidebarItem
