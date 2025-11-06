@@ -133,18 +133,24 @@ const CreateUserModal = ({ onClose, onUserCreated }) => {
         }
       }
     }
+
     if ("password" in fieldValues) {
       tempErrors.password = fieldValues.password ? "" : "Password is required.";
       if (fieldValues.password && fieldValues.password.length < 5) {
         tempErrors.password = "Password must be at least 5 characters long.";
       }
     }
-    if ("confirmPassword" in fieldValues || "password" in fieldValues) {
-      tempErrors.confirmPassword = confirmPass
-        ? ""
-        : "Please confirm your password.";
-      if (confirmPass && fieldValues.password !== confirmPass) {
+
+    if ("confirmPassword" in fieldValues) {
+      // Make sure confirmPass is defined and both password and confirmPass match
+      if (!fieldValues.confirmPassword) {
+        tempErrors.confirmPassword = "Please confirm your password.";
+      } else if (fieldValues.password !== fieldValues.confirmPassword) {
         tempErrors.confirmPassword = "Passwords do not match.";
+      } else if (fieldValues.password === fieldValues.confirmPassword) {
+        tempErrors.confirmPassword = "";
+      } else {
+        tempErrors.confirmPassword = "";
       }
     }
 
