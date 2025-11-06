@@ -2361,6 +2361,7 @@ import {
   Settings2,
   User2,
   CheckCircle,
+  ImportIcon,
 } from "lucide-react";
 
 /**
@@ -2428,11 +2429,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   }, [pathname]);
 
   // Handles navigation, preventing re-navigation to the same page
+  // const handleLinkClick = (pagePath) => {
+  //   if (selectedPage === pagePath) {
+  //     setSelectedPage(null);
+  //     navigate("/dashboard");
+  //   } else {
+  //     setSelectedPage(pagePath);
+  //     navigate(pagePath);
+  //   }
+  // };
   const handleLinkClick = (pagePath) => {
-    if (selectedPage === pagePath) {
-      setSelectedPage(null);
-      navigate("/dashboard");
-    } else {
+    if (selectedPage !== pagePath) {
       setSelectedPage(pagePath);
       navigate(pagePath);
     }
@@ -2488,18 +2495,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         /> */}
 
         {!isUser && (
-  <SidebarItem
-    icon={<Clock className="w-4 h-4" />}
-    text="Timesheet"
-    to="/dashboard/timesheet"
-    isSelected={selectedPage === "/dashboard/timesheet"}
-    isCollapsed={!sidebarOpen}
-    onClick={createLinkHandler("/dashboard/timesheet")}
-  />
-)}
+          <SidebarItem
+            icon={<Clock className="w-4 h-4" />}
+            text="Timesheet"
+            to="/dashboard/timesheet"
+            isSelected={selectedPage === "/dashboard/timesheet"}
+            isCollapsed={!sidebarOpen}
+            onClick={createLinkHandler("/dashboard/timesheet")}
+          />
+        )}
 
-
-         {(isAdmin || isUser) && (
+        {(isAdmin || isUser) && (
           <SidebarItem
             icon={<CheckCircle className="w-4 h-4" />}
             text="Approvals"
@@ -2551,6 +2557,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             isSelected={selectedPage === "/dashboard/usertable"}
             isCollapsed={!sidebarOpen}
             onClick={createLinkHandler("/dashboard/usertable")}
+          />
+        )}
+
+        {isAdmin && (
+          <SidebarItem
+            icon={<ImportIcon className="w-4 h-4" />}
+            text="Import"
+            to="/dashboard/import"
+            isSelected={selectedPage === "/dashboard/import"}
+            isCollapsed={!sidebarOpen}
+            onClick={createLinkHandler("/dashboard/import")}
           />
         )}
         {/* <SidebarItem

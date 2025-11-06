@@ -648,9 +648,6 @@
 //   );
 // }
 
-
-
-
 // export default function Dashboard() {
 //   const { pathname } = useLocation();
 //   const navigate = useNavigate();
@@ -734,6 +731,7 @@ import AboutPage from "../components/AboutPage";
 import TimesheetHistory from "../components/TimesheetHistory";
 import Settings from "../components/Settings";
 import ApprovalComponent from "../components/ApprovalComponent";
+import Import from "../components/import";
 
 const showToast = (message, type = "info") => {
   const bgColor =
@@ -779,12 +777,15 @@ export default function Dashboard() {
     }
   }, [navigate]);
 
-useEffect(() => {
-  if (currentUser && currentUser.role === "User" && pathname.includes("/dashboard/timesheet")) {
-    navigate("/dashboard/approvals");
-  }
-}, [currentUser, pathname, navigate]);
-
+  useEffect(() => {
+    if (
+      currentUser &&
+      currentUser.role === "User" &&
+      pathname.includes("/dashboard/timesheet")
+    ) {
+      navigate("/dashboard/approvals");
+    }
+  }, [currentUser, pathname, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
@@ -827,10 +828,14 @@ useEffect(() => {
           <TimesheetHistory />
         ) : pathname === "/dashboard/settings" ? (
           <Settings />
+        ) : pathname === "/dashboard/import" ? (
+          <Import />
         ) : pathname === "/dashboard/usertable" ? (
           <UserTable />
+        ) : isUser ? (
+          <ApprovalComponent />
         ) : (
-          isUser ? <ApprovalComponent /> : <MainTable />
+          <MainTable />
         )}
       </div>
     </div>

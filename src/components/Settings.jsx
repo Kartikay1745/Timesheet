@@ -233,6 +233,9 @@ const Settings = () => {
   const [allowEmailRedirectId, setAllowEmailRedirectId] = useState(0);
   const [importLoading, setImportLoading] = useState(false);
   const [redirectEmailToId, setRedirectEmailToId] = useState(0);
+  const [allowEmailNotification, setAllowEmailNotification] = useState(false);
+  const [allowEmailNotificationId, setAllowEmailNotificationId] = useState(0);
+  const [notificaionEmailToId, setNotificaionEmailToId] = useState(0);
 
   useEffect(() => {
     // Existing user session loading logic
@@ -269,6 +272,9 @@ const Settings = () => {
         const emailConfig = data.find(
           (item) => item.name === "REDIRECT_EMAIL_TO"
         );
+        const emailNotification = data.find(
+          (item) => item.name === "EMAIL_NOTIFICATION"
+        );
 
         if (redirectConfig) {
           setAllowEmailRedirect(redirectConfig.value === "true");
@@ -277,6 +283,11 @@ const Settings = () => {
         if (emailConfig) {
           setRedirectEmailTo(emailConfig.value);
           setRedirectEmailToId(emailConfig.id);
+        }
+
+        if (emailNotification) {
+          setAllowEmailNotification(emailNotification.value === "true");
+          setAllowEmailNotificationId(emailNotification.id);
         }
       })
       .catch((err) => {
@@ -310,6 +321,12 @@ const Settings = () => {
         value: redirectEmailTo,
         createdAt: nowISOString,
         id: redirectEmailToId || 0,
+      },
+      {
+        name: "EMAIL_NOTIFICATION",
+        value: allowEmailNotification.toString(),
+        createdAt: nowISOString,
+        id: allowEmailNotificationId || 0,
       },
     ];
 
@@ -426,7 +443,7 @@ const Settings = () => {
           </div>
 
           {/* Import Button: Now floated top-right in its own row */}
-          <div className="w-full flex justify-end items-center mt-4 px-2">
+          {/* <div className="w-full flex justify-end items-center mt-4 px-2">
             <button
               onClick={handleImportClick}
               type="button"
@@ -456,14 +473,28 @@ const Settings = () => {
               onChange={handleImportFile}
               accept=".csv"
             />
-          </div>
+          </div> */}
 
           {/* Card with Settings */}
           <div className="w-full flex flex-col gap-4 bg-white border rounded shadow-sm py-6 px-6 mt-2">
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
+              <label
+                htmlFor="allowEmailNotification"
+                className="text-gray-700 text-md mr-1"
+              >
+                Allow Email Notification :
+              </label>
+              <input
+                id="allowEmailNotification"
+                type="checkbox"
+                checked={allowEmailNotification}
+                onChange={(e) => setAllowEmailNotification(e.target.checked)}
+                className="w-4 h-5 text-blue-600 rounded focus:ring-blue-500"
+              />
+
               <label
                 htmlFor="allowEmailRedirect"
-                className="text-gray-700 text-md mr-2"
+                className="text-gray-700 text-md"
               >
                 Allow Email Redirect :
               </label>
@@ -474,7 +505,41 @@ const Settings = () => {
                 onChange={(e) => setAllowEmailRedirect(e.target.checked)}
                 className="w-4 h-5 text-blue-600 rounded focus:ring-blue-500"
               />
+            </div> */}
+            <div className="flex items-center gap-x-8">
+              <div className="flex items-center">
+                <label
+                  htmlFor="allowEmailNotification"
+                  className="text-gray-700 text-md"
+                >
+                  Allow Email Notification :
+                </label>
+                <input
+                  id="allowEmailNotification"
+                  type="checkbox"
+                  checked={allowEmailNotification}
+                  onChange={(e) => setAllowEmailNotification(e.target.checked)}
+                  className="w-4 h-5 ml-2 text-blue-600 rounded focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <label
+                  htmlFor="allowEmailRedirect"
+                  className="text-gray-700 text-md"
+                >
+                  Allow Email Redirect :
+                </label>
+                <input
+                  id="allowEmailRedirect"
+                  type="checkbox"
+                  checked={allowEmailRedirect}
+                  onChange={(e) => setAllowEmailRedirect(e.target.checked)}
+                  className="w-4 h-5 ml-2 text-blue-600 rounded focus:ring-blue-500"
+                />
+              </div>
             </div>
+
             <div className="flex items-center">
               <label
                 htmlFor="redirectEmailTo"
@@ -482,15 +547,17 @@ const Settings = () => {
               >
                 Redirect Email To :
               </label>
-              <input
-                id="redirectEmailTo"
-                type="email"
-                value={redirectEmailTo}
-                onChange={(e) => setRedirectEmailTo(e.target.value)}
-                className="flex-1 px-1 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+              <span>
+                <input
+                  id="redirectEmailTo"
+                  type="email"
+                  value={redirectEmailTo}
+                  onChange={(e) => setRedirectEmailTo(e.target.value)}
+                  className="flex-1 px-1 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400  min-w-[300px]"
+                />
+              </span>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-start">
               <button
                 onClick={handleSave}
                 disabled={loading}
