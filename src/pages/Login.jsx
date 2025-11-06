@@ -922,35 +922,53 @@ const PasswordModal = ({ userInfo, type, onClose }) => {
     setError("");
 
     try {
-      const url = `${backendUrl}/api/User/${userInfo.userId}`;
-
-      // Construct payload as per your schema with required fields and newpassword
-      const payload = {
+      // 1. Update user details API
+      const userUpdateUrl = `${backendUrl}/api/User/${userInfo.userId}`;
+      const userUpdatePayload = {
         userId: userInfo.userId,
         fullName: userInfo.fullName || userInfo.name || "",
         email: userInfo.email || "",
         role: userInfo.role || "",
         isActive: true,
-        firstLogin: false, // mark firstLogin false after updating password
-        password: newPassword,
+        firstLogin: false,
       };
 
-      const response = await fetch(url, {
+      const userResponse = await fetch(userUpdateUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(userUpdatePayload),
       });
 
-      if (response.ok) {
-        showToast("Password updated successfully! Please login.", "success");
-        onClose();
-        navigate("/login");
-      } else {
-        const errorData = await response.json().catch(() => null);
+      if (!userResponse.ok) {
+        const errorData = await userResponse.json().catch(() => null);
         throw new Error(
-          errorData?.message || `Request failed with status ${response.status}`
+          errorData?.message ||
+            `User update failed with status ${userResponse.status}`
         );
       }
+
+      // 2. Reset password API
+      const resetPasswordUrl = `${backendUrl}/api/User/${userInfo.userId}/reset-password`;
+      const resetPayload = { newPassword: newPassword };
+
+      const resetResponse = await fetch(resetPasswordUrl, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resetPayload),
+      });
+
+      if (!resetResponse.ok) {
+        const errorData = await resetResponse.json().catch(() => null);
+        throw new Error(
+          errorData?.message ||
+            `Password reset failed with status ${resetResponse.status}`
+        );
+      }
+
+      // If both succeed:
+      showToast(" Password reset successfully! Please login.", "success");
+      onClose();
+      navigate("/login");
     } catch (err) {
       setError(err.message);
     } finally {
