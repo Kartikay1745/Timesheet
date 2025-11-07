@@ -7302,13 +7302,26 @@ export default function MainTable() {
             method: "POST",
           }
         );
-        if (refreshedResp.ok) {
-          fetchData();
-        }
+        // if (refreshedResp.ok) {
+        //   fetchData();
+
+        // }
         if (!refreshedResp.ok) {
-          throw new Error(
-            "Import API call failed: " + refreshedResp.statusText
-          );
+          let backendError =
+            "Import API call failed: " + refreshedResp.statusText;
+          try {
+            const errJson = await refreshedResp.json();
+            // Show message if present, otherwise error stringified
+            backendError =
+              errJson.message ||
+              errJson.error ||
+              JSON.stringify(errJson) ||
+              backendError;
+          } catch {
+            // fallback: try to get plain text error if not json
+            backendError = await refreshedResp.text().catch(() => backendError);
+          }
+          throw new Error(backendError);
         }
 
         const contentType = refreshedResp.headers.get("content-type") || "";
@@ -7333,7 +7346,8 @@ export default function MainTable() {
       }
     } catch (error) {
       console.error(error);
-      showToast("Upload failed", "error");
+      // showToast("Upload failed", "error");
+      showToast(error.message || "Upload failed", "error");
     } finally {
       setImportLoading(false);
       setSelectedFile(null);
