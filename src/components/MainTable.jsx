@@ -6298,6 +6298,32 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
 import { backendUrl } from "./config";
 
+// const showToast = (message, type = "info") => {
+//   const bgColor =
+//     type === "success"
+//       ? "#4ade80"
+//       : type === "error"
+//       ? "#ef4444"
+//       : type === "warning"
+//       ? "#f59e0b"
+//       : "#3b82f6";
+//   const toast = document.createElement("div");
+//   toast.textContent = message;
+//   toast.style.cssText = `
+//     position: fixed; top: 20px; right: 20px; z-index: 9999;
+//     background: ${bgColor}; color: white; padding: 12px 16px;
+//     border-radius: 6px; font-size: 14px; max-width: 300px;
+//     box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
+//   `;
+//   document.body.appendChild(toast);
+//   const displayTime =
+//     message.includes("import") || message.includes("Import") ? 4000 : 1000;
+//   setTimeout(() => {
+//     toast.style.opacity = "0";
+//     setTimeout(() => document.body.removeChild(toast), 300);
+//   }, displayTime);
+// };
+
 const showToast = (message, type = "info") => {
   const bgColor =
     type === "success"
@@ -6307,20 +6333,49 @@ const showToast = (message, type = "info") => {
       : type === "warning"
       ? "#f59e0b"
       : "#3b82f6";
+
   const toast = document.createElement("div");
   toast.textContent = message;
   toast.style.cssText = `
     position: fixed; top: 20px; right: 20px; z-index: 9999;
-    background: ${bgColor}; color: white; padding: 12px 16px;
+    background: ${bgColor}; color: white; padding: 12px 16px 12px 16px;
     border-radius: 6px; font-size: 14px; max-width: 300px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; transition: all 0.3s ease;
   `;
+
+  // Create close button
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "✕";
+  closeBtn.style.cssText = `
+    background: transparent; border: none; color: white;
+    font-size: 16px; cursor: pointer; padding: 0;
+    line-height: 1; user-select: none;
+  `;
+
+  closeBtn.onclick = () => {
+    toast.style.opacity = "0";
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 300);
+  };
+
+  toast.appendChild(closeBtn);
   document.body.appendChild(toast);
-  const displayTime =
-    message.includes("import") || message.includes("Import") ? 4000 : 1000;
+
+  // Increase display time - e.g., 4000ms generally, 6000ms if message includes "import"
+  const displayTime = message.toLowerCase().includes("import") ? 8000 : 6000;
+
   setTimeout(() => {
     toast.style.opacity = "0";
-    setTimeout(() => document.body.removeChild(toast), 300);
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 300);
   }, displayTime);
 };
 
