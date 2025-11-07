@@ -42,10 +42,12 @@ const Import = () => {
   // Store both value and id for each config to pass id on save
   const [allowEmailRedirectId, setAllowEmailRedirectId] = useState(0);
   const [importLoading, setImportLoading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
   const [redirectEmailToId, setRedirectEmailToId] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
   const [status, setStatus] = useState("");
   const [progress, setProgress] = useState(0);
+  const [selectedUserFile, setSelectedUserFile] = useState(null);
 
   useEffect(() => {
     // Existing user session loading logic
@@ -80,6 +82,18 @@ const Import = () => {
     navigate("/");
   };
 
+  function downloadCSV(csvContent, filename) {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
   //   const handleImportFile = (e) => {
   //     const file = e.target.files?.[0];
   //     if (file) {
@@ -87,10 +101,103 @@ const Import = () => {
   //     }
   //   };
 
-  const handleImportFile = (e) => {
+  const handleUserFile = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
+      setSelectedUserFile(file);
+    }
+  };
+
+  const handleUserClick = async (e) => {
+    e.preventDefault();
+
+    if (!selectedUserFile) {
+      showToast("No file selected", "error");
+      return;
+    }
+
+    if (!selectedUserFile.name.toLowerCase().endsWith(".csv")) {
+      showToast("Please select a CSV file", "error");
+      return;
+    }
+
+    setUserLoading(true);
+
+    try {
+      // Step 1: Fetch pre-signed URL dynamically from your backend API
+      const presignResp = await fetch(
+        `${backendUrl}/api/Timesheet/GetPresignedUrl/${encodeURIComponent(
+          selectedUserFile.name
+        )}`
+      );
+
+      if (!presignResp.ok) {
+        throw new Error("Failed to get presigned URL");
+      }
+
+      const presignedUrl = await presignResp.text();
+
+      // Step 2: Upload file to S3 pre-signed URL using PUT
+      const uploadResponse = await fetch(presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": selectedUserFile.type || "text/csv",
+        },
+        body: selectedUserFile,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Upload to S3 failed: " + uploadResponse.statusText);
+      }
+
+      // Step 3: Optionally refresh your data here
+      setLoading(true);
+      try {
+        const refreshedResp = await fetch(
+          `${backendUrl}/api/Timesheet/import-employees-csv-s3?filename=${encodeURIComponent(
+            selectedUserFile.name
+          )}&Username=${encodeURIComponent(currentUser?.name || "")}`,
+          {
+            method: "POST",
+          }
+        );
+        // if (refreshedResp.ok) {
+        //   const refreshedData = await refreshedResp.json();
+        //   setRows(refreshedData);
+        // }
+        if (!refreshedResp.ok) {
+          throw new Error(
+            "Import API call failed: " + refreshedResp.statusText
+          );
+        }
+
+        const contentType = refreshedResp.headers.get("content-type") || "";
+        if (
+          contentType.includes("text/csv") ||
+          contentType.includes("text/plain")
+        ) {
+          const csvText = await refreshedResp.text();
+          const filename = `imported_${selectedUserFile.name.replace(
+            ".csv",
+            ""
+          )}_${Date.now()}.csv`;
+          downloadCSV(csvText, filename);
+          showToast("Import skipped ", "error");
+        } else {
+          // Optionally handle JSON or other responses here
+          showToast("import successful", "success");
+        }
+        // showToast("Upload successful", "success");
+      } finally {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Upload failed", "error");
+    } finally {
+      setUserLoading(false);
+      setSelectedUserFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -296,18 +403,12 @@ const Import = () => {
   //     }
   //   };
 
-  function downloadCSV(csvContent, filename) {
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", filename);
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }
+  const handleImportFile = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
 
   const handleImportClick = async (e) => {
     e.preventDefault();
@@ -357,7 +458,10 @@ const Import = () => {
         const refreshedResp = await fetch(
           `${backendUrl}/api/Timesheet/import-projects-csv-s3?filename=${encodeURIComponent(
             selectedFile.name
-          )}&Username=${encodeURIComponent(currentUser?.name || "")}`
+          )}&Username=${encodeURIComponent(currentUser?.name || "")}`,
+          {
+            method: "POST",
+          }
         );
         // if (refreshedResp.ok) {
         //   const refreshedData = await refreshedResp.json();
@@ -452,6 +556,27 @@ const Import = () => {
               //   style={{ minWidth: "200px" }}
             >
               {importLoading ? "Processing..." : "Upload"}
+            </button>
+          </div>
+          <div className="w-full flex flex-col items-start gap-2 mt-4 px-2">
+            <h2 className="font-semibold text-md">Import Employee File</h2>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="border rounded px-1 py-1 text-gray-800"
+              onChange={handleUserFile}
+              accept=".csv"
+              disabled={userLoading}
+              //   style={{ minWidth: "220px" }}
+            />
+            <button
+              onClick={handleUserClick}
+              type="button"
+              disabled={userLoading}
+              className="bg-cyan-500 hover:bg-cyan-600 text-white px-1 py-1 rounded shadow font-semibold transition-colors text-md disabled:opacity-60 disabled:cursor-not-allowed"
+              //   style={{ minWidth: "200px" }}
+            >
+              {userLoading ? "Processing..." : "Upload"}
             </button>
           </div>
         </div>
