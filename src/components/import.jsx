@@ -296,6 +296,19 @@ const Import = () => {
   //     }
   //   };
 
+  function downloadCSV(csvContent, filename) {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   const handleImportClick = async (e) => {
     e.preventDefault();
 
@@ -314,7 +327,9 @@ const Import = () => {
     try {
       // Step 1: Fetch pre-signed URL dynamically from your backend API
       const presignResp = await fetch(
-        `${backendUrl}/api/Timesheet/GetPresignedUrl`
+        `${backendUrl}/api/Timesheet/GetPresignedUrl/${encodeURIComponent(
+          selectedFile.name
+        )}`
       );
 
       if (!presignResp.ok) {
@@ -340,15 +355,37 @@ const Import = () => {
       setLoading(true);
       try {
         const refreshedResp = await fetch(
-          `${backendUrl}/api/Timesheet/import-projects-csv-s3?Username=${encodeURIComponent(
-            currentUser?.name || ""
-          )}`
+          `${backendUrl}/api/Timesheet/import-projects-csv-s3?filename=${encodeURIComponent(
+            selectedFile.name
+          )}&Username=${encodeURIComponent(currentUser?.name || "")}`
         );
         // if (refreshedResp.ok) {
         //   const refreshedData = await refreshedResp.json();
         //   setRows(refreshedData);
         // }
-        showToast("Upload successful", "success");
+        if (!refreshedResp.ok) {
+          throw new Error(
+            "Import API call failed: " + refreshedResp.statusText
+          );
+        }
+
+        const contentType = refreshedResp.headers.get("content-type") || "";
+        if (
+          contentType.includes("text/csv") ||
+          contentType.includes("text/plain")
+        ) {
+          const csvText = await refreshedResp.text();
+          const filename = `imported_${selectedFile.name.replace(
+            ".csv",
+            ""
+          )}_${Date.now()}.csv`;
+          downloadCSV(csvText, filename);
+          showToast("Import skipped ", "error");
+        } else {
+          // Optionally handle JSON or other responses here
+          showToast("import successful", "success");
+        }
+        // showToast("Upload successful", "success");
       } finally {
         setLoading(false);
       }

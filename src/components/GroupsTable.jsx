@@ -2,9 +2,24 @@
 import React from "react";
 
 const groupRows = [
-  { groupId: "G100", groupName: "Admin Group", vendorName: "TCS", vendorId: "V001" },
-  { groupId: "G101", groupName: "Project Managers", vendorName: "Infosys", vendorId: "V002" },
-  { groupId: "G105", groupName: "HR Team", vendorName: "Wipro", vendorId: "V003" }
+  {
+    groupId: "G100",
+    groupName: "Admin Group",
+    vendorName: "TCS",
+    vendorId: "V001",
+  },
+  {
+    groupId: "G101",
+    groupName: "Project Managers",
+    vendorName: "Infosys",
+    vendorId: "V002",
+  },
+  {
+    groupId: "G105",
+    groupName: "HR Team",
+    vendorName: "Wipro",
+    vendorId: "V003",
+  },
 ];
 
 export default function GroupsTable() {
@@ -12,12 +27,20 @@ export default function GroupsTable() {
     <div className="min-h-screen bg-[#f9fafd] flex flex-col pl-44 pr-4">
       <div className="flex-1 flex flex-col items-center justify-start pt-8">
         <div className="w-full flex flex-col items-center">
-          <div className="border border-gray-300 rounded bg-white shadow"
-               style={{
-                //  marginLeft: 24,
-                //   marginRight: 24, 
-                //   width: "calc(100vw - 220px)",
-                   minWidth: 300, padding: "0.5rem", minHeight: "220px", maxHeight: "70vh", overflow: "hidden", marginBottom: "0px" }}>
+          <div
+            className="border border-gray-300 rounded bg-white shadow"
+            style={{
+              //  marginLeft: 24,
+              //   marginRight: 24,
+              //   width: "calc(100vw - 220px)",
+              minWidth: 300,
+              padding: "0.5rem",
+              minHeight: "220px",
+              maxHeight: "70vh",
+              overflow: "hidden",
+              marginBottom: "0px",
+            }}
+          >
             <div
               style={{
                 overflowX: "auto",
@@ -27,25 +50,117 @@ export default function GroupsTable() {
                 width: "100%",
               }}
             >
-              <table style={{ borderCollapse: "collapse", fontSize: "12px", minWidth: "800px", width: "max-content" }}>
-                <thead style={{ position: "sticky", top: 0, backgroundColor: "white", zIndex: 10 }}>
+              <table
+                style={{
+                  borderCollapse: "collapse",
+                  fontSize: "12px",
+                  minWidth: "800px",
+                  width: "max-content",
+                }}
+              >
+                <thead
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "white",
+                    zIndex: 10,
+                  }}
+                >
                   <tr>
-                    <th style={{ border: "1px solid #d1d5db", padding: "8px", fontSize: "13px", minWidth: 120, fontWeight: "bold", color: "#1e40af" }}>Group ID</th>
-                    <th style={{ border: "1px solid #d1d5db", padding: "8px", fontSize: "13px", minWidth: 220, fontWeight: "bold", color: "#1e40af" }}>Group Name</th>
-                    <th style={{ border: "1px solid #d1d5db", padding: "8px", fontSize: "13px", minWidth: 190, fontWeight: "bold", color: "#1e40af" }}>Vendor Name</th>
-                    <th style={{ border: "1px solid #d1d5db", padding: "8px", fontSize: "13px", minWidth: 120, fontWeight: "bold", color: "#1e40af" }}>Vendor ID</th>
+                    <th
+                      style={{
+                        border: "1px solid #d1d5db",
+                        padding: "8px",
+                        fontSize: "13px",
+                        minWidth: 120,
+                        fontWeight: "bold",
+                        color: "#1e40af",
+                      }}
+                    >
+                      Group ID
+                    </th>
+                    <th
+                      style={{
+                        border: "1px solid #d1d5db",
+                        padding: "8px",
+                        fontSize: "13px",
+                        minWidth: 220,
+                        fontWeight: "bold",
+                        color: "#1e40af",
+                      }}
+                    >
+                      Group Name
+                    </th>
+                    <th
+                      style={{
+                        border: "1px solid #d1d5db",
+                        padding: "8px",
+                        fontSize: "13px",
+                        minWidth: 190,
+                        fontWeight: "bold",
+                        color: "#1e40af",
+                      }}
+                    >
+                      Vendor Name
+                    </th>
+                    <th
+                      style={{
+                        border: "1px solid #d1d5db",
+                        padding: "8px",
+                        fontSize: "13px",
+                        minWidth: 120,
+                        fontWeight: "bold",
+                        color: "#1e40af",
+                      }}
+                    >
+                      Vendor ID
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {groupRows.map((row, idx) => (
-                    <tr key={row.groupId}
+                    <tr
+                      key={row.groupId}
                       style={{
                         backgroundColor: idx % 2 === 0 ? "#f9fafb" : "white",
-                      }}>
-                      <td style={{ border: "1px solid #e5e7eb", padding: "8px", minWidth: 120 }}>{row.groupId}</td>
-                      <td style={{ border: "1px solid #e5e7eb", padding: "8px", minWidth: 220 }}>{row.groupName}</td>
-                      <td style={{ border: "1px solid #e5e7eb", padding: "8px", minWidth: 190 }}>{row.vendorName}</td>
-                      <td style={{ border: "1px solid #e5e7eb", padding: "8px", minWidth: 120 }}>{row.vendorId}</td>
+                      }}
+                    >
+                      <td
+                        style={{
+                          border: "1px solid #e5e7eb",
+                          padding: "8px",
+                          minWidth: 120,
+                        }}
+                      >
+                        {row.groupId}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #e5e7eb",
+                          padding: "8px",
+                          minWidth: 220,
+                        }}
+                      >
+                        {row.groupName}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #e5e7eb",
+                          padding: "8px",
+                          minWidth: 190,
+                        }}
+                      >
+                        {row.vendorName}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #e5e7eb",
+                          padding: "8px",
+                          minWidth: 120,
+                        }}
+                      >
+                        {row.vendorId}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
